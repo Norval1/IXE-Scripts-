@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Norval — Call Reference Tool</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #1F3864;
+    --gold: #B08D57;
+    --gold-light: #d4ae78;
+    --bg: #f5f6f8;
+    --white: #ffffff;
+    --text: #1a1a2e;
+    --muted: #6b7280;
+    --border: #e2e4e9;
+    --success: #10b981;
+    --tag-bg: #eef0f4;
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.6; }
+
+  /* HEADER */
+  .header { background: var(--navy); color: white; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+  .header-title { font-size: 16px; font-weight: 700; letter-spacing: 0.5px; }
+  .header-title span { color: var(--gold); }
+  .header-badge { background: var(--gold); color: var(--navy); font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 20px; letter-spacing: 0.5px; }
+
+  /* TABS */
+  .tabs { display: flex; background: var(--navy); padding: 0 12px; gap: 2px; overflow-x: auto; border-bottom: 3px solid var(--gold); }
+  .tab { padding: 10px 16px; color: rgba(255,255,255,0.6); cursor: pointer; font-size: 12px; font-weight: 600; letter-spacing: 0.5px; white-space: nowrap; border-bottom: 3px solid transparent; margin-bottom: -3px; transition: all 0.2s; text-transform: uppercase; }
+  .tab:hover { color: rgba(255,255,255,0.9); }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  /* CONTENT */
+  .content { padding: 16px; max-width: 1100px; margin: 0 auto; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* SECTION CARDS */
+  .section-card { background: var(--white); border-radius: 10px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); overflow: hidden; border-left: 4px solid var(--navy); }
+  .section-card.gold-border { border-left-color: var(--gold); }
+  .section-card.red-border { border-left-color: #ef4444; }
+  .section-card.green-border { border-left-color: var(--success); }
+
+  .section-header { padding: 12px 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: var(--white); user-select: none; }
+  .section-header:hover { background: #f9fafb; }
+  .section-title { font-weight: 700; font-size: 13px; color: var(--navy); display: flex; align-items: center; gap: 8px; }
+  .section-badge { background: var(--navy); color: white; font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .section-badge.gold { background: var(--gold); }
+  .section-badge.red { background: #ef4444; }
+  .section-badge.green { background: var(--success); }
+  .chevron { color: var(--muted); font-size: 12px; transition: transform 0.2s; }
+  .section-header.open .chevron { transform: rotate(180deg); }
+
+  .section-body { padding: 0 16px 16px; display: none; }
+  .section-body.open { display: block; }
+
+  /* SCRIPT TEXT */
+  .script-text { background: #f0f4ff; border-radius: 8px; padding: 14px; font-size: 14px; line-height: 1.7; color: #1a1a2e; border-left: 3px solid var(--navy); margin-bottom: 10px; position: relative; }
+  .script-text .copy-btn { position: absolute; top: 8px; right: 8px; background: var(--navy); color: white; border: none; border-radius: 5px; padding: 3px 8px; font-size: 10px; cursor: pointer; opacity: 0.7; }
+  .script-text .copy-btn:hover { opacity: 1; }
+  .script-text strong { color: var(--navy); }
+  .script-text em { color: var(--gold); font-style: normal; font-weight: 600; }
+
+  .mirror-tag { display: inline-block; background: var(--gold); color: var(--navy); font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; margin-left: 4px; vertical-align: middle; }
+  .note-tag { display: inline-block; background: #fef3c7; color: #92400e; font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px; margin-left: 4px; vertical-align: middle; }
+
+  /* BULLET LISTS */
+  .script-bullets { list-style: none; padding: 0; margin: 8px 0; }
+  .script-bullets li { padding: 6px 10px 6px 20px; position: relative; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .script-bullets li:last-child { border-bottom: none; }
+  .script-bullets li:before { content: "▸"; color: var(--gold); position: absolute; left: 4px; }
+
+  /* ARI QUESTIONS */
+  .ari-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .ari-pill { background: var(--tag-bg); border: 1px solid var(--border); border-radius: 20px; padding: 6px 14px; font-size: 12px; font-weight: 600; color: var(--navy); cursor: pointer; transition: all 0.15s; }
+  .ari-pill:hover { background: var(--navy); color: white; }
+
+  /* OBJECTION CARDS */
+  .obj-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
+  .obj-card { background: var(--white); border-radius: 10px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.08); border: 1px solid var(--border); }
+  .obj-trigger { padding: 12px 14px; cursor: pointer; font-weight: 700; font-size: 12px; color: var(--navy); background: #f8f9ff; border-bottom: 2px solid var(--navy); display: flex; justify-content: space-between; align-items: center; }
+  .obj-trigger:hover { background: #eef0ff; }
+  .obj-trigger.open { background: var(--navy); color: white; }
+  .obj-trigger.open .obj-chevron { color: var(--gold); }
+  .obj-chevron { font-size: 11px; transition: transform 0.2s; }
+  .obj-trigger.open .obj-chevron { transform: rotate(180deg); }
+  .obj-answer { display: none; padding: 12px 14px; font-size: 13px; line-height: 1.65; color: #2d3748; background: var(--white); }
+  .obj-answer.open { display: block; }
+
+  /* COL FRAMEWORK ACCORDION */
+  .col-section { background: var(--white); border-radius: 10px; margin-bottom: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); overflow: hidden; }
+  .col-header { padding: 12px 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, var(--navy) 0%, #2a4a7f 100%); color: white; }
+  .col-header:hover { background: linear-gradient(135deg, #162a4d 0%, #1F3864 100%); }
+  .col-header-title { font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 8px; }
+  .col-station { background: var(--gold); color: var(--navy); font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 10px; }
+  .col-body { display: none; padding: 14px 16px; }
+  .col-body.open { display: block; }
+  .col-point { padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; line-height: 1.6; }
+  .col-point:last-child { border-bottom: none; }
+  .col-point strong { color: var(--navy); }
+  .col-number { display: inline-block; background: var(--gold); color: var(--navy); font-size: 10px; font-weight: 800; width: 20px; height: 20px; border-radius: 50%; text-align: center; line-height: 20px; margin-right: 6px; flex-shrink: 0; }
+  .col-flex { display: flex; align-items: flex-start; gap: 0; }
+
+  /* VOCAB TABLES */
+  .vocab-table { width: 100%; border-collapse: collapse; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.08); margin-bottom: 16px; }
+  .vocab-table th { background: var(--navy); color: white; padding: 10px 14px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .vocab-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); font-size: 13px; background: var(--white); }
+  .vocab-table tr:last-child td { border-bottom: none; }
+  .vocab-table tr:hover td { background: #f8f9ff; }
+  .filler-word { color: #ef4444; font-weight: 700; }
+  .swap-word { color: var(--success); font-weight: 600; }
+  .power-word { color: var(--navy); font-weight: 700; background: var(--tag-bg); padding: 2px 6px; border-radius: 4px; }
+
+  /* TEMPLATE CARDS */
+  .template-card { background: var(--white); border-radius: 10px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); overflow: hidden; }
+  .template-header { background: var(--navy); color: white; padding: 10px 16px; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; justify-content: space-between; align-items: center; }
+  .template-body { padding: 14px 16px; font-size: 13px; line-height: 1.7; white-space: pre-wrap; color: #2d3748; }
+  .copy-template-btn { background: var(--gold); color: var(--navy); border: none; border-radius: 5px; padding: 4px 10px; font-size: 10px; font-weight: 800; cursor: pointer; }
+  .copy-template-btn:hover { background: var(--gold-light); }
+
+  /* STEPS */
+  .steps { counter-reset: step; }
+  .step { display: flex; gap: 12px; margin-bottom: 12px; }
+  .step-num { background: var(--gold); color: var(--navy); font-weight: 800; font-size: 13px; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .step-content { flex: 1; }
+  .step-title { font-weight: 700; color: var(--navy); margin-bottom: 4px; font-size: 13px; }
+  .step-text { font-size: 13px; color: #374151; line-height: 1.6; }
+
+  /* DIVIDER */
+  .divider { height: 1px; background: var(--border); margin: 12px 0; }
+  .section-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 8px; padding-bottom: 4px; border-bottom: 2px solid var(--gold); display: inline-block; }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 20px; right: 20px; background: var(--success); color: white; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; opacity: 0; transition: opacity 0.3s; z-index: 999; pointer-events: none; }
+  .toast.show { opacity: 1; }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .obj-grid { grid-template-columns: 1fr; }
+    .content { padding: 10px; }
+    .tab { padding: 8px 10px; font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-title">NORVAL <span>// CALL TOOL</span></div>
+  <div class="header-badge">IXE LIVE</div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('script')">📋 Script</div>
+  <div class="tab" onclick="switchTab('objections')">🛡️ Objections</div>
+  <div class="tab" onclick="switchTab('col')">🎯 Col's Framework</div>
+  <div class="tab" onclick="switchTab('vocab')">💬 Vocab</div>
+  <div class="tab" onclick="switchTab('templates')">📨 Templates</div>
+</div>
+
+<div class="content">
+
+  <!-- ===== SCRIPT TAB ===== -->
+  <div class="tab-panel active" id="tab-script">
+
+    <!-- OPENING -->
+    <div class="section-card">
+      <div class="section-header open" onclick="toggleSection(this)">
+        <div class="section-title"><span class="section-badge">Opening</span> Intro Call</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="section-body open">
+        <div class="script-text">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          <em>"G'day [Name], my name is Norval."</em> Before you hang up on me, I was hoping you could help me out for a moment. I'm only calling because you requested the ADF Property Guide published by Daimien Patterson, my CEO. I just want to make sure that has reached you, and I'm curious — <strong>what made you want to grab the property guide?</strong>
+        </div>
+
+        <div class="section-label">Just Information Objection</div>
+        <div class="script-text">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          Okay, when you say <em>"just..."</em> <span class="mirror-tag">MIRROR</span> — <strong>are you thinking about...</strong>
+        </div>
+        <ul class="script-bullets">
+          <li>Where to start with property?</li>
+          <li>Understanding your ADF entitlements?</li>
+          <li>Strategies to pay your home off faster and build retirement wealth?</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- TIME OBJECTION + ROADMAP PITCH -->
+    <div class="section-card gold-border">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-title"><span class="section-badge gold">Pitch</span> Time Objection → Roadmap DC</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="section-body">
+        <div class="section-label">Time Objection Handle</div>
+        <div class="script-text">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          Let me check my schedule to see where I can fit you in... But quickly — I'm not here to sell you anything. I'm one of the many veterans here. My job is to call everyone that requested the guide, ask a few questions to understand what you're trying to do with property, and make your life easier. <span class="mirror-tag">MIRROR THEIR SITUATION</span><br><br>
+          So you can have a better understanding of where you sit and what's possible for you. <strong>Would you be open to hearing me out quickly?</strong>
+        </div>
+
+        <div class="divider"></div>
+        <div class="section-label">Roadmap / DC Pitch — Getting Them to Trevor</div>
+        <div class="script-text">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          Look — Daimien has authorised any veteran or current serving member that requested the guide the opportunity to have a complimentary 15-minute Discovery Call. Essentially, it's a sit-down with one of our senior consultants so you can get the information, guidance, and support you need. <span class="mirror-tag">MIRROR SITUATION</span><br><br>
+          I'm glad you have the guide — that's a great reference tool — but the real reason I'm calling is to identify 15 minutes in your calendar so you can actually get <em>information now</em>, rather than the book collecting dust and you putting this off for months.<br><br>
+          <strong>Would you be open to sparing 15 minutes? Maybe we can help you, maybe we can't — we've helped a lot of people over 16 years. What have you got to lose?</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOGISTICAL DISCOVERY -->
+    <div class="section-card">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-title"><span class="section-badge">Discover</span> Logistical Discovery</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="section-body">
+        <div class="script-text">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          Serving / Service length / What are you doing now? Partner? Own home or renting?<br><br>
+          What are you trying to do property-wise? <em>Maybe we can help you, maybe we can't.</em> Are you open to telling me a little bit about your situation?
+        </div>
+        <div class="section-label">Ari Questions</div>
+        <div class="ari-grid">
+          <div class="ari-pill">Walk me through...</div>
+          <div class="ari-pill">Tell me a little bit about...</div>
+          <div class="ari-pill">Have you considered...?</div>
+          <div class="ari-pill">How does that sound?</div>
+          <div class="ari-pill">So what I'm hearing from you is...</div>
+          <div class="ari-pill">Are you comfortable with...?</div>
+          <div class="ari-pill">What were you hoping the guide would help you with?</div>
+          <div class="ari-pill">Have you thought about the cost of doing nothing?</div>
+        </div>
+        <div class="divider"></div>
+        <div class="section-label">Col's Opening Questions</div>
+        <div class="ari-grid">
+          <div class="ari-pill">Is there anything you want to get out of this session today?</div>
+          <div class="ari-pill">Any questions before we do the deep dive?</div>
+        </div>
+        <div class="divider"></div>
+        <div class="script-text">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          Well, that's exactly what we do — and <strong>would you be open to hearing a recommendation?</strong><br><br>
+          <em>[Pitch Roadmap / DC — Mirror their situation]</em>
+        </div>
+      </div>
+    </div>
+
+    <!-- EMOTIONAL DISCOVERY -->
+    <div class="section-card">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-title"><span class="section-badge">Discover</span> Emotional Discovery</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="section-body">
+        <div class="script-text">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          What have you done so far on your own? <span class="mirror-tag">MIRROR</span><br><br>
+          What's your property timeline looking like?<br><br>
+          What's made you want to look at this now?<br><br>
+          <strong>Are you aware of the opportunity cost impacting you by delaying this further?</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 STEP PROCESS -->
+    <div class="section-card gold-border">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-title"><span class="section-badge gold">Process</span> The 3-Step Process</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="section-body">
+        <div class="script-text">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          We have a very particular process we've developed over 16 years to make sure you're supported in the maximum possible way. It's a three-step process:
+        </div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <div class="step-title">Education</div>
+              <div class="step-text">First, a complimentary 15-minute discussion around your situation, goals, timelines, and what's possible for you. A lot of people don't believe they can do something when they actually can — that starts with education around property. Over 1,200 people in 16 years have started exactly where you are and are now making money from property. The only difference? They educated themselves.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <div class="step-title">Strategy Session</div>
+              <div class="step-text">Step two is a strategy session with one of our senior consultants — trained by Daimien himself, a gold card veteran and experienced property investor with over 15 years in the game. We go right through your situation and show you exactly what you can do. A lot of us think we can't do something when we can — it's only our own lack of education holding us back.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <div class="step-title">Property Sourcing & Ongoing Support</div>
+              <div class="step-text">We source the right property for you — whether it's your own home or an investment property. We know what areas are going to move and why, based on economic fundamentals and proven history. If you go out bush or deploy, we handle everything while you're away. It's a one-stop shop, and we look after you for life.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FALLBACK WEBINAR -->
+    <div class="section-card red-border">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-title"><span class="section-badge red">Last Resort</span> Fallback — Live Webinar</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="section-body">
+        <div class="script-text">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          No dramas at all. How about this instead — Daimien Patterson, our CEO, runs a live webinar covering everything from entitlements — FHOG, HPSEA, HPAS, DHOAS — right through to DVA claims and building a portfolio the right way. He served 14 years himself, did tours in Timor and Iraq, and built his own portfolio from scratch — so he's not just teaching theory. It runs about 90 minutes, there's a live chat where your questions get answered as he goes, and it's completely free. Worth watching with your partner too, so you're both across it.
+        </div>
+        <div style="text-align:center; margin-top:8px;">
+          <a href="https://www.integritypropertyinvestment.com.au/adf-webinar-master/" target="_blank" style="background:var(--navy);color:white;padding:8px 18px;border-radius:6px;text-decoration:none;font-size:12px;font-weight:700;">Open Webinar Link ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- MARKET CYCLE -->
+    <div class="section-card">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-title"><span class="section-badge">Market</span> Market Cycle + Opportunity Cost</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="section-body">
+        <div class="script-text">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          Here's the thing — when you go back and look at 40 years of property data, prices have never fallen two years running. 2018 — down one year, up three. 2022 — down one year, up three. Now we're in 2026, same pattern. Prices are down, but history says they rebound from 2027.<br><br>
+          Every time prices have fallen, government has stepped in — rate hikes, budget changes, lending restrictions. But here's what they haven't fixed — the <em>real</em> problem. All that intervention does is create a cycle. Sentiment shifts temporarily, but the fundamentals? They don't change.
+        </div>
+      </div>
+    </div>
+
+    <!-- SUPPLY vs DEMAND -->
+    <div class="section-card">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-title"><span class="section-badge">Data</span> The Real Problem — Supply vs Demand</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="section-body">
+        <div class="script-text">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          Last year we needed to build more than 250,000 homes just to keep up with population growth and start closing the shortage. We only started construction on 196,000. So we're already behind.<br><br>
+          But it gets worse. We're short <strong>83,000 skilled tradies right now</strong> to even build what we're currently trying to build. We need another <strong>116,000 construction workers</strong> by 2029. And meanwhile? Australia is bringing in <strong>300,000-plus people</strong> through net migration every year — all of those people need housing.<br><br>
+          So you've got massive demand — 300,000 new Australians a year — and falling supply. We're not building enough homes. We don't have the tradies to build them. That's not sentiment, that's not government policy — that's a structural gap that doesn't close overnight.
+        </div>
+      </div>
+    </div>
+
+    <!-- OPPORTUNITY COST CLOSE -->
+    <div class="section-card gold-border">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-title"><span class="section-badge gold">Close</span> The Close — Opportunity Cost</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="section-body">
+        <div class="script-text">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          Here's the reality — every year you delay, you're missing out on capital growth. You're not building equity. You're not accessing depreciation. If a property's worth $700K and grows 10% a year, that's <strong>$70,000 in appreciation</strong>. That's what you miss by waiting.<br><br>
+          The cost of delaying isn't zero. It's <em>exponentially</em> higher than just moving now. And given that supply keeps tightening, the prices available today are only going to look more attractive in a few years' time when demand has caught up again.<br><br>
+          <strong>So based on everything we've talked about — would it help you if we schedule a 15-minute Roadmap Call with Trevor? He'll show you exactly how to position yourself so you're not just waiting for the market to move. Would that help you?</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- NATURAL DROPS -->
+    <div class="section-card">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-title"><span class="section-badge">Drops</span> Drop In Naturally (1–2 per call)</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="section-body">
+        <div class="script-text">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          <strong>Guide + Webinar vs DC:</strong><br>
+          "The guide and the webinar give you the education and information — it's essentially a resource tool. What the Discovery Call with Trevor does is apply those principles to <em>your specific situation</em>, so you actually know what's possible for you."
+        </div>
+        <div class="script-text">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          <strong>Work Smart, Not Hard:</strong><br>
+          "Here's what most people don't realise — one good property decision can outperform years of overtime and grinding. It's not about working harder; it's about working smart."
+        </div>
+        <div class="script-text">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          <strong>Buy Where It's Booming:</strong><br>
+          "Infrastructure and job creation drive growth — not proximity to where you live. You want your money working in the location where the fundamentals are genuinely present, and that's what Trevor will help you see."
+        </div>
+        <div class="script-text">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          <strong>Real Asset vs Liability:</strong><br>
+          "Your own home is a liability — it costs you money. A property that's rented out gives you rent and a tax return working for you. That's the difference between a home and a real asset."
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 STAGES -->
+    <div class="section-card">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-title"><span class="section-badge">Education</span> 4 Stages of Property Investment</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="section-body">
+        <div class="script-text">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          <strong>Buying your own home — why it's usually a mistake first:</strong><br><br>
+          Nine times out of ten, buying your own home first is a mistake financially. Why? You don't live where it's booming. You can't claim any expenses on tax. There's no rent and no tax return helping you pay it off. And cash flow wise — it's always cheaper to hold an investment property. Always better to rent where you need to live and buy where you're going to make money.<br><br>
+          Your own home is always a liability. It's always a lifestyle decision — not an investment decision. The time it makes sense is at the end of the game when you're wealthy, or in that six-month window to access the first home owner grant.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end script tab -->
+
+
+  <!-- ===== OBJECTIONS TAB ===== -->
+  <div class="tab-panel" id="tab-objections">
+    <div style="margin-bottom:12px; font-size:12px; color:var(--muted);">Click any objection to reveal your response. Memorise these over the weekend.</div>
+
+    <div class="obj-grid">
+
+      <div class="obj-card">
+        <div class="obj-trigger" onclick="toggleObj(this)"><span>I don't remember requesting the guide</span><span class="obj-chevron">▼</span></div>
+        <div class="obj-answer">No worries at all — it's pretty common, there are a lot of guides and resources online. What happened is you came across our ADF Property Guide and entered your details to get a copy. My job is just to give you a quick call to make sure it reached you and see if it's of any use to you. Can I ask — is property something you've been thinking about, even casually?</div>
+      </div>
+
+      <div class="obj-card">
+        <div class="obj-trigger" onclick="toggleObj(this)"><span>I just wanted the book to see what's out there</span><span class="obj-chevron">▼</span></div>
+        <div class="obj-answer">That's fair — and that's exactly what the guide is there for. Can I ask though — what made you go looking in the first place? [Listen.] Fair enough. Look, no pressure either way, but if any of that's still on your mind, the live webinar with Daimien is a great next step — no cost, watch it in your own time, and you'll come out with a lot more clarity than the book alone. Would that be something you'd watch?</div>
+      </div>
+
+      <div class="obj-card">
+        <div class="obj-trigger" onclick="toggleObj(this)"><span>I'm just doing research, not ready to commit</span><span class="obj-chevron">▼</span></div>
+        <div class="obj-answer">Totally fair — that's exactly why this isn't a commitment. The guide gives you the general rules, but the Roadmap Call is where you find out how they apply to your specific situation, so your research actually goes somewhere. Fifteen minutes with Trevor doesn't cost you anything, and you'll know more walking out than any amount of googling will give you. Can we get a time in this week or next?</div>
+      </div>
+
+      <div class="obj-card">
+        <div class="obj-trigger" onclick="toggleObj(this)"><span>I want to wait and see what happens with the market</span><span class="obj-chevron">▼</span></div>
+        <div class="obj-answer">Here's the thing — when you look back at 40 years of data, every time prices have dropped, they've never fallen two years running. 2018 — down one year, up three. 2022 — same. We're in 2026 now, same pattern. The market moves whether we're watching or not. The question is whether you're positioned to benefit from the next move, or watching it happen from the sideline. That's exactly what the 15-minute call with Trevor is designed to answer for your situation specifically.</div>
+      </div>
+
+      <div class="obj-card">
+        <div class="obj-trigger" onclick="toggleObj(this)"><span>Want to wait and see what happens with the government</span><span class="obj-chevron">▼</span></div>
+        <div class="obj-answer">That's a reasonable thing to think about. Here's what's important though — this has actually happened before. We abolished negative gearing in the 1980s, and within 18 months rents went up so sharply they had to reverse the decision two years later. New Zealand did the exact same thing and reversed it two years after that. The fundamentals don't change because of a budget — supply is still falling, demand is still growing. The budget actually creates more urgency to act on new construction now, not less.</div>
+      </div>
+
+      <div class="obj-card">
+        <div class="obj-trigger" onclick="toggleObj(this)"><span>What's happening overseas is making me nervous</span><span class="obj-chavron">▼</span></div>
+        <div class="obj-answer">That's understandable — and that's exactly why Australian property stands out. Our market isn't driven by what's happening in the US or geopolitically. It's a pure supply and demand equation. We're bringing in 300,000 plus people a year, we're not building enough homes, and we don't have the tradies to build more. That's not a news cycle — that's a structural reality that keeps property fundamentals strong regardless of what's happening overseas.</div>
+      </div>
+
+      <div class="obj-card">
+        <div class="obj-trigger" onclick="toggleObj(this)"><span>I'm just doing my own research</span><span class="obj-chevron">▼</span></div>
+        <div class="obj-answer">That's a smart approach — and I respect that. The reality is, most people spend months researching and still don't know where they actually sit or what's actually possible for them specifically. The 15-minute call with Trevor doesn't replace your research — it gives it a direction. He'll look at your exact numbers and tell you what's viable for you. That's something Google can't do. Worth 15 minutes to find out, wouldn't you say?</div>
+      </div>
+
+      <div class="obj-card">
+        <div class="obj-trigger" onclick="toggleObj(this)"><span>I want to pay off my own home first</span><span class="obj-chevron">▼</span></div>
+        <div class="obj-answer">Makes sense — that's what most of us are taught growing up. Here's what's important though — your own home doesn't pay you anything. It's not producing income. A property that's rented out gives you rent and a tax return working for you while you're still paying yours down. It's not either-or — it's about doing both in the right order. That's exactly what Trevor can map out for your situation.</div>
+      </div>
+
+      <div class="obj-card">
+        <div class="obj-trigger" onclick="toggleObj(this)"><span>I don't want any more debt</span><span class="obj-chevron">▼</span></div>
+        <div class="obj-answer">That's a completely fair concern — and it's one of the most common ones we hear. Here's the reality — not all debt is the same. A debt that someone else is paying down through rent, while also giving you a tax return, is a completely different animal to personal debt. What Trevor does is show you whether the numbers stack up for your situation — you might be surprised what's actually viable. It's 15 minutes and costs nothing to find out.</div>
+      </div>
+
+      <div class="obj-card">
+        <div class="obj-trigger" onclick="toggleObj(this)"><span>Can you just send me some information?</span><span class="obj-chevron">▼</span></div>
+        <div class="obj-answer">I could, but honestly — information on its own doesn't move the needle. It's the same stuff everyone else gets sent and it rarely goes anywhere. What actually matters is someone looking at your specific situation and telling you what's possible for you. That's all the Roadmap Call is. Fifteen minutes, no obligation. Let's just get it in the diary and you can always cancel if it's not useful.</div>
+      </div>
+
+      <div class="obj-card">
+        <div class="obj-trigger" onclick="toggleObj(this)"><span>I don't have a deposit / can't afford it</span><span class="obj-chevron">▼</span></div>
+        <div class="obj-answer">That's actually one of the most common reasons people book the call — not a reason to skip it. There's more than one way to get a deposit together — DVA compensation, equity, family guarantee, your entitlements as an ADF member. Trevor will show you exactly where you stand before you spend a cent. Worth 15 minutes to find out, wouldn't you say?</div>
+      </div>
+
+      <div class="obj-card">
+        <div class="obj-trigger" onclick="toggleObj(this)"><span>Can Trevor just email me instead?</span><span class="obj-chevron">▼</span></div>
+        <div class="obj-answer">He could, but email can't ask you questions or tell you what actually applies to your situation — and that's the bit that matters. Fifteen minutes on a call does more than any email ever could. Let's just find a time that works and you can judge for yourself whether it was worth it.</div>
+      </div>
+
+      <div class="obj-card">
+        <div class="obj-trigger" onclick="toggleObj(this)"><span>Not really interested — just wanted the book</span><span class="obj-chevron">▼</span></div>
+        <div class="obj-answer">No worries at all — that's exactly what it's there for. Can I ask though — what made you go looking for it in the first place? [Listen.] Fair enough. No pressure either way. But if any of that's still on your mind, the live webinar with Daimien is a good next step — no cost, watch it in your own time, and you'll come out with a lot more clarity. Would that be something you'd watch?</div>
+      </div>
+
+    </div>
+  </div><!-- end objections tab -->
+
+
+  <!-- ===== COL'S FRAMEWORK TAB ===== -->
+  <div class="tab-panel" id="tab-col">
+    <div style="margin-bottom:12px; font-size:12px; color:var(--muted);">Col's strategy session frameworks — condensed in your style. Use these as pre-objection handling and education drops.</div>
+
+    <div class="col-section">
+      <div class="col-header" onclick="toggleCol(this)">
+        <div class="col-header-title"><span class="col-station">Station 1</span> Can We Do This Logistically?</div>
+        <div class="chevron" style="color:var(--gold)">▼</div>
+      </div>
+      <div class="col-body">
+        <div class="col-point"><strong>The Two Sides:</strong> Deposit funding on the left — cash, usable equity, defence entitlements, super. Borrowing capacity on the right. No use having one without the other.</div>
+        <div class="col-point"><strong>Investment vs Owner-Occupier Lending:</strong> For a home to live in, banks assess surplus income only. For an investment property, they also count the property's future rental income — which means your investment borrowing capacity is often <em>higher</em> than your home-buyer borrowing capacity. Say this explicitly.</div>
+        <div class="col-point"><strong>Equity Caveat:</strong> Equity is only usable if the person who can borrow against it is on the title, and the property can service more debt. Stuck equity = liquidate and redeploy as cash.</div>
+        <div class="col-point"><strong>Defence Entitlements — Don't Cash Early:</strong> DHA subsidised rent is worth roughly $300/week ($15,600/year). A $30K first home owner grant is paid back in about two years of continued service. Don't trade an ongoing benefit for a one-off number.</div>
+      </div>
+    </div>
+
+    <div class="col-section">
+      <div class="col-header" onclick="toggleCol(this)">
+        <div class="col-header-title"><span class="col-station">Station 2</span> Is Now a Good Time?</div>
+        <div class="chevron" style="color:var(--gold)">▼</div>
+      </div>
+      <div class="col-body">
+        <div class="col-point"><strong>Bonds vs Shares vs Property — Same $200K:</strong><br>• $200K in bonds at 10% = $20K growth<br>• $200K as deposit on $800K property at 10% = $80K growth<br>Same money, same return rate — but 4x more in property because of leverage. Let the arithmetic make the point, not opinion.</div>
+        <div class="col-point"><strong>Offset Account:</strong> Money in an offset effectively earns you your mortgage rate (say 6.5%) completely tax-free. To earn the same spendable outcome from shares, you'd need a gross return of 10–11% before tax. The comparison isn't 6.5% vs 6.5% — it's 6.5% tax-free vs 10–11% taxed.</div>
+        <div class="col-point"><strong>Budget / Negative Gearing:</strong> If you disincentivise investors from owning rental stock, you decrease rental supply without changing rental demand — so rents go up. This happened in Australia in the 1980s and reversed within two years. Same thing in New Zealand. Historical proof of concept, not opinion. Today's vacancy rates (0.3–1.8%) are half what they were in the 80s — the same policy causes more damage now.</div>
+        <div class="col-point"><strong>Apple Tree Analogy:</strong> Funnelling investors toward new construction only doesn't create more homes — it just adds more competition for the same limited build volume. If the tree only grows 5 apples a year and you double demand, you still only get 5 apples.</div>
+      </div>
+    </div>
+
+    <div class="col-section">
+      <div class="col-header" onclick="toggleCol(this)">
+        <div class="col-header-title"><span class="col-station">Station 3</span> New vs Established</div>
+        <div class="chevron" style="color:var(--gold)">▼</div>
+      </div>
+      <div class="col-body">
+        <div class="col-point"><strong>Definition first:</strong> "Established" is a legal/tax classification, not an age description. A brand-new home someone else built and sold to you is considered established by the ATO.</div>
+        <div class="col-point"><strong>Stamp Duty Gap:</strong> New build — duty on land component only (~$15K on a $1M property). Established — duty on full price (~$45–55K). That gap alone is $30–40K before you've even compared anything else.</div>
+        <div class="col-point"><strong>Depreciation Gap — the big one:</strong><br>• Established: prime cost method, structure only, flat 2.5% over 40 years<br>• New build: diminishing value method, structure AND fixtures/fittings, front-loaded in first 5–7 years<br>• Under 2026 budget rules, established properties get zero negative gearing benefit at all<br>• New build can return $11K+ tax return vs near-zero for established on identical properties<br>• Over 7 years, that's $100K+ more in deductions from a new build</div>
+        <div class="col-point"><strong>Structural Guarantee:</strong> New build inspected and signed off at slab, frame, and enclosed — with photos and certification. Established: zero structural guarantee or warranty from vendor. Car warranty analogy — would you buy the 1-year or 10-year warranty?</div>
+        <div class="col-point"><strong>Holding Costs vs Stamp Duty:</strong> Construction period costs (~$30K, tax-deductible) are less than established stamp duty alone (~$40K+, not deductible) — before the depreciation gap is even counted.</div>
+      </div>
+    </div>
+
+    <div class="col-section">
+      <div class="col-header" onclick="toggleCol(this)">
+        <div class="col-header-title"><span class="col-station">Station 4</span> Equilibrium Point Theory</div>
+        <div class="chevron" style="color:var(--gold)">▼</div>
+      </div>
+      <div class="col-body">
+        <div class="col-point"><strong>The Core Idea:</strong> Property investing is a science, not an art. There's a mathematical sweet spot — an equilibrium point — where the price, land size, and specification align with what the actual owner-occupier market in that location can afford and wants to buy.</div>
+        <div class="col-point"><strong>You're building for the buyer, not yourself:</strong> You're building the house the largest pool of future owner-occupier buyers in that suburb can afford and would want — because they drive your capital growth and resale value.</div>
+        <div class="col-point"><strong>Don't overcapitalise:</strong><br>• Biggest land on the street = odd one out, smaller resale pool<br>• 5 bedrooms in a young-couple suburb = wrong demographic<br>• Pool = half your buyers see it as a liability, not a bonus<br>More spend is not automatically more growth — it can actually shrink your buyer pool at resale.</div>
+      </div>
+    </div>
+
+    <div class="col-section">
+      <div class="col-header" onclick="toggleCol(this)">
+        <div class="col-header-title"><span class="col-station">Locations</span> Why We Buy Where We Buy</div>
+        <div class="chevron" style="color:var(--gold)">▼</div>
+      </div>
+      <div class="col-body">
+        <div class="col-point"><strong>Urban Growth Boundary:</strong> Every capital city has a planning boundary past which land can't be rezoned. Growth gets pushed to satellite corridors sitting inside or just outside it — and those corridors fill in over 15–20 years as infrastructure and population catch up.</div>
+        <div class="col-point"><strong>The Investment Thesis:</strong> Identify a growth corridor while land is comparatively cheap and infrastructure is still being built — then let population growth, employment, and transport investment close the price gap to established suburbs nearer the CBD. That gap closing IS the growth.</div>
+        <div class="col-point"><strong>Don't sell on vibes:</strong> Show specifically funded, approved infrastructure and population trajectory. Frame the current price gap to a comparable established suburb as the growth still left to capture. That's what makes it science, not a guess.</div>
+      </div>
+    </div>
+
+    <div class="col-section">
+      <div class="col-header" onclick="toggleCol(this)">
+        <div class="col-header-title"><span class="col-station">PPOR vs IP</span> Investment First — Why It Makes Sense</div>
+        <div class="chevron" style="color:var(--gold)">▼</div>
+      </div>
+      <div class="col-body">
+        <div class="col-point"><strong>PPOR = lifestyle decision wearing a financial costume.</strong> Investment property = financial decision that might become a lifestyle decision later, once it's done its job.</div>
+        <div class="col-point"><strong>The Sequencing Argument:</strong> Investment property first = higher borrowing capacity (rental income counted) + tax deductions working for you. A home first = no deductions, lower borrowing capacity for everything that follows.</div>
+        <div class="col-point"><strong>Nothing stops you</strong> from turning an investment property into your home later — once it's paid down and worked for you first.</div>
+      </div>
+    </div>
+
+    <div class="col-section">
+      <div class="col-header" onclick="toggleCol(this)">
+        <div class="col-header-title"><span class="col-station">Col Style</span> Col's Delivery Habits to Steal</div>
+        <div class="chevron" style="color:var(--gold)">▼</div>
+      </div>
+      <div class="col-body">
+        <div class="col-point"><strong>The Train Track:</strong> Narrate the shape of the conversation as you go — "So that's the first station on the train track... the next station is..." Keeps the client oriented and makes it feel like a deliberate methodology.</div>
+        <div class="col-point"><strong>The Verdict Habit:</strong> Ask the station question plainly, answer in one word, pause, then explain. "Can you do this logistically? Yes." The pause does the work.</div>
+        <div class="col-point"><strong>Analogy First:</strong> Every abstract concept gets a plain analogy before the numbers — apple tree (supply), car warranty (build quality), offset (tax-free savings). Analogy → numbers → verdict.</div>
+        <div class="col-point"><strong>Pre-empt Objections:</strong> State the objection yourself before the client raises it — then answer with a worked number or historical precedent. Never a vague reassurance.</div>
+        <div class="col-point"><strong>Always Close with One Concrete Next Step:</strong> Never end on "let's stay in touch." Name the exact next action and when it happens.</div>
+      </div>
+    </div>
+
+  </div><!-- end col tab -->
+
+
+  <!-- ===== VOCAB TAB ===== -->
+  <div class="tab-panel" id="tab-vocab">
+
+    <div class="section-label" style="margin-bottom:12px;">Filler Word Swaps — Replace These Instantly</div>
+    <table class="vocab-table">
+      <thead>
+        <tr><th>❌ Instead of...</th><th>✅ Use this instead</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="filler-word">Bro / Brother / Man / Mate</td><td class="swap-word">[Name] — use their name directly</td></tr>
+        <tr><td class="filler-word">Guys / Team</td><td class="swap-word">Look... / Here's the thing... / The reality is...</td></tr>
+        <tr><td class="filler-word">So basically...</td><td class="swap-word">What we're seeing is... / The data shows...</td></tr>
+        <tr><td class="filler-word">Like I said...</td><td class="swap-word">To bring that back to your situation...</td></tr>
+        <tr><td class="filler-word">You know what I mean?</td><td class="swap-word">Does that make sense for where you're at?</td></tr>
+        <tr><td class="filler-word">Kind of / Sort of</td><td class="swap-word">Specifically / In essence / What that means is...</td></tr>
+        <tr><td class="filler-word">Honestly / To be honest</td><td class="swap-word">Here's what's important... / The reality is...</td></tr>
+        <tr><td class="filler-word">Yeah nah / Nah yeah</td><td class="swap-word">Understood. / Fair enough. / That makes sense.</td></tr>
+        <tr><td class="filler-word">Heaps / Lots of</td><td class="swap-word">Significantly / Considerably / A substantial amount</td></tr>
+        <tr><td class="filler-word">Pretty good / Pretty bad</td><td class="swap-word">Considerable / Notable / Meaningful</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-label" style="margin-bottom:12px; margin-top:20px;">Authority Phrases — Drop 1–2 Per Call</div>
+    <table class="vocab-table">
+      <thead>
+        <tr><th>Phrase</th><th>When to Use</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>"The reality is..."</strong></td><td>Opening a hard truth or data point</td></tr>
+        <tr><td><strong>"What we're seeing is..."</strong></td><td>Presenting market data or trends</td></tr>
+        <tr><td><strong>"Here's what's important..."</strong></td><td>Before your key point or close</td></tr>
+        <tr><td><strong>"The data shows..."</strong></td><td>Backing up a claim with numbers</td></tr>
+        <tr><td><strong>"Based on the fundamentals..."</strong></td><td>Supply/demand, economic argument</td></tr>
+        <tr><td><strong>"When we look at the numbers..."</strong></td><td>Transitioning to a worked example</td></tr>
+        <tr><td><strong>"In accordance with..."</strong></td><td>Policy, strategy, process alignment</td></tr>
+        <tr><td><strong>"The opportunity cost of..."</strong></td><td>Delaying, waiting, inaction</td></tr>
+        <tr><td><strong>"To bring that back to your situation..."</strong></td><td>Applying general data to the client</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-label" style="margin-bottom:12px; margin-top:20px;">Power Vocabulary — Your Arsenal</div>
+    <table class="vocab-table">
+      <thead>
+        <tr><th>Word</th><th>Use It When...</th><th>Example</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="power-word">Exponentially</span></td><td>Describing compound growth or delay cost</td><td>"The cost of waiting increases exponentially..."</td></tr>
+        <tr><td><span class="power-word">Equilibrium point</span></td><td>Explaining the right property spec/price</td><td>"We're looking for the equilibrium point..."</td></tr>
+        <tr><td><span class="power-word">Viable</span></td><td>Assessing if a strategy or deal works</td><td>"The question is whether it's actually viable..."</td></tr>
+        <tr><td><span class="power-word">Lucrative</span></td><td>Describing ROI or investment upside</td><td>"Property is the most lucrative leveraged asset..."</td></tr>
+        <tr><td><span class="power-word">Disincentivise</span></td><td>Policy/regulation impact on investors</td><td>"When you disincentivise investors from..."</td></tr>
+        <tr><td><span class="power-word">In accordance with</span></td><td>Strategy alignment, process compliance</td><td>"In accordance with the strategy..."</td></tr>
+        <tr><td><span class="power-word">Boutique investment</span></td><td>High-quality, tailored opportunities</td><td>"This is a boutique investment opportunity..."</td></tr>
+        <tr><td><span class="power-word">Contingency</span></td><td>Risk management, backup planning</td><td>"We always build in a contingency..."</td></tr>
+        <tr><td><span class="power-word">Advocate</span></td><td>Your title — not consultant, not salesperson</td><td>"As your advocate, my role is to..."</td></tr>
+        <tr><td><span class="power-word">Structural gap</span></td><td>Supply vs demand problem</td><td>"This is a structural gap that doesn't close overnight."</td></tr>
+        <tr><td><span class="power-word">Fundamentals</span></td><td>Supply/demand economic basis</td><td>"The fundamentals haven't changed."</td></tr>
+        <tr><td><span class="power-word">Deployable</span></td><td>Cash or equity that can be used</td><td>"Is that equity actually deployable?"</td></tr>
+        <tr><td><span class="power-word">Leverage</span></td><td>Using borrowed money to amplify returns</td><td>"Property gives you access to leverage..."</td></tr>
+        <tr><td><span class="power-word">Trajectory</span></td><td>Growth direction, population, market</td><td>"The population trajectory in that corridor..."</td></tr>
+        <tr><td><span class="power-word">Sustainable</span></td><td>Long-term, defensible strategy</td><td>"A sustainable, measurable approach..."</td></tr>
+      </tbody>
+    </table>
+
+  </div><!-- end vocab tab -->
+
+
+  <!-- ===== TEMPLATES TAB ===== -->
+  <div class="tab-panel" id="tab-templates">
+
+    <div class="template-card">
+      <div class="template-header">
+        📱 SMS — Missed Call
+        <button class="copy-template-btn" onclick="copyTemplate('sms-missed')">Copy</button>
+      </div>
+      <div class="template-body" id="sms-missed">G'day [Name],
+
+I just tried giving you a quick call — I'm Norval from Integrity Property Investment.
+
+You recently requested the ADF Property Guide, and I just wanted to touch base to make sure it reached you and see if you had any questions.
+
+No rush at all — feel free to give me a call back when you get a chance, or I can try you again at a better time.
+
+Norval
+Integrity Property</div>
+    </div>
+
+    <div class="template-card">
+      <div class="template-header">
+        💡 LW Text — Webinar Confirmation
+        <button class="copy-template-btn" onclick="copyTemplate('lw-text')">Copy</button>
+      </div>
+      <div class="template-body" id="lw-text">G'day,
+
+Just confirming you received your ADF Masterclass Property Webinar link via email and are still able to attend tonight?
+
+Please also check your junk or spam folder to be safe — search "ADF Masterclass Webinar" and it should come up.
+
+Norval,
+Integrity Property</div>
+    </div>
+
+    <div class="template-card">
+      <div class="template-header">
+        📅 DC Reminder — Discovery Call
+        <button class="copy-template-btn" onclick="copyTemplate('dc-reminder')">Copy</button>
+      </div>
+      <div class="template-body" id="dc-reminder">G'day [Name],
+
+Just a friendly reminder about our discovery call coming up on [Date/Time].
+
+If you haven't watched the ADF property webinar recording yet, I'd recommend having a look before we chat — we'll be referencing it during our session, so it'll give you a bit of context going in.
+
+Norval,
+Integrity Property</div>
+    </div>
+
+    <div class="template-card">
+      <div class="template-header">
+        ⚖️ Email — DVA Help / Jonty at Tag Legal
+        <button class="copy-template-btn" onclick="copyTemplate('dva-email')">Copy</button>
+      </div>
+      <div class="template-body" id="dva-email">Subject: DVA Support — Someone Who Can Actually Help
+
+Hi [Name],
+
+It was great speaking with you.
+
+As I mentioned, when it comes to DVA claims and legal support for veterans, I always point people in the direction of a good mate of mine — Jonty at Tag Legal. They specialise specifically in DVA matters and are genuinely one of the best in the space.
+
+You can check them out here: https://www.taglegal.com.au/aboutus
+
+Just let them know Norval sent you — they'll look after you.
+
+Any other questions, I'm always happy to help.
+
+Kind regards,
+Norval
+Integrity Property Investment</div>
+    </div>
+
+  </div><!-- end templates tab -->
+
+</div><!-- end content -->
+
+<div class="toast" id="toast">✓ Copied!</div>
+
+<script>
+  function switchTab(tabId) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + tabId).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  function toggleSection(header) {
+    const body = header.nextElementSibling;
+    header.classList.toggle('open');
+    body.classList.toggle('open');
+  }
+
+  function toggleObj(trigger) {
+    const answer = trigger.nextElementSibling;
+    trigger.classList.toggle('open');
+    answer.classList.toggle('open');
+  }
+
+  function toggleCol(header) {
+    const body = header.nextElementSibling;
+    body.classList.toggle('open');
+    const chevron = header.querySelector('.chevron');
+    chevron.style.transform = body.classList.contains('open') ? 'rotate(180deg)' : '';
+  }
+
+  function copyText(btn) {
+    const text = btn.parentElement.innerText.replace('Copy', '').trim();
+    navigator.clipboard.writeText(text).then(() => showToast());
+  }
+
+  function copyTemplate(id) {
+    const text = document.getElementById(id).innerText;
+    navigator.clipboard.writeText(text).then(() => showToast());
+  }
+
+  function showToast() {
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2000);
+  }
+
+  // Open first section by default
+  document.querySelector('.section-header').click();
+</script>
+
+</body>
+</html>
