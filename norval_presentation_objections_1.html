@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Norval — Property Presentation Objection Handler</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #1F3864;
+    --gold: #B08D57;
+    --gold-light: #d4ae78;
+    --bg: #f0f2f5;
+    --white: #ffffff;
+    --text: #1a1a2e;
+    --muted: #6b7280;
+    --border: #e2e4e9;
+    --red: #ef4444;
+    --green: #10b981;
+    --amber: #f59e0b;
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.65; }
+
+  .header { background: var(--navy); color: white; padding: 12px 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: space-between; }
+  .header-title { font-size: 16px; font-weight: 800; }
+  .header-title span { color: var(--gold); }
+  .header-sub { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+  .header-badge { background: var(--red); color: white; font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 20px; }
+
+  .tabs { background: var(--navy); display: flex; padding: 0 16px; gap: 2px; overflow-x: auto; border-bottom: 3px solid var(--gold); }
+  .tab { padding: 10px 16px; color: rgba(255,255,255,0.55); cursor: pointer; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; white-space: nowrap; border-bottom: 3px solid transparent; margin-bottom: -3px; transition: all 0.2s; text-transform: uppercase; }
+  .tab:hover { color: rgba(255,255,255,0.9); }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  .content { padding: 16px; max-width: 1000px; margin: 0 auto; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* BANNER */
+  .banner { background: linear-gradient(135deg, var(--navy) 0%, #2a4a7f 100%); color: white; border-radius: 12px; padding: 16px 20px; margin-bottom: 16px; }
+  .banner h2 { font-size: 17px; font-weight: 800; margin-bottom: 4px; }
+  .banner p { font-size: 12px; color: rgba(255,255,255,0.7); }
+  .banner-tags { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .btag { background: rgba(255,255,255,0.15); color: white; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+  .btag.gold { background: var(--gold); color: var(--navy); }
+  .btag.red { background: var(--red); }
+
+  /* OBJECTION CARDS */
+  .obj-card { background: var(--white); border-radius: 12px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); overflow: hidden; }
+  .obj-trigger { padding: 14px 18px; cursor: pointer; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; border-left: 5px solid var(--navy); background: var(--white); user-select: none; }
+  .obj-trigger:hover { background: #f8f9ff; }
+  .obj-trigger.open { background: var(--navy); border-left-color: var(--gold); }
+  .obj-trigger.open .obj-question { color: white; }
+  .obj-trigger.open .obj-tag { opacity: 0.7; }
+  .obj-trigger.open .chevron { color: var(--gold); transform: rotate(180deg); }
+  .obj-trigger.red-border { border-left-color: var(--red); }
+  .obj-trigger.gold-border { border-left-color: var(--gold); }
+  .obj-trigger.green-border { border-left-color: var(--green); }
+
+  .obj-left { flex: 1; }
+  .obj-question { font-weight: 700; font-size: 14px; color: var(--navy); margin-bottom: 4px; }
+  .obj-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+  .obj-tag { font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 10px; text-transform: uppercase; }
+  .obj-tag.price { background: #fef3c7; color: #92400e; }
+  .obj-tag.trust { background: #e0f2fe; color: #0369a1; }
+  .obj-tag.timing { background: #f0fdf4; color: #166534; }
+  .obj-tag.technical { background: #fdf2f8; color: #86198f; }
+  .obj-tag.close { background: #fef2f2; color: #991b1b; }
+  .obj-tag.education { background: #eff6ff; color: #1d4ed8; }
+  .chevron { color: var(--muted); font-size: 13px; transition: transform 0.2s; flex-shrink: 0; margin-top: 2px; }
+
+  .obj-body { display: none; padding: 16px 18px; border-top: 1px solid var(--border); }
+  .obj-body.open { display: block; }
+
+  .response-box { background: #f0f4ff; border-left: 4px solid var(--navy); border-radius: 0 8px 8px 0; padding: 14px 16px; font-size: 14px; line-height: 1.75; color: #1a1a2e; margin-bottom: 10px; position: relative; }
+  .response-box strong { color: var(--navy); }
+  .response-box em { color: var(--gold); font-style: normal; font-weight: 600; }
+  .copy-btn { position: absolute; top: 8px; right: 8px; background: var(--navy); color: white; border: none; border-radius: 5px; padding: 3px 9px; font-size: 10px; cursor: pointer; }
+  .copy-btn:hover { background: var(--gold); color: var(--navy); }
+
+  .explainer { background: #fef3c7; border: 1px solid var(--amber); border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #78350f; margin-bottom: 10px; }
+  .explainer strong { color: #92400e; }
+
+  .tip-box { background: #f0fdf4; border: 1px solid var(--green); border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #065f46; }
+  .tip-box strong { color: #065f46; }
+
+  /* CONCEPT CARDS */
+  .concept-card { background: var(--white); border-radius: 12px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); overflow: hidden; border-left: 5px solid var(--gold); }
+  .concept-header { padding: 14px 18px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+  .concept-header:hover { background: #fdfaf4; }
+  .concept-title { font-weight: 700; font-size: 14px; color: var(--navy); display: flex; align-items: center; gap: 8px; }
+  .concept-badge { background: var(--gold); color: var(--navy); font-size: 9px; font-weight: 800; padding: 2px 8px; border-radius: 10px; text-transform: uppercase; }
+  .concept-body { display: none; padding: 16px 18px; border-top: 1px solid var(--border); }
+  .concept-body.open { display: block; }
+
+  /* TABLE */
+  .compare-table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 13px; border-radius: 8px; overflow: hidden; }
+  .compare-table th { background: var(--navy); color: white; padding: 8px 12px; text-align: left; }
+  .compare-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); background: white; }
+  .compare-table tr:last-child td { border-bottom: none; }
+  .win { color: var(--green); font-weight: 700; }
+  .lose { color: var(--red); font-weight: 700; }
+
+  /* CLOSE SEQUENCE */
+  .close-step { display: flex; gap: 12px; margin-bottom: 14px; }
+  .close-num { background: var(--gold); color: var(--navy); font-weight: 800; font-size: 13px; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .close-content { flex: 1; }
+  .close-label { font-weight: 700; color: var(--navy); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .close-text { background: #f0f4ff; border-left: 3px solid var(--navy); padding: 10px 12px; border-radius: 0 6px 6px 0; font-size: 13px; line-height: 1.7; }
+
+  .toast { position: fixed; bottom: 20px; right: 20px; background: var(--green); color: white; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; opacity: 0; transition: opacity 0.3s; z-index: 999; pointer-events: none; }
+  .toast.show { opacity: 1; }
+
+  .divider { height: 1px; background: var(--border); margin: 14px 0; }
+  .section-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 10px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-title">NORVAL <span>// PRESENTATION OBJECTIONS</span></div>
+    <div class="header-sub">Property Presentation — Full Objection Handler + Concepts</div>
+  </div>
+  <div class="header-badge">TRAINING</div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('price')">💰 Price & Value</div>
+  <div class="tab" onclick="switchTab('timing')">⏰ Timing & Hesitation</div>
+  <div class="tab" onclick="switchTab('technical')">🔧 Technical</div>
+  <div class="tab" onclick="switchTab('close')">🎯 Close Objections</div>
+  <div class="tab" onclick="switchTab('concepts')">📚 Key Concepts</div>
+</div>
+
+<div class="content">
+
+  <!-- ===== PRICE & VALUE ===== -->
+  <div class="tab-panel active" id="tab-price">
+    <div class="banner">
+      <h2>Price & Value Objections</h2>
+      <p>The most common objections at property presentations. Clients challenge the price, compare to cheaper alternatives, or question the value. Answer with wholesale vs retail, builder relationships, 16 years, and Col's commercial-risk argument.</p>
+      <div class="banner-tags">
+        <span class="btag gold">Wholesale vs Retail</span>
+        <span class="btag">Builder Relationships</span>
+        <span class="btag">16 Years</span>
+        <span class="btag">Commercial Risk Argument</span>
+      </div>
+    </div>
+
+    <!-- CHEAPER ON REALESTATE.COM -->
+    <div class="obj-card">
+      <div class="obj-trigger gold-border" onclick="toggleObj(this)">
+        <div class="obj-left">
+          <div class="obj-question">"I could go on realestate.com.au right now and find something cheaper."</div>
+          <div class="obj-meta"><span class="obj-tag price">Price</span><span class="obj-tag trust">Trust</span></div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="obj-body">
+        <div class="explainer"><strong>What they're really saying:</strong> "Prove to me you're not overcharging." This is a trust objection dressed as a price objection. Don't defend the price — explain why our price is structured differently.</div>
+        <div class="response-box">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          You absolutely can — and I'd encourage you to. What you'll find on realestate.com.au is retail pricing. What you're looking at tonight is <em>wholesale</em>.<br><br>
+          Here's how that works. We've been operating for 16 years, and over that time we've built direct relationships with our builders and developers that most individuals will never have access to. We bring them volume — in some cases 50 to 100 clients a year through one builder alone. At an average build cost of around $450,000, that's a $20 million-plus annual revenue stream for them.<br><br>
+          What that means for you is: they compete for our business. They price sharply, they include things that don't appear on standard retail packages, and they prioritise our clients because they can't afford not to. When you go on realestate.com.au, you're paying what the market will allow. What you're seeing tonight is what we negotiate directly — land cost plus build cost, at our volume rate, with a full turnkey package included. That's not retail. That's wholesale.
+        </div>
+        <div class="tip-box"><strong>If they push further:</strong> "Tell me — what are you finding cheaper, and what's included in that price? Is it turnkey? Fixed price contract? 25-year structural guarantee? Let's compare apples to apples."</div>
+      </div>
+    </div>
+
+    <!-- WEBSITE PRICE -->
+    <div class="obj-card">
+      <div class="obj-trigger gold-border" onclick="toggleObj(this)">
+        <div class="obj-left">
+          <div class="obj-question">"If I go to the developer's website right now, will I find the same price?"</div>
+          <div class="obj-meta"><span class="obj-tag price">Price</span><span class="obj-tag trust">Trust</span></div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="obj-body">
+        <div class="explainer"><strong>What they're really saying:</strong> "Are you adding a margin on top?" Answer confidently — we buy at volume, not as an individual. Don't apologise for the relationship.</div>
+        <div class="response-box">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          Possibly not — and here's why. What we access is not what's on their public website. Their website is retail. What we access is a direct relationship built on 16 years of consistent volume.<br><br>
+          Think about it this way — when a large corporation buys in bulk, they don't pay the same price as an individual customer. Same principle here. We bring this developer consistent, quality, pre-educated clients. In return, they give us access to pricing and inclusions that aren't advertised publicly.<br><br>
+          What you're looking at tonight isn't just a cheaper version of what's on the website — it's a completely different procurement model. You're paying for the land at cost and the build at cost, with a full turnkey package, without someone's retail profit margin on top.
+        </div>
+      </div>
+    </div>
+
+    <!-- PRICE OBJECTION GENERAL -->
+    <div class="obj-card">
+      <div class="obj-trigger red-border" onclick="toggleObj(this)">
+        <div class="obj-left">
+          <div class="obj-question">"It's too expensive / the price is too high."</div>
+          <div class="obj-meta"><span class="obj-tag price">Price</span></div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="obj-body">
+        <div class="explainer"><strong>What they're really saying:</strong> Often fear, not genuine price concern. Dig into what they're comparing it to first before responding.</div>
+        <div class="response-box">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          I hear you — and I want to make sure we're comparing the right things. What are you measuring it against?<br><br>
+          [Listen — then respond based on what they say.]<br><br>
+          Here's the reality — the price on what we're looking at tonight is the land plus the build. That's the intrinsic cost. There's no developer profit margin built on top, no retail markup. If you were to find an equivalent finished property in that same area, you'd pay whatever the market demands — which is that cost basis plus whatever the previous owner made on it.<br><br>
+          What's expensive in property isn't the entry price — it's the opportunity cost of not entering. Every year this sits outside your portfolio is a year of capital growth, rental income, and depreciation benefits that you're not accessing. That's the real cost.
+        </div>
+      </div>
+    </div>
+
+    <!-- WHY CAN'T I BUY SOMETHING NEW RIGHT NOW -->
+    <div class="obj-card">
+      <div class="obj-trigger gold-border" onclick="toggleObj(this)">
+        <div class="obj-left">
+          <div class="obj-question">"Why can't I just go and buy something new right now on my own?"</div>
+          <div class="obj-meta"><span class="obj-tag price">Price</span><span class="obj-tag trust">Trust</span><span class="obj-tag education">Education</span></div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="obj-body">
+        <div class="explainer"><strong>What they're really saying:</strong> "Why do I need you?" This is the advocacy question. Answer with the builder accountability argument — Col's $22.5M commercial risk reasoning.</div>
+        <div class="response-box">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          You can — and there's nothing stopping you. But here's what that looks like in reality.<br><br>
+          If you go directly to a builder as an individual, you're one client. If something goes wrong — delays, quality issues, corners cut — you've got limited commercial leverage. That builder's risk in treating you poorly is minimal, because you represent one job to them.<br><br>
+          When you go through us, you're not one client. We send some of our builders 50 clients a year at roughly $450,000 per build. That's $22 million-plus in annual revenue for that builder from us alone. If they do the wrong thing by you, they're not just risking your job — they're risking their entire relationship with us. That's a commercial incentive to look after you that simply doesn't exist when you go it alone.<br><br>
+          On top of that — we don't work with volume builders. We work with a small, vetted panel of boutique builders with strong balance sheets, fixed-price contracts, and 25-year structural guarantees. Finding those builders yourself, vetting them, negotiating separate land and build contracts, and managing the process while you're deployed or working full-time — that's what we do, so you don't have to.
+        </div>
+      </div>
+    </div>
+
+    <!-- COL'S BUILDER SPEECH -->
+    <div class="obj-card">
+      <div class="obj-trigger gold-border" onclick="toggleObj(this)">
+        <div class="obj-left">
+          <div class="obj-question">"How do I know the builder is good / what if the builder goes bust?"</div>
+          <div class="obj-meta"><span class="obj-tag trust">Trust</span><span class="obj-tag technical">Technical</span></div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="obj-body">
+        <div class="explainer"><strong>Col's actual framing on builders — this is gold. Use it verbatim.</strong></div>
+        <div class="response-box">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          That's a fair question — and it's one I want to address properly, because the builder is one of the most important parts of this equation.<br><br>
+          We do not work with volume builders. We have a very small, highly vetted panel of boutique builders in each sub-market — and the vetting process is strict. Strong balance sheets. Liquid. Material on hand. They don't subcontract out all of their tradespeople. And they have a proven track record with our clients specifically.<br><br>
+          But here's the most important part — these builders aren't just accountable to you as one family. We send some of them 50 clients a year. At roughly $450,000 per build, that's a $22.5 million annual revenue stream from us alone. If they did the wrong thing by you, they wouldn't just be doing the wrong thing by one family — they'd be jeopardising that entire relationship. There's no commercial incentive for them to cut corners or let you down.<br><br>
+          And if, God forbid, something did happen — we always have a second builder pre-arranged and ready to step in. We've never had to use it. But the contingency exists. That's what it means to have an advocate in your corner rather than going it alone.
+        </div>
+        <div class="tip-box"><strong>Car warranty analogy if needed:</strong> "Think about it like buying a car. Great Wall offers a one-year warranty. Toyota offers ten years. You know immediately which one is built better. Our builders offer 25-year structural guarantees. Volume builders offer six months. That tells you everything."</div>
+      </div>
+    </div>
+
+  </div><!-- end price tab -->
+
+
+  <!-- ===== TIMING & HESITATION ===== -->
+  <div class="tab-panel" id="tab-timing">
+    <div class="banner">
+      <h2>Timing & Hesitation Objections</h2>
+      <p>The most common stall tactics. "I want to think about it." "Let me talk to my partner." "The market timing isn't right." Handle these with opportunity cost, market cycle data, and the cost of waiting.</p>
+    </div>
+
+    <!-- I WANT TO THINK ABOUT IT -->
+    <div class="obj-card">
+      <div class="obj-trigger red-border" onclick="toggleObj(this)">
+        <div class="obj-left">
+          <div class="obj-question">"I want to think about it."</div>
+          <div class="obj-meta"><span class="obj-tag timing">Timing</span><span class="obj-tag close">Close</span></div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="obj-body">
+        <div class="explainer"><strong>What they're really saying:</strong> Either they have an unanswered question or concern they haven't voiced — or they're not fully sold on the opportunity. Dig before you respond.</div>
+        <div class="response-box">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          Of course — and I respect that. Can I ask though — what specifically do you want to think through? Because if there's something that's not sitting right, I'd much rather address it now than have you sitting with a question I could answer in two minutes.<br><br>
+          [Listen carefully — most of the time there's a specific concern underneath this.]<br><br>
+          Here's what I want you to be aware of as you think about it — and I say this not to put pressure on you, but because it's my job to be straight with you. Property doesn't wait. The developers' admin team are monitoring this tonight because we often run presentations late — they stay online past 10pm for us. This allocation is held for the next few hours. After that, it goes back into the pool.<br><br>
+          The thinking is valid. But what are you actually thinking about that we can't resolve right now?
+        </div>
+      </div>
+    </div>
+
+    <!-- LET ME TALK TO MY PARTNER -->
+    <div class="obj-card">
+      <div class="obj-trigger red-border" onclick="toggleObj(this)">
+        <div class="obj-left">
+          <div class="obj-question">"I need to talk to my partner / wife / husband first."</div>
+          <div class="obj-meta"><span class="obj-tag timing">Timing</span><span class="obj-tag close">Close</span></div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="obj-body">
+        <div class="explainer"><strong>Note:</strong> This is legitimate — Col always tries to have both partners present. If you've got both in the room, great. If not, acknowledge it but keep moving.</div>
+        <div class="response-box">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          Completely understand — and ideally we'd have both of you in the room, which is why I prefer to run these sessions with both partners present. Is there any way to get them on a quick call right now so they can hear the key numbers?<br><br>
+          [If no — continue:]<br><br>
+          Here's what I'd suggest. The most important thing your partner needs to understand is the cash flow position — what it actually costs you out of pocket per week — and the opportunity cost of waiting. I can send you a one-page summary you can walk them through tonight. But I want to be transparent — the allocation we've been looking at tonight is only held for a few hours. I wouldn't want you to have the conversation, get them on board, and find out the property's gone.<br><br>
+          Could we do this — I'll mark your interest and hold the position temporarily while you speak to them tonight. If you come back to me before [time], we can move forward. If not, no pressure. Does that work?
+        </div>
+      </div>
+    </div>
+
+    <!-- MARKET TIMING -->
+    <div class="obj-card">
+      <div class="obj-trigger" onclick="toggleObj(this)">
+        <div class="obj-left">
+          <div class="obj-question">"The market isn't right / I'll wait for prices to drop."</div>
+          <div class="obj-meta"><span class="obj-tag timing">Timing</span><span class="obj-tag education">Education</span></div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="obj-body">
+        <div class="response-box">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          I want to show you something that might change the way you think about that. When you go back through 40 years of Australian property data, prices have never fallen two years in a row. 2018 — down one year, up three. 2022 — down one year, up three. We're in 2026 now, same pattern playing out.<br><br>
+          Every time prices have pulled back, government stepped in — rate changes, budget adjustments — and sentiment shifted temporarily. But the fundamentals never changed. You've still got 300,000-plus new Australians arriving every year, 83,000 fewer tradies than we need to build homes right now, and construction volumes falling not growing.<br><br>
+          The market isn't waiting for you to be ready. And the prices that look expensive today are going to look very attractive in two years when demand catches up further. The cost of waiting isn't zero — it's the capital growth you're not capturing right now.
+        </div>
+      </div>
+    </div>
+
+    <!-- NOT THE RIGHT TIME FOR US -->
+    <div class="obj-card">
+      <div class="obj-trigger" onclick="toggleObj(this)">
+        <div class="obj-left">
+          <div class="obj-question">"It's just not the right time for us right now."</div>
+          <div class="obj-meta"><span class="obj-tag timing">Timing</span></div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="obj-body">
+        <div class="response-box">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          I respect that — and I never want to push anyone into something they're not ready for. Can I ask what would need to change for the timing to feel right?<br><br>
+          [Listen — identify the specific condition.] <br><br>
+          The reason I ask is because in most cases, the timing issue is actually solvable. If it's a cash flow concern — the numbers on this property are designed to be as close to neutral as possible. If it's about having enough cash ready — that's what delayed registration is designed for. If it's something else entirely, I'd rather know now so I can tell you honestly whether we can work around it or not.<br><br>
+          The thing I don't want for you is to come back in six months when you feel ready, and find that what was available tonight is $60,000 to $80,000 more expensive. That's a real cost that's very hard to recover from.
+        </div>
+      </div>
+    </div>
+
+    <!-- WHAT IF I LOSE MY JOB -->
+    <div class="obj-card">
+      <div class="obj-trigger" onclick="toggleObj(this)">
+        <div class="obj-left">
+          <div class="obj-question">"What if I lose my job / income drops?"</div>
+          <div class="obj-meta"><span class="obj-tag timing">Timing</span><span class="obj-tag education">Education</span></div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="obj-body">
+        <div class="response-box">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          That's a fair concern — and it's exactly why the cash flow structure of this property matters. What we've built here isn't a property that relies entirely on your income to survive. The rental income covers a significant portion of the holding costs. The tax return covers more. What's left is a relatively small out-of-pocket contribution.<br><br>
+          On top of that — the offset account strategy means you're not leaving yourself with no buffer. The cash you place in the offset stays liquid. It's yours. It's there if you need it.<br><br>
+          And the buffer built into the numbers we've shown you tonight is deliberately conservative. The rent figure used is the low end of what the property manager is projecting — in reality, rental income in this area has been trending upward.<br><br>
+          The real risk in property isn't having one — it's not having one when values keep moving.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end timing tab -->
+
+
+  <!-- ===== TECHNICAL ===== -->
+  <div class="tab-panel" id="tab-technical">
+    <div class="banner">
+      <h2>Technical Objections</h2>
+      <p>Undervaluation, conditional vs unconditional, depreciation questions, rental yield concerns. These require clear, confident explanations — not waffling. Know these cold before training with Haydn.</p>
+    </div>
+
+    <!-- UNDERVALUATION -->
+    <div class="obj-card">
+      <div class="obj-trigger gold-border" onclick="toggleObj(this)">
+        <div class="obj-left">
+          <div class="obj-question">"What is an undervaluation? What happens if the bank values it for less than purchase price?"</div>
+          <div class="obj-meta"><span class="obj-tag technical">Technical</span></div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="obj-body">
+        <div class="explainer"><strong>Haydn asked you this — know it cold.</strong> An undervaluation occurs when the bank's independent valuer assesses the property at a lower figure than the contracted purchase price. This affects how much the bank will lend.</div>
+        <div class="response-box">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          Great question — and it's something worth understanding before you sign anything.<br><br>
+          An undervaluation is when the bank sends out their own independent valuer, and that valuer comes back with a figure lower than what you've agreed to pay. For example — you contract to purchase a property for $750,000, but the bank's valuer assesses it at $700,000. The bank will only lend against the lower figure.<br><br>
+          What that means practically is: instead of borrowing 80% of $750,000 ($600,000), you'd only be able to borrow 80% of $700,000 ($560,000). You'd need to make up the $40,000 gap from your own funds — either from cash, equity, or you'd need to pay lenders mortgage insurance to bridge the shortfall.<br><br>
+          Now — this is less common on new construction than on established, for a simple reason. On new builds, the bank is valuing a contract price, not a comparable sale. And because we source properties at intrinsic cost — land plus build, no retail premium — the valuation is less likely to come in under because there's no inflated margin built into the price to begin with.<br><br>
+          That said, it can happen in fast-moving markets where comparable sales haven't caught up yet. If it does happen, our operations team will work through the options with you — it's not a deal-breaker, it just needs a conversation.
+        </div>
+        <div class="explainer"><strong>What Haydn is really testing:</strong> Do you understand the finance mechanics well enough to explain them confidently to a client? Know this answer cold — and know that undervaluations are more likely on established properties where there's a retail premium baked into the price.</div>
+      </div>
+    </div>
+
+    <!-- CONDITIONAL VS UNCONDITIONAL -->
+    <div class="obj-card">
+      <div class="obj-trigger gold-border" onclick="toggleObj(this)">
+        <div class="obj-left">
+          <div class="obj-question">"What's the difference between a conditional and unconditional contract?"</div>
+          <div class="obj-meta"><span class="obj-tag technical">Technical</span></div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="obj-body">
+        <div class="explainer"><strong>Another Haydn training question — know this cold.</strong></div>
+        <div class="response-box">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          <strong>Conditional contract:</strong> The purchase is subject to one or more conditions being satisfied before it becomes binding. The most common conditions are finance approval (subject to the bank formally approving your loan) and building and pest inspection (subject to a satisfactory inspection of the property).<br><br>
+          While those conditions are live, either party has the ability to exit the contract without penalty if the condition isn't met. For example — if your finance is declined, you can exit a conditional contract and get your deposit back. The contract only becomes fully binding once all conditions are waived or satisfied.<br><br>
+          <strong>Unconditional contract:</strong> There are no outstanding conditions. Both parties are fully committed. Once a contract goes unconditional, you cannot exit without losing your deposit and potentially facing legal action for breach of contract.<br><br>
+          In the context of new construction — your initial expression of interest is effectively conditional, because finance isn't formally approved yet. The contract typically becomes unconditional once the bank has formally issued approval, the cooling-off period has passed, and any conditions have been waived. Our operations team walks you through each of those milestones so you're never in the dark.
+        </div>
+        <div class="tip-box"><strong>Key point to remember:</strong> The EOI tonight is not unconditional. It's an expression of interest — it takes the property off the market while finance is arranged. The client is not locked in without an out at this stage.</div>
+      </div>
+    </div>
+
+    <!-- RENTAL YIELD CONCERN -->
+    <div class="obj-card">
+      <div class="obj-trigger" onclick="toggleObj(this)">
+        <div class="obj-left">
+          <div class="obj-question">"The rental yield seems low. I've seen better yields elsewhere."</div>
+          <div class="obj-meta"><span class="obj-tag technical">Technical</span><span class="obj-tag education">Education</span></div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="obj-body">
+        <div class="response-box">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          Yield is only one part of the return equation — and chasing yield at the expense of capital growth is one of the most common mistakes first-time investors make.<br><br>
+          High yield areas typically offer that yield because growth is low. The market is pricing in low demand for the asset — so to attract tenants and investors, the rent has to be proportionally high. What you end up with is an income-producing asset that doesn't grow.<br><br>
+          What we're focused on is total return. A property growing at 8 to 10 percent per annum on a $700,000 asset is generating $56,000 to $70,000 in capital growth per year. No high-yield property in a flat-growth market is going to outperform that. The rent is there to cover holding costs — and that's exactly what it does here. The growth is where the wealth is built.<br><br>
+          The properties that offer 6 and 7 percent yields are typically in regional areas with limited infrastructure, limited population growth, and limited resale demand. That's not where we operate.
+        </div>
+      </div>
+    </div>
+
+    <!-- DEPRECIATION QUESTION -->
+    <div class="obj-card">
+      <div class="obj-trigger" onclick="toggleObj(this)">
+        <div class="obj-left">
+          <div class="obj-question">"How does the depreciation and tax return actually work?"</div>
+          <div class="obj-meta"><span class="obj-tag technical">Technical</span><span class="obj-tag education">Education</span></div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="obj-body">
+        <div class="response-box">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          Depreciation is essentially this — even though your property is going up in value in the real world, on paper the carpets are getting older, the blinds are getting older, the appliances are getting older. A quantity surveyor puts a dollar figure on that theoretical wear each year, and you can claim that against your taxable income.<br><br>
+          What makes new construction so powerful is the method you're allowed to use. On a new build, you can claim on the structure AND everything in it — using the diminishing value method, which front-loads most of the depreciation into the first 5 to 7 years. That's when you need the tax benefit most, to help cover holding costs while the property is growing.<br><br>
+          On an established property under the 2026 budget rules — you get zero negative gearing benefit. None. The entire depreciation advantage disappears.<br><br>
+          In practical terms — on the property you're looking at tonight, the combination of rental income, depreciation, and the interest deduction reduces what this property actually costs you out of pocket per week to the figure on that cash flow page. That's not an estimate — that's the structure working exactly as designed.
+        </div>
+      </div>
+    </div>
+
+    <!-- WHAT ABOUT INTEREST RATES -->
+    <div class="obj-card">
+      <div class="obj-trigger" onclick="toggleObj(this)">
+        <div class="obj-left">
+          <div class="obj-question">"What if interest rates go up?"</div>
+          <div class="obj-meta"><span class="obj-tag technical">Technical</span><span class="obj-tag timing">Timing</span></div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="obj-body">
+        <div class="response-box">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          That's a fair thing to think about — and the cash flow projections we've shown you tonight are built on current rates, not optimistic ones.<br><br>
+          Here's what's important though — when interest rates rise, two things typically happen simultaneously. Rental demand increases, because borrowing becomes harder for owner-occupiers and more people stay in the rental market. And rental prices follow — because demand for rental stock goes up while supply doesn't change. So the property that costs you a bit more to hold in a rising rate environment is also bringing in more rent.<br><br>
+          The cash flow on this property is not a knife-edge position. The numbers shown tonight are conservative — the rental projection is at the lower end of what the property manager is forecasting. There's a buffer built in. And the offset account strategy means you've got liquid cash reducing your interest exposure without losing access to the money.<br><br>
+          Property in Australia has survived and outperformed through multiple rate cycles over 40 years. The fundamentals drive long-term performance — not short-term rate movements.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end technical tab -->
+
+
+  <!-- ===== CLOSE OBJECTIONS ===== -->
+  <div class="tab-panel" id="tab-close">
+    <div class="banner">
+      <h2>Close Objections + EOI Urgency</h2>
+      <p>These come up at the point of commitment. Handle them with urgency (developers' admin, the hold, the allocation), Sean's language, and the opportunity cost close.</p>
+      <div class="banner-tags">
+        <span class="btag gold">Sean's Urgency Framework</span>
+        <span class="btag red">Assume the Close</span>
+        <span class="btag">Never End on Nothing</span>
+      </div>
+    </div>
+
+    <!-- HOLD / URGENCY -->
+    <div class="obj-card">
+      <div class="obj-trigger red-border" onclick="toggleObj(this)">
+        <div class="obj-left">
+          <div class="obj-question">"I'm not ready to put an EOI in tonight."</div>
+          <div class="obj-meta"><span class="obj-tag close">Close</span><span class="obj-tag timing">Timing</span></div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="obj-body">
+        <div class="explainer"><strong>Sean's framework:</strong> The developers' admin staff work late because we run presentations in the evenings. They stay online past 10pm specifically to process EOIs from our presentations. This allocation is on hold tonight only — it goes back into the pool if we don't move.</div>
+        <div class="response-box">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          I understand — and I want to make sure I'm not rushing you into anything you're not comfortable with. But I do need to be transparent with you about how this works.<br><br>
+          The developers' administration team are online right now — they stay late specifically because we run presentations in the evenings. They monitor these allocations in real time. What we have on hold tonight is this specific lot at this specific price. That hold lasts a few hours — it's not something I can extend indefinitely.<br><br>
+          Here's the reality — an expression of interest tonight isn't a marriage. It's a $1,000 to $2,000 holding deposit that takes this off the market while we arrange finance and paperwork. That's it. It's fully refundable if finance isn't approved. You're not signing unconditional tonight — you're securing your position while everything else falls into place.<br><br>
+          The question isn't whether you're 100% certain. The question is — do the fundamentals make sense, and is this a decision you'd regret not making?
+        </div>
+      </div>
+    </div>
+
+    <!-- SEND ME INFORMATION FIRST -->
+    <div class="obj-card">
+      <div class="obj-trigger" onclick="toggleObj(this)">
+        <div class="obj-left">
+          <div class="obj-question">"Can you send me the information and I'll look at it and get back to you?"</div>
+          <div class="obj-meta"><span class="obj-tag close">Close</span><span class="obj-tag timing">Timing</span></div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="obj-body">
+        <div class="response-box">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          I can — but I want to be straight with you about what that looks like in practice. By the time you've reviewed everything and come back to me, there's a very real chance this allocation is gone. We're not the only people looking at this tonight.<br><br>
+          What information is it you're still missing? Because everything that matters — the location, the numbers, the cash flow, the build spec — we've covered tonight. If there's something specific you need to see, I'd rather work through it right now than have you sitting with a document trying to figure it out alone at 11pm.<br><br>
+          The information doesn't change the decision — what changes the decision is answering the specific question you haven't asked yet. What's that question?
+        </div>
+      </div>
+    </div>
+
+    <!-- WE NEED TO DO MORE RESEARCH -->
+    <div class="obj-card">
+      <div class="obj-trigger" onclick="toggleObj(this)">
+        <div class="obj-left">
+          <div class="obj-question">"We need to do more research before committing."</div>
+          <div class="obj-meta"><span class="obj-tag close">Close</span><span class="obj-tag timing">Timing</span></div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="obj-body">
+        <div class="response-box">
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          That's a completely reasonable instinct — and I'd be worried if you didn't feel that way. Research is important. But let me ask — what specifically are you still researching? The area? The numbers? The builder? The strategy itself?<br><br>
+          [Listen — identify the specific gap.]<br><br>
+          Here's the thing about research in property — at some point you have to make a decision with imperfect information. That's the nature of investing. The people I've seen do the most research and wait the longest are often the ones who end up paying the most — because while they were researching, the market moved.<br><br>
+          What I can tell you is this — 16 years and thousands of clients. We have not sourced a property that has gone backwards in value for a client who held it for the appropriate time horizon. The research has been done. That's what tonight was.
+        </div>
+      </div>
+    </div>
+
+    <!-- THE CLOSE SEQUENCE -->
+    <div style="background: var(--white); border-radius: 12px; padding: 16px 18px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); border-left: 5px solid var(--gold);">
+      <div style="font-weight: 800; color: var(--navy); font-size: 14px; margin-bottom: 14px;">🎯 The Assumptive Close Sequence — Run This at the End</div>
+      <div class="close-step">
+        <div class="close-num">1</div>
+        <div class="close-content">
+          <div class="close-label">Summarise & Confirm</div>
+          <div class="close-text">"So based on everything we've covered tonight — the location, the fundamentals, the cash flow position — does this make sense for where you're trying to go financially?"</div>
+        </div>
+      </div>
+      <div class="close-step">
+        <div class="close-num">2</div>
+        <div class="close-content">
+          <div class="close-label">Assume the Close</div>
+          <div class="close-text">"What we're going to do now is get the expression of interest submitted tonight. I'll follow up with the developers first thing tomorrow morning, and from there our operations team will hold your hand through every step of the process. You won't be doing any of this alone."</div>
+        </div>
+      </div>
+      <div class="close-step">
+        <div class="close-num">3</div>
+        <div class="close-content">
+          <div class="close-label">If They Hesitate — Urgency</div>
+          <div class="close-text">"The developers' team are online right now — they stay late for our presentations. This allocation is held for the next few hours. I'd hate for you to have this conversation and come back to me tomorrow and find it's gone. The EOI is $1,000 to $2,000 — it's fully refundable if finance doesn't come through. What you're doing tonight is securing your position."</div>
+        </div>
+      </div>
+      <div class="close-step">
+        <div class="close-num">4</div>
+        <div class="close-content">
+          <div class="close-label">Opportunity Cost Final Close</div>
+          <div class="close-text">"The cost of not doing this isn't zero. At 10% growth per annum on this asset, you're looking at $70,000 to $80,000 in capital appreciation in year one alone. Every month this sits outside your portfolio is money you're not making. The decision to go forward tonight costs you $1,000. The decision to wait costs you considerably more."</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end close tab -->
+
+
+  <!-- ===== KEY CONCEPTS ===== -->
+  <div class="tab-panel" id="tab-concepts">
+    <div class="banner">
+      <h2>Key Concepts — Know These Cold</h2>
+      <p>Technical concepts Haydn will test you on. Property presentation fundamentals, finance mechanics, and IXE-specific frameworks. Read these before every training session.</p>
+    </div>
+
+    <div class="concept-card">
+      <div class="concept-header" onclick="toggleConcept(this)">
+        <div class="concept-title"><span class="concept-badge">Finance</span> Undervaluation — What It Is & How to Handle It</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="concept-body">
+        <p style="margin-bottom:10px;"><strong>Definition:</strong> An undervaluation occurs when the bank's independent valuer assesses the property at a lower figure than the contracted purchase price.</p>
+        <table class="compare-table">
+          <thead><tr><th>Scenario</th><th>What Happens</th></tr></thead>
+          <tbody>
+            <tr><td>Contract price: $750K, Bank val: $750K</td><td class="win">No issue. Loan proceeds as normal.</td></tr>
+            <tr><td>Contract price: $750K, Bank val: $700K</td><td class="lose">$50K shortfall. Must be covered by cash, equity, or LMI.</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:10px; font-size:13px;"><strong>Why it's less common on new builds:</strong> Banks value a contract price (land + build cost), not a comparable sale. Because we source at intrinsic cost with no retail premium, there's less gap for a valuer to find.</p>
+        <p style="margin-top:8px; font-size:13px;"><strong>If it happens:</strong> Operations team works through options — additional cash contribution, reduced LVR, or LMI. Not a deal-breaker, just a conversation.</p>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <div class="concept-header" onclick="toggleConcept(this)">
+        <div class="concept-title"><span class="concept-badge">Finance</span> Conditional vs Unconditional Contract</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="concept-body">
+        <table class="compare-table">
+          <thead><tr><th>Type</th><th>What It Means</th><th>Can You Exit?</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Conditional</strong></td><td>Subject to conditions — typically finance approval and/or B&P inspection. Not fully binding until conditions are met.</td><td class="win">Yes — if conditions aren't satisfied, you can exit and get deposit back.</td></tr>
+            <tr><td><strong>Unconditional</strong></td><td>All conditions waived. Fully binding on both parties.</td><td class="lose">No — exiting means forfeiting deposit and potential legal action.</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:10px; font-size:13px;"><strong>In the context of tonight's EOI:</strong> An expression of interest is not an unconditional contract. It's a conditional hold — it takes the property off the market while finance is arranged. The client is not locked in without an out at EOI stage.</p>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <div class="concept-header" onclick="toggleConcept(this)">
+        <div class="concept-title"><span class="concept-badge">Strategy</span> Wholesale vs Retail — The IXE Procurement Model</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="concept-body">
+        <p style="font-size:13px; margin-bottom:10px;"><strong>Retail:</strong> What's on realestate.com.au or the developer's public website. Priced at what the market will allow — includes the developer's profit margin on top of cost basis.</p>
+        <p style="font-size:13px; margin-bottom:10px;"><strong>Wholesale:</strong> What IXE accesses through direct, volume-based builder relationships. Land cost + build cost at our negotiated rate. No retail premium. Full turnkey package.</p>
+        <p style="font-size:13px; margin-bottom:10px;"><strong>Why builders give us this:</strong> We send some builders 50+ clients per year at $450,000 average build cost = $22.5M+ annual revenue stream. They compete for our business. Retail clients are one job — we are a pipeline.</p>
+        <p style="font-size:13px;"><strong>Key line:</strong> "You're paying what it costs to produce this property — not what someone else paid for it plus their profit margin."</p>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <div class="concept-header" onclick="toggleConcept(this)">
+        <div class="concept-title"><span class="concept-badge">Tax</span> New vs Established — The 2026 Depreciation Comparison</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="concept-body">
+        <table class="compare-table">
+          <thead><tr><th>Factor</th><th>Established (2026)</th><th>New Build</th></tr></thead>
+          <tbody>
+            <tr><td>Stamp duty on $750K</td><td class="lose">~$30–40K (full price + investor rate)</td><td class="win">~$10–15K (land component only)</td></tr>
+            <tr><td>Negative gearing (2026 rules)</td><td class="lose">Zero — cannot negatively gear</td><td class="win">Full negative gearing available</td></tr>
+            <tr><td>Depreciation method</td><td class="lose">Prime cost — structure only, flat 2.5%/yr</td><td class="win">Diminishing value — structure + fittings, front-loaded</td></tr>
+            <tr><td>7-year depreciation advantage</td><td class="lose">$0</td><td class="win">$100,000+</td></tr>
+            <tr><td>Structural guarantee</td><td class="lose">None from vendor</td><td class="win">25-year guarantee from builder</td></tr>
+            <tr><td>Construction visibility</td><td class="lose">None — buying finished asset</td><td class="win">Stage-by-stage photos + certification</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <div class="concept-header" onclick="toggleConcept(this)">
+        <div class="concept-title"><span class="concept-badge">Finance</span> IO vs P&I — Interest Only vs Principal & Interest</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="concept-body">
+        <p style="font-size:13px; margin-bottom:8px;"><strong>Interest Only (IO):</strong> You pay only the interest on the loan each month. The principal (the loan amount) doesn't reduce. Lower monthly repayment. Used on investment properties to maximise cash flow and keep the interest deduction high.</p>
+        <p style="font-size:13px; margin-bottom:8px;"><strong>Principal & Interest (P&I):</strong> You pay both interest and a portion of the principal each month. Higher repayments but the loan reduces over time. Typically used on owner-occupied loans where you want to pay it off.</p>
+        <p style="font-size:13px; margin-bottom:8px;"><strong>Why IO is used for investment properties:</strong> Keeps the loan high (and therefore the interest deduction high for tax purposes). Also keeps repayments lower, improving cash flow. The property's capital growth is doing the wealth-building work — not the principal reduction.</p>
+        <p style="font-size:13px;"><strong>ATO PAYG Variation:</strong> Rather than waiting until tax time for your full return, you can lodge a PAYG withholding variation with the ATO. This instructs your employer to reduce the tax withheld from your pay throughout the year — meaning you get the benefit weekly, not in a lump sum at the end.</p>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <div class="concept-header" onclick="toggleConcept(this)">
+        <div class="concept-title"><span class="concept-badge">Strategy</span> Delayed Registration — The Full Explanation</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="concept-body">
+        <p style="font-size:13px; margin-bottom:8px;"><strong>What it is:</strong> Locking in today's pricing on a property that won't register (receive council approval for construction to commence) until a future date — typically 6 to 18 months away.</p>
+        <p style="font-size:13px; margin-bottom:8px;"><strong>How it works:</strong> Expression of interest placed on a future land release stage. Fixed-price land paperwork and build contract locked in at today's pricing. Any value growth between now and registration belongs to the buyer — before construction starts and before a single mortgage repayment is made.</p>
+        <p style="font-size:13px; margin-bottom:8px;"><strong>Real example:</strong> The Robinsons — Deebing Heights, Ipswich. Held mid-2025 at ~$820K. Just registered. Now valued at $1.05M+. $170K in equity before breaking ground.</p>
+        <p style="font-size:13px;"><strong>Who it's for:</strong> Conditional-based investors — clients with a condition that needs to be met before they can fully commit (sale settlement, DVA payout, end of posting). Delayed registration gives them time AND today's price.</p>
+      </div>
+    </div>
+
+  </div><!-- end concepts tab -->
+
+</div><!-- end content -->
+
+<div class="toast" id="toast">✓ Copied!</div>
+
+<script>
+  function switchTab(tabId) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + tabId).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  function toggleObj(trigger) {
+    const body = trigger.nextElementSibling;
+    trigger.classList.toggle('open');
+    body.classList.toggle('open');
+  }
+
+  function toggleConcept(header) {
+    const body = header.nextElementSibling;
+    const chevron = header.querySelector('.chevron');
+    body.classList.toggle('open');
+    chevron.style.transform = body.classList.contains('open') ? 'rotate(180deg)' : '';
+  }
+
+  function copyText(btn) {
+    const text = btn.parentElement.innerText.replace('Copy', '').trim();
+    navigator.clipboard.writeText(text).then(() => showToast());
+  }
+
+  function showToast() {
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2000);
+  }
+</script>
+
+</body>
+</html>
