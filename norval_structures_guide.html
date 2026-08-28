@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Norval — Structures, Trusts & Tax Guide</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #1F3864;
+    --gold: #B08D57;
+    --gold-light: #d4ae78;
+    --bg: #f0f2f5;
+    --white: #ffffff;
+    --text: #1a1a2e;
+    --muted: #6b7280;
+    --border: #e2e4e9;
+    --green: #10b981;
+    --red: #ef4444;
+    --amber: #f59e0b;
+    --purple: #7c3aed;
+    --blue: #2563eb;
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.65; }
+
+  .header { background: var(--navy); color: white; padding: 12px 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: space-between; }
+  .header-title { font-size: 16px; font-weight: 800; }
+  .header-title span { color: var(--gold); }
+  .header-sub { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+  .header-badge { background: var(--purple); color: white; font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 20px; }
+
+  .tabs { background: var(--navy); display: flex; padding: 0 12px; gap: 2px; overflow-x: auto; border-bottom: 3px solid var(--gold); }
+  .tab { padding: 10px 14px; color: rgba(255,255,255,0.55); cursor: pointer; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; white-space: nowrap; border-bottom: 3px solid transparent; margin-bottom: -3px; transition: all 0.2s; text-transform: uppercase; }
+  .tab:hover { color: rgba(255,255,255,0.9); }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  .content { padding: 16px; max-width: 1100px; margin: 0 auto; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* BANNER */
+  .banner { background: linear-gradient(135deg, var(--navy) 0%, #2a4a7f 100%); color: white; border-radius: 12px; padding: 16px 20px; margin-bottom: 16px; }
+  .banner h2 { font-size: 17px; font-weight: 800; margin-bottom: 4px; }
+  .banner p { font-size: 12px; color: rgba(255,255,255,0.75); line-height: 1.6; }
+  .banner-tags { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .btag { font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+  .btag.gold { background: var(--gold); color: var(--navy); }
+  .btag.white { background: rgba(255,255,255,0.15); color: white; }
+  .btag.green { background: var(--green); color: white; }
+  .btag.red { background: var(--red); color: white; }
+  .btag.purple { background: var(--purple); color: white; }
+
+  /* CARDS */
+  .card { background: var(--white); border-radius: 12px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); overflow: hidden; }
+  .card-header { padding: 13px 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; }
+  .card-header:hover { background: #f8f9ff; }
+  .card-header.open { background: #f0f4ff; }
+  .card-title { font-weight: 700; font-size: 13px; color: var(--navy); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .badge { font-size: 9px; font-weight: 800; padding: 2px 8px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .badge.navy { background: var(--navy); color: white; }
+  .badge.gold { background: var(--gold); color: var(--navy); }
+  .badge.green { background: var(--green); color: white; }
+  .badge.red { background: var(--red); color: white; }
+  .badge.purple { background: var(--purple); color: white; }
+  .badge.blue { background: var(--blue); color: white; }
+  .badge.amber { background: var(--amber); color: white; }
+  .chevron { color: var(--muted); font-size: 12px; transition: transform 0.2s; flex-shrink: 0; }
+  .chevron.open { transform: rotate(180deg); }
+  .card-body { display: none; border-top: 1px solid var(--border); }
+  .card-body.open { display: block; }
+  .card-inner { padding: 14px 16px; }
+
+  /* SPLIT PANEL */
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  @media(max-width:680px){.split{grid-template-columns:1fr;}}
+  .panel-l { padding: 14px 16px; background: #eef1f8; border-right: 1px solid var(--border); }
+  .panel-r { padding: 14px 16px; background: #f0fff4; }
+  .panel-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; padding-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+  .pl-navy { color: var(--navy); border-bottom: 2px solid var(--navy); }
+  .pl-green { color: var(--green); border-bottom: 2px solid var(--green); }
+  .panel-label span { font-size: 9px; padding: 2px 6px; border-radius: 4px; }
+  .pl-navy span { background: var(--navy); color: white; }
+  .pl-green span { background: var(--green); color: white; }
+
+  /* TEXT BOXES */
+  .textbox { border-radius: 0 8px 8px 0; padding: 12px 14px; margin: 8px 0; font-size: 13px; line-height: 1.75; position: relative; }
+  .textbox.navy { background: #eef1f8; border-left: 3px solid var(--navy); }
+  .textbox.green { background: #f0fff4; border-left: 3px solid var(--green); color: #065f46; font-weight: 500; }
+  .textbox.gold { background: #fef9ec; border-left: 3px solid var(--gold); }
+  .textbox.red { background: #fff5f5; border-left: 3px solid var(--red); }
+  .textbox.purple { background: #f5f3ff; border-left: 3px solid var(--purple); }
+  .textbox strong { color: var(--navy); }
+  .copy-btn { position: absolute; top: 8px; right: 8px; background: var(--navy); color: white; border: none; border-radius: 4px; padding: 2px 8px; font-size: 10px; cursor: pointer; opacity: 0.7; }
+  .copy-btn:hover { opacity: 1; background: var(--gold); color: var(--navy); }
+
+  /* TABLE */
+  .tbl { width: 100%; border-collapse: collapse; font-size: 12px; margin: 10px 0; border-radius: 8px; overflow: hidden; }
+  .tbl th { background: var(--navy); color: white; padding: 8px 12px; text-align: left; }
+  .tbl td { padding: 8px 12px; border-bottom: 1px solid var(--border); background: white; vertical-align: top; }
+  .tbl tr:last-child td { border-bottom: none; }
+  .tbl tr:hover td { background: #f8f9ff; }
+  .win { color: var(--green); font-weight: 700; }
+  .lose { color: var(--red); font-weight: 700; }
+  .neutral { color: var(--amber); font-weight: 700; }
+
+  /* INSIGHT BOX */
+  .insight { border-radius: 8px; padding: 10px 14px; margin: 10px 0; font-size: 12px; }
+  .insight.amber { background: #fef3c7; border: 1px solid var(--amber); color: #78350f; }
+  .insight.green { background: #f0fdf4; border: 1px solid var(--green); color: #065f46; }
+  .insight.purple { background: #f5f3ff; border: 1px solid var(--purple); color: #4c1d95; }
+  .insight.red { background: #fff5f5; border: 1px solid var(--red); color: #991b1b; }
+  .insight strong { font-weight: 800; }
+
+  /* ENTITY DIAGRAM */
+  .diagram { background: #f8f9ff; border-radius: 10px; padding: 16px; margin: 12px 0; font-size: 12px; }
+  .diagram-title { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; letter-spacing: 1px; }
+  .entity-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+  .entity-box { border-radius: 8px; padding: 8px 14px; font-weight: 700; font-size: 12px; text-align: center; min-width: 120px; }
+  .entity-box.personal { background: #dbeafe; border: 2px solid var(--blue); color: var(--blue); }
+  .entity-box.company { background: #fef3c7; border: 2px solid var(--amber); color: #92400e; }
+  .entity-box.trust { background: #f5f3ff; border: 2px solid var(--purple); color: var(--purple); }
+  .entity-box.property { background: #f0fdf4; border: 2px solid var(--green); color: #065f46; }
+  .entity-box.smsf { background: #fff5f5; border: 2px solid var(--red); color: var(--red); }
+  .arrow { color: var(--muted); font-size: 16px; }
+  .entity-note { font-size: 11px; color: var(--muted); margin-left: 4px; }
+
+  /* PROS CONS */
+  .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0; }
+  @media(max-width:580px){.pros-cons{grid-template-columns:1fr;}}
+  .pros { background: #f0fdf4; border-radius: 8px; padding: 12px; }
+  .cons { background: #fff5f5; border-radius: 8px; padding: 12px; }
+  .pros h4 { color: var(--green); font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; }
+  .cons h4 { color: var(--red); font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; }
+  .pros li, .cons li { font-size: 12px; padding: 4px 0 4px 14px; position: relative; border-bottom: 1px solid rgba(0,0,0,0.05); }
+  .pros li:before { content: "✓"; color: var(--green); position: absolute; left: 0; font-weight: 800; }
+  .cons li:before { content: "✗"; color: var(--red); position: absolute; left: 0; font-weight: 800; }
+  .pros li:last-child, .cons li:last-child { border-bottom: none; }
+
+  /* STEPS */
+  .steps { margin: 10px 0; }
+  .step { display: flex; gap: 12px; margin-bottom: 12px; }
+  .step-num { background: var(--gold); color: var(--navy); font-weight: 800; font-size: 12px; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .step-body { flex: 1; font-size: 13px; }
+  .step-title { font-weight: 700; color: var(--navy); margin-bottom: 3px; }
+
+  .divider { height: 1px; background: var(--border); margin: 12px 0; }
+  .section-lbl { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 8px; }
+
+  .toast { position: fixed; bottom: 20px; right: 20px; background: var(--green); color: white; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; opacity: 0; transition: opacity 0.3s; z-index: 999; pointer-events: none; }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-title">NORVAL <span>// STRUCTURES & TAX GUIDE</span></div>
+    <div class="header-sub">Trusts · Companies · SMSF · Negative Gearing · Carry Forward · Resi vs Commercial</div>
+  </div>
+  <div class="header-badge">ADVANCED</div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('trusts')">🏛️ Types of Trusts</div>
+  <div class="tab" onclick="switchTab('structures')">🏢 Structures</div>
+  <div class="tab" onclick="switchTab('partition')">✂️ Partition Strategy</div>
+  <div class="tab" onclick="switchTab('negearing')">📉 Neg Gearing & Carry Forward</div>
+  <div class="tab" onclick="switchTab('borrowing')">💡 Borrowing Capacity</div>
+  <div class="tab" onclick="switchTab('resicomm')">🏭 Resi vs Commercial</div>
+</div>
+
+<div class="content">
+
+<!-- ========== TAB 1: TYPES OF TRUSTS ========== -->
+<div class="tab-panel active" id="tab-trusts">
+  <div class="banner">
+    <h2>Every Type of Trust — Explained Simply</h2>
+    <p>A trust is a legal arrangement where one person (the trustee) holds and manages assets for the benefit of others (the beneficiaries). The trustee controls it. The beneficiaries benefit from it. The trust itself is not a legal person — it needs a trustee to act on its behalf.</p>
+    <div class="banner-tags">
+      <span class="btag gold">Not Legal Advice</span>
+      <span class="btag white">Always get a good accountant</span>
+      <span class="btag purple">Jack Henderson Reference</span>
+    </div>
+  </div>
+
+  <!-- DISCRETIONARY / FAMILY TRUST -->
+  <div class="card" style="border-left: 5px solid var(--purple);">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-title"><span class="badge purple">Most Common</span> Discretionary Trust (Family Trust)</div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="card-body">
+      <div class="card-inner">
+        <div class="textbox navy"><strong>What it is:</strong> The trustee has full discretion over how income and capital is distributed to beneficiaries each year. You can choose who gets what — and change it year to year based on who's in the lowest tax bracket.<br><br>
+        <strong>Who controls it:</strong> The trustee (usually a company — called a corporate trustee).<br>
+        <strong>Who benefits:</strong> The beneficiaries — typically family members, spouse, adult children, related companies.<br><br>
+        <strong>Classic setup:</strong> Mum & Dad set up a family trust. Trustee = a company they own. Beneficiaries = themselves, their kids, and any related entities. Each year they distribute income to whoever pays the least tax — spreading the tax load across the family.</div>
+
+        <div class="pros-cons">
+          <div class="pros"><h4>✓ Pros</h4>
+            <ul>
+              <li>Income splitting across family members (tax minimisation)</li>
+              <li>Asset protection — assets in trust not personally owned</li>
+              <li>50% CGT discount if held 12+ months (individuals as beneficiaries)</li>
+              <li>Flexibility — change distributions year to year</li>
+              <li>Keeps assets out of your personal estate (estate planning)</li>
+            </ul>
+          </div>
+          <div class="cons"><h4>✗ Cons</h4>
+            <ul>
+              <li>2026 budget — 30% minimum tax on trust distributions (if passed)</li>
+              <li>Cannot distribute losses to beneficiaries (losses trapped in trust)</li>
+              <li>No negative gearing benefit on established property</li>
+              <li>Setup cost: $2,000–$3,000 + ongoing accounting fees</li>
+              <li>Losses must be carried forward inside trust — can't offset personal income</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="insight amber"><strong>2026 Budget Warning:</strong> The government's proposed 30% minimum tax on discretionary trust distributions means income can't be streamed to low-income family members at their marginal rate anymore. If passed, family trusts lose a major advantage. Jack Henderson: "Discretionary trusts are losing their flare because of this 30% minimum tax."</div>
+
+        <div class="diagram">
+          <div class="diagram-title">Typical Family Trust Structure</div>
+          <div class="entity-row">
+            <div class="entity-box personal">You (Appointor)</div>
+            <div class="arrow">→</div>
+            <div class="entity-box company">Corporate Trustee Pty Ltd</div>
+            <div class="arrow">→</div>
+            <div class="entity-box trust">Family Trust</div>
+          </div>
+          <div class="entity-row" style="margin-left:40px;">
+            <div class="arrow">↓ Distributes income to</div>
+          </div>
+          <div class="entity-row" style="margin-left:40px; gap:6px;">
+            <div class="entity-box personal" style="min-width:90px;font-size:11px;">You</div>
+            <div class="entity-box personal" style="min-width:90px;font-size:11px;">Spouse</div>
+            <div class="entity-box personal" style="min-width:90px;font-size:11px;">Adult Children</div>
+            <div class="entity-box company" style="min-width:90px;font-size:11px;">Related Co.</div>
+          </div>
+        </div>
+
+        <div class="insight green"><strong>Best used for:</strong> High-income families wanting to split income tax across multiple people, asset protection from business risks, and estate planning. Common for business owners and investors who want flexibility year to year.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UNIT TRUST -->
+  <div class="card" style="border-left: 5px solid var(--blue);">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-title"><span class="badge blue">Investors</span> Unit Trust</div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="card-body">
+      <div class="card-inner">
+        <div class="textbox navy"><strong>What it is:</strong> A trust divided into fixed "units" — like shares in a company. Each unit holder owns a fixed percentage. Income and capital are distributed according to units held — the trustee has NO discretion to change this.<br><br>
+        <strong>Who uses it:</strong> Business partners, joint investors, people who want a clear fixed ownership split without a company structure. Also still usable for some borrowing strategies post-budget changes.</div>
+
+        <div class="pros-cons">
+          <div class="pros"><h4>✓ Pros</h4>
+            <ul>
+              <li>Clear fixed ownership — no disputes about distribution</li>
+              <li>Banks can lend to unit trusts (easier to finance than discretionary)</li>
+              <li>Units can be sold/transferred (flexibility for joint investors)</li>
+              <li>Still gets 50% CGT discount if individual unit holders</li>
+              <li>Less likely to be hit by discretionary trust tax changes</li>
+            </ul>
+          </div>
+          <div class="cons"><h4>✗ Cons</h4>
+            <ul>
+              <li>No flexibility — can't redirect income year to year</li>
+              <li>Losses still trapped inside the trust</li>
+              <li>Stamp duty may apply when transferring units (state dependent)</li>
+              <li>More complex to set up than a simple company</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="insight green"><strong>Best used for:</strong> Joint property investments between unrelated parties, business ventures with multiple investors, or when you need bank finance inside a trust structure. Jack Henderson still uses unit trusts as an alternative to discretionary trusts post-budget.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BARE TRUST -->
+  <div class="card" style="border-left: 5px solid var(--muted);">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-title"><span class="badge navy">Simple</span> Bare Trust (Simple Trust / Nominee Trust)</div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="card-body">
+      <div class="card-inner">
+        <div class="textbox navy"><strong>What it is:</strong> The simplest trust. One beneficiary with an absolute right to the assets and income. The trustee is purely a nominee — they hold the asset "on trust" for one person, with zero discretion. The beneficiary IS the real owner for tax purposes.<br><br>
+        <strong>Example:</strong> A company holds a property "on trust" for you personally — your name isn't on the title but you're the beneficial owner for tax. Used in the partition strategy and for privacy.</div>
+        <div class="insight amber"><strong>Common use:</strong> Holding property under a different name for privacy or structural reasons while the tax treatment follows the actual beneficial owner. Also used when an SMSF needs to hold property during construction (property can't be in SMSF name during build, so a bare trust holds it until completion).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HYBRID TRUST -->
+  <div class="card" style="border-left: 5px solid var(--gold);">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-title"><span class="badge gold">Advanced</span> Hybrid Trust</div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="card-body">
+      <div class="card-inner">
+        <div class="textbox navy"><strong>What it is:</strong> A combination of discretionary and unit trust. Some units are fixed (unit trust component), but the trustee also has discretion over the remaining income (discretionary component).<br><br>
+        <strong>Why it was popular:</strong> Used to allow negative gearing benefits to flow through to individual unit holders while also maintaining income distribution flexibility. The ATO has significantly cracked down on these — most structures that tried to use hybrid trusts for negative gearing have been challenged.</div>
+        <div class="insight red"><strong>Warning:</strong> Hybrid trusts have been targeted by the ATO. The negative gearing through hybrid trust strategy is largely dead. Only use with specialist advice.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TESTAMENTARY TRUST -->
+  <div class="card" style="border-left: 5px solid var(--green);">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-title"><span class="badge green">Estate Planning</span> Testamentary Trust</div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="card-body">
+      <div class="card-inner">
+        <div class="textbox navy"><strong>What it is:</strong> A trust created by a Will — it comes into existence only when someone dies. The deceased's assets flow into the testamentary trust instead of directly to beneficiaries.<br><br>
+        <strong>The big tax advantage:</strong> Minor children (under 18) can receive income from a testamentary trust and be taxed at adult rates — not the penalty children's tax rates (up to 66% on unearned income for under-18s). This is a massive estate planning tool for families with young children.</div>
+        <div class="pros-cons">
+          <div class="pros"><h4>✓ Pros</h4>
+            <ul>
+              <li>Minor children taxed at adult rates on distributions</li>
+              <li>Asset protection for beneficiaries (divorce, bankruptcy)</li>
+              <li>Control over how/when beneficiaries receive assets</li>
+              <li>Can continue for up to 80 years</li>
+            </ul>
+          </div>
+          <div class="cons"><h4>✗ Cons</h4>
+            <ul>
+              <li>Only created on death — no benefit during lifetime</li>
+              <li>Requires proper estate planning and Will drafting</li>
+              <li>Ongoing trustee obligations and accounting costs</li>
+            </ul>
+          </div>
+        </div>
+        <div class="insight green"><strong>Best used for:</strong> Anyone with significant assets who wants to protect and efficiently distribute their estate to children and grandchildren. Every property investor should have a Will with testamentary trust provisions.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SMSF TRUST -->
+  <div class="card" style="border-left: 5px solid var(--red);">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-title"><span class="badge red">Super</span> SMSF (Self-Managed Super Fund Trust)</div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="card-body">
+      <div class="card-inner">
+        <div class="textbox navy"><strong>What it is:</strong> A superannuation fund you control yourself — structured as a trust. You are both the trustee AND a beneficiary (as a member). Regulated by the ATO. Maximum 6 members.<br><br>
+        <strong>The property angle:</strong> An SMSF can borrow to buy property using a Limited Recourse Borrowing Arrangement (LRBA). The property is held in a bare trust during the loan period, then transferred to the SMSF once paid off.<br><br>
+        <strong>Business owner use case:</strong> A business owner can have their SMSF buy the commercial premises their business operates from — and the business pays rent to the SMSF. The rent is income inside super (taxed at 15% in accumulation phase, 0% in pension phase). This is one of the most powerful wealth strategies available to business owners.</div>
+
+        <div class="diagram">
+          <div class="diagram-title">Business Owner SMSF Property Strategy</div>
+          <div class="entity-row">
+            <div class="entity-box smsf">SMSF (Trust)</div>
+            <div class="arrow">owns</div>
+            <div class="entity-box property">Commercial Premises</div>
+          </div>
+          <div class="entity-row">
+            <div class="entity-box company">Your Business (Pty Ltd)</div>
+            <div class="arrow">pays rent to →</div>
+            <div class="entity-box smsf">SMSF</div>
+          </div>
+          <div class="entity-row" style="font-size:11px; color:var(--muted); margin-left:10px;">
+            ↑ Rent is a tax deduction for the business AND grows inside super at 15% (or 0% in pension)
+          </div>
+        </div>
+
+        <div class="pros-cons">
+          <div class="pros"><h4>✓ Pros</h4>
+            <ul>
+              <li>Tax on income inside super: 15% (accumulation) or 0% (pension phase)</li>
+              <li>Business pays rent to your own SMSF — deductible for business, low tax in super</li>
+              <li>CGT on sale: 10% if held 12+ months (accumulation) or 0% (pension phase)</li>
+              <li>Asset protection — SMSF assets generally protected from creditors</li>
+              <li>Forces disciplined long-term wealth building</li>
+            </ul>
+          </div>
+          <div class="cons"><h4>✗ Cons</h4>
+            <ul>
+              <li>Money locked in until preservation age (60+)</li>
+              <li>Strict rules — can't use SMSF property personally (except business premises)</li>
+              <li>Minimum ~$200K in super before SMSF makes sense (cost vs benefit)</li>
+              <li>LRBA borrowing is more expensive than standard property loans</li>
+              <li>High compliance burden — annual audit, ATO reporting</li>
+              <li>Can't buy residential property from related parties</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="insight purple"><strong>The business owner sweet spot:</strong> If you own a business and operate from leased premises, having your SMSF buy those premises and charge your business market rent is a legitimate strategy that redirects rent from a landlord's pocket into your own retirement fund — at a low tax rate.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRUST COMPARISON TABLE -->
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-title"><span class="badge gold">Summary</span> All Trusts — Quick Reference Table</div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="card-body">
+      <div class="card-inner">
+        <table class="tbl">
+          <thead><tr><th>Trust Type</th><th>Tax Flexibility</th><th>Negative Gearing</th><th>CGT Discount</th><th>Best For</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Discretionary (Family)</strong></td><td class="win">High — distribute to lowest tax bracket</td><td class="lose">No (losses trapped)</td><td class="win">Yes (individual beneficiaries)</td><td>Income splitting, families</td></tr>
+            <tr><td><strong>Unit Trust</strong></td><td class="neutral">Fixed — based on units held</td><td class="lose">No (losses trapped)</td><td class="win">Yes (individual unit holders)</td><td>Joint investors, business partners</td></tr>
+            <tr><td><strong>Bare Trust</strong></td><td class="neutral">Same as beneficial owner</td><td class="win">Follows beneficial owner</td><td class="win">Follows beneficial owner</td><td>Privacy, SMSF construction, partition</td></tr>
+            <tr><td><strong>Hybrid Trust</strong></td><td class="neutral">Mixed</td><td class="lose">ATO crackdown — avoid</td><td class="neutral">Complex</td><td>Rarely used now</td></tr>
+            <tr><td><strong>Testamentary</strong></td><td class="win">High — minor children at adult rates</td><td class="lose">N/A (estate only)</td><td class="win">Yes</td><td>Estate planning, protecting inheritance</td></tr>
+            <tr><td><strong>SMSF</strong></td><td class="win">15% or 0% tax in pension</td><td class="lose">N/A (super rules)</td><td class="win">10% or 0% in pension</td><td>Business owners, super investment</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div><!-- end trusts tab -->
+
+
+<!-- ========== TAB 2: STRUCTURES ========== -->
+<div class="tab-panel" id="tab-structures">
+  <div class="banner">
+    <h2>Company vs Trust vs Personal Name</h2>
+    <p>How each structure works for property ownership, the tax implications, borrowing capacity effects, and when to use which one. Based on Jack Henderson's frameworks and 2026 budget rules.</p>
+  </div>
+
+  <!-- PERSONAL NAME -->
+  <div class="card" style="border-left:5px solid var(--blue);">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-title"><span class="badge blue">Simplest</span> Personal Name Ownership</div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="card-body">
+      <div class="card-inner">
+        <div class="textbox navy">You buy and own the property in your own name. The mortgage is in your name. All income and losses flow directly to your personal tax return.</div>
+        <div class="pros-cons">
+          <div class="pros"><h4>✓ Pros (2026 — NEW BUILDS ONLY)</h4>
+            <ul>
+              <li>Negative gearing on NEW builds — offset losses against income</li>
+              <li>50% CGT discount if held 12+ months</li>
+              <li>Full depreciation (diminishing value method on new builds)</li>
+              <li>PAYG variation — get tax benefit weekly, not annually</li>
+              <li>Simplest setup — no entity costs</li>
+              <li>Banks lend readily — straightforward assessment</li>
+            </ul>
+          </div>
+          <div class="cons"><h4>✗ Cons</h4>
+            <ul>
+              <li>ZERO negative gearing on established properties (2026 rules)</li>
+              <li>No income splitting — all income taxed at your marginal rate</li>
+              <li>No asset protection — creditors can access personally owned assets</li>
+              <li>Limits borrowing capacity as portfolio grows</li>
+              <li>Estate complications if no proper Will/testamentary trust</li>
+            </ul>
+          </div>
+        </div>
+        <div class="insight green"><strong>Bottom line:</strong> Personal name is still the best structure for new build investment properties in 2026 — you get all three: negative gearing, CGT discount, and depreciation. For established properties, the tax benefits have been gutted.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPANY (PTY LTD) -->
+  <div class="card" style="border-left:5px solid var(--amber);">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-title"><span class="badge amber">Entity</span> Company (Pty Ltd)</div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="card-body">
+      <div class="card-inner">
+        <div class="textbox navy">A separate legal entity. Pays company tax (currently 25% for base rate entities, 30% for larger companies). Does not get the 50% CGT discount individuals get. Can carry forward losses indefinitely. Cannot negatively gear (losses stay in company).<br><br>
+        <strong>Key advantage post-budget:</strong> If negative gearing is gone anyway for established properties, there's less difference between personal name and company for established property — and the company gives you asset protection and the ability to recycle borrowing capacity.</div>
+
+        <div class="pros-cons">
+          <div class="pros"><h4>✓ Pros</h4>
+            <ul>
+              <li>Asset protection — company assets separate from personal</li>
+              <li>Flat 25-30% tax rate (good if your marginal rate is higher)</li>
+              <li>Can carry forward losses indefinitely</li>
+              <li>Can recycle borrowing capacity as property pays itself off</li>
+              <li>Can be trustee of a trust — separates control from ownership</li>
+              <li>No discretionary trust 30% minimum tax issues</li>
+            </ul>
+          </div>
+          <div class="cons"><h4>✗ Cons</h4>
+            <ul>
+              <li>No 50% CGT discount — pay full tax on capital gains</li>
+              <li>No negative gearing flow-through to personal income</li>
+              <li>Banks apply different (often stricter) lending criteria</li>
+              <li>Setup + ASIC fees + accounting costs annually</li>
+              <li>Cannot access depreciation against personal income</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="insight purple"><strong>Jack Henderson's use:</strong> Holds established properties in Pty Ltd because they get zero tax benefit in personal name anyway. Company debt can be recycled as properties become profitable. Meanwhile new builds go in personal name to access all three tax benefits.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CORPORATE TRUSTEE -->
+  <div class="card" style="border-left:5px solid var(--purple);">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-title"><span class="badge purple">Advanced</span> Corporate Trustee Structure (Company + Trust)</div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="card-body">
+      <div class="card-inner">
+        <div class="textbox navy">The most common sophisticated setup. A company acts as trustee of a trust. The company controls the trust's assets, but the trust owns the property and distributes income to beneficiaries.<br><br>
+        <strong>Why use a company as trustee instead of an individual?</strong> An individual trustee has personal liability. A company as trustee limits liability to the company (which has limited assets). If a trustee dies or leaves, the company continues — no need to transfer assets.</div>
+
+        <div class="diagram">
+          <div class="diagram-title">Corporate Trustee Structure — Full Map</div>
+          <div class="entity-row">
+            <div class="entity-box personal">You (Director + Shareholder)</div>
+            <div class="arrow">→ controls →</div>
+            <div class="entity-box company">Trustee Co. Pty Ltd</div>
+          </div>
+          <div class="entity-row" style="margin-left:40px;">
+            <div class="entity-box company">Trustee Co. Pty Ltd</div>
+            <div class="arrow">→ acts as trustee of →</div>
+            <div class="entity-box trust">Family/Unit Trust</div>
+          </div>
+          <div class="entity-row" style="margin-left:80px;">
+            <div class="entity-box trust">Trust</div>
+            <div class="arrow">→ owns →</div>
+            <div class="entity-box property">Investment Property</div>
+          </div>
+          <div class="entity-row" style="margin-left:80px;">
+            <div class="entity-box trust">Trust Income</div>
+            <div class="arrow">→ distributed to →</div>
+            <div class="entity-box personal">Beneficiaries</div>
+          </div>
+        </div>
+
+        <div class="insight green"><strong>Best for:</strong> Anyone building a serious portfolio who wants asset protection, income splitting, and the ability to add or change beneficiaries over time. The extra cost is worth it once you have meaningful assets to protect.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MULTI-ENTITY STRUCTURE -->
+  <div class="card" style="border-left:5px solid var(--gold);">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-title"><span class="badge gold">Jack Henderson Style</span> Multiple Entity Structure</div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="card-body">
+      <div class="card-inner">
+        <div class="textbox navy">Jack Henderson runs 5 entities: Henderson Advocacy, Endeavour Build, Henderson Asset Management, Henderson Accounting, Henderson Finance.<br><br>
+        The principle: separate entities for separate risks. Business operations in one entity. Assets in another. Anything that could be sued (service business) kept away from anything valuable (property, investments).</div>
+
+        <div class="diagram">
+          <div class="diagram-title">Sophisticated Multi-Entity Map (Henderson Model)</div>
+          <div class="entity-row">
+            <div class="entity-box personal">You (Appointor of all trusts)</div>
+          </div>
+          <div class="entity-row" style="gap:6px; flex-wrap:wrap;">
+            <div class="entity-box company" style="font-size:11px;">Operating Business Pty Ltd<br><span style="font-weight:400">(high risk — gets sued)</span></div>
+            <div class="entity-box trust" style="font-size:11px;">Family Trust<br><span style="font-weight:400">(holds investments)</span></div>
+            <div class="entity-box company" style="font-size:11px;">Property Co. Pty Ltd<br><span style="font-weight:400">(established properties)</span></div>
+            <div class="entity-box personal" style="font-size:11px;">Personal Name<br><span style="font-weight:400">(new builds only)</span></div>
+            <div class="entity-box smsf" style="font-size:11px;">SMSF<br><span style="font-weight:400">(commercial/super)</span></div>
+          </div>
+        </div>
+
+        <div class="insight amber"><strong>The key principle:</strong> Never mix the entity that faces legal/business risk with the entity that holds your valuable assets. Separate them deliberately so a lawsuit against your business can't reach your investment portfolio.</div>
+      </div>
+    </div>
+  </div>
+</div><!-- end structures tab -->
+
+
+<!-- ========== TAB 3: PARTITION STRATEGY ========== -->
+<div class="tab-panel" id="tab-partition">
+  <div class="banner">
+    <h2>The Partition Strategy — Jack Henderson</h2>
+    <p>Buy a development site under two names (tenants in common), build a second dwelling, subdivide, then attribute 100% of each property to the entity that gets the best tax treatment for that asset type. New build to personal name. Established to company.</p>
+    <div class="banner-tags">
+      <span class="btag gold">NSW Strategy (varies by state)</span>
+      <span class="btag white">Requires deed of partition</span>
+      <span class="btag white">Speak to accountant</span>
+    </div>
+  </div>
+
+  <div class="card" style="border-left:5px solid var(--gold);">
+    <div class="card-header open" onclick="toggleCard(this)">
+      <div class="card-title"><span class="badge gold">How It Works</span> Step by Step</div>
+      <div class="chevron open">▼</div>
+    </div>
+    <div class="card-body open">
+      <div class="card-inner">
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <div class="step-title">Go under contract as Tenants in Common</div>
+              Two names on the contract — Jack Henderson (personal) AND Jack Henderson Pty Ltd (company). Not joint tenants — tenants in common, so ownership shares can be unequal.
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <div class="step-title">Execute a Deed of Partitioning</div>
+              Legal document prepared alongside the contract documenting the intention: to develop the site, subdivide, and attribute each property to a specific owner at completion. This is what avoids GST and CGT at the split point.
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <div class="step-title">Document the long-term intention clearly</div>
+              Both parties intend to hold as long-term investments — not to sell. This is critical for GST purposes. If the ATO thinks you're a developer flipping stock, GST applies. If genuine long-term investors — no GST.
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <div class="step-title">Build the second dwelling, subdivide</div>
+              Construct the new house on the back of the block. After construction, apply for subdivision — creating two separate titles.
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-body">
+              <div class="step-title">Attribute ownership via the partition</div>
+              Instead of both entities owning 50% of each property — use the deed of partition to attribute:<br>
+              • <strong>Existing house (established) → Jack Henderson Pty Ltd (100%)</strong><br>
+              • <strong>New house (new build) → Jack Henderson personal name (100%)</strong>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">6</div>
+            <div class="step-body">
+              <div class="step-title">Result — maximum tax efficiency</div>
+              New build in personal name: negative gearing ✓, 50% CGT discount ✓, full depreciation ✓<br>
+              Established in company: asset protection ✓, no lost benefits (established gets none anyway under 2026 rules) ✓, debt can be recycled as it pays itself off ✓
+            </div>
+          </div>
+        </div>
+
+        <div class="diagram">
+          <div class="diagram-title">Before vs After Partition</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div>
+              <div style="font-size:10px;font-weight:800;color:var(--muted);margin-bottom:8px;text-transform:uppercase;">BEFORE (without partition)</div>
+              <div class="entity-box company" style="margin-bottom:6px;font-size:11px;">Both properties → Both entities own 50% each</div>
+              <div style="font-size:11px;color:var(--red);">✗ Can't claim depreciation on established<br>✗ No CGT discount optimisation<br>✗ No negative gearing on new build in company</div>
+            </div>
+            <div>
+              <div style="font-size:10px;font-weight:800;color:var(--muted);margin-bottom:8px;text-transform:uppercase;">AFTER (with partition)</div>
+              <div class="entity-box personal" style="margin-bottom:6px;font-size:11px;">New build → Personal name (100%)</div>
+              <div class="entity-box company" style="margin-bottom:6px;font-size:11px;">Old house → Company (100%)</div>
+              <div style="font-size:11px;color:var(--green);">✓ Neg gearing on new build<br>✓ Full depreciation personally<br>✓ 50% CGT discount<br>✓ Created ~$1M equity from development</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="insight amber"><strong>GST & CGT:</strong> No GST if genuinely held as long-term investments and documented correctly. No CGT at the partition point if both properties have equal valuations at the time of split. If unequal values — a CGT event may occur on the difference. Get a good accountant.</div>
+        <div class="insight green"><strong>Jack's result on this deal:</strong> Created $1 million in equity from the development. Massive depreciation claim in personal name. Established house debt recycled inside company over time. This is the "equity factory" strategy.</div>
+      </div>
+    </div>
+  </div>
+</div><!-- end partition tab -->
+
+
+<!-- ========== TAB 4: NEG GEARING & CARRY FORWARD ========== -->
+<div class="tab-panel" id="tab-negearing">
+  <div class="banner">
+    <h2>Negative Gearing, Carry Forward Losses & the 2026 Rules</h2>
+    <p>The 2026 budget changed the negative gearing rules for established properties. But losses don't disappear — they become carry forward losses. Understanding the difference between immediate and deferred tax relief is critical when clients say "there's no benefit anymore."</p>
+  </div>
+
+  <!-- WHAT IS NEG GEARING -->
+  <div class="card" style="border-left:5px solid var(--navy);">
+    <div class="card-header open" onclick="toggleCard(this)">
+      <div class="card-title"><span class="badge navy">Foundation</span> What Negative Gearing Actually Is</div>
+      <div class="chevron open">▼</div>
+    </div>
+    <div class="card-body open">
+      <div class="split">
+        <div class="panel-l">
+          <div class="panel-label pl-navy"><span>COL</span> How Col explains it</div>
+          <div class="textbox navy">
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+            "Negative gearing is simply when the cost of holding a property — the interest, the rates, the management fees, all of it — exceeds the rental income it produces. That shortfall is a loss. And historically, you could take that loss and deduct it from your other income — your salary — which meant you paid less tax that year. The property was costing you money on paper, but the tax office was subsidising part of that cost by reducing what you paid in tax."
+          </div>
+          <div class="textbox navy" style="margin-top:8px;">
+            <strong>The worked example (Col style):</strong><br><br>
+            Income: $130,000<br>
+            Property costs: $40,000<br>
+            Rental income: $35,000<br>
+            Shortfall (loss): $5,000<br>
+            Depreciation: $20,000<br>
+            Total claimable: $25,000<br><br>
+            Taxable income reduces to $105,000 → tax return ≈ $11,000+<br>
+            Property is now <em>positively cash flowed</em> even though negatively geared.
+          </div>
+        </div>
+        <div class="panel-r">
+          <div class="panel-label pl-green"><span>NORVAL</span> How I'd say it</div>
+          <div class="textbox green">
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+            "Negative gearing is basically this — when your property costs more to hold than it earns in rent, that gap is a loss. The old rules said: that loss reduces your taxable income this year, which means the tax office is effectively sharing the cost of holding the property with you. So even though you're losing money on paper, you're getting a tax refund that plugs most of the gap — and the property is still growing in value the whole time."
+          </div>
+          <div class="textbox green" style="margin-top:8px;">
+            "The way to think about it — you're borrowing from the taxman to help fund the holding costs of an asset that's growing. As long as the growth outpaces the cost, you're winning."
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2026 RULE CHANGE -->
+  <div class="card" style="border-left:5px solid var(--red);">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-title"><span class="badge red">2026 Change</span> What Changed — Established vs New Build</div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="card-body">
+      <div class="card-inner">
+        <table class="tbl">
+          <thead><tr><th>Property Type</th><th>Old Rules (pre-2026)</th><th>New Rules (2026+)</th></tr></thead>
+          <tbody>
+            <tr><td><strong>New Build (personal name)</strong></td><td class="win">Full negative gearing + depreciation + 50% CGT discount</td><td class="win">UNCHANGED — still gets all three ✓</td></tr>
+            <tr><td><strong>Established Property (personal name)</strong></td><td class="win">Negative gearing allowed — offset against personal income in that year</td><td class="lose">ZERO negative gearing — loss becomes a carry forward loss only</td></tr>
+            <tr><td><strong>Established Property (company)</strong></td><td class="neutral">No neg gearing (company never could), 30% flat tax</td><td class="neutral">No change — losses carry forward in company as before</td></tr>
+            <tr><td><strong>Trust (discretionary)</strong></td><td class="neutral">Losses trapped in trust (couldn't distribute losses)</td><td class="neutral">Same — losses still trapped + 30% minimum tax proposed</td></tr>
+          </tbody>
+        </table>
+        <div class="insight red"><strong>The key point for clients:</strong> Established property in personal name went from "government subsidises your holding cost this year" to "your loss is deferred until you sell." The benefit didn't disappear — it moved. This actually makes the new build advantage even larger.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARRY FORWARD LOSSES -->
+  <div class="card" style="border-left:5px solid var(--purple);">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-title"><span class="badge purple">Critical</span> Carry Forward Losses — How They Actually Work</div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="card-body">
+      <div class="split">
+        <div class="panel-l">
+          <div class="panel-label pl-navy"><span>CONCEPT</span> What carry forward means</div>
+          <div class="textbox navy">
+            A carry forward loss is a loss that cannot be used in the current tax year but is preserved and "banked" for future years.<br><br>
+            <strong>For established property under 2026 rules:</strong><br>
+            Year 1 — property loses $10,000 → can't offset against salary → loss is recorded and carried forward<br>
+            Year 2 — property loses $8,000 → same → banked<br>
+            Year 3 — property loses $6,000 → same → banked<br>
+            <strong>Total banked: $24,000</strong><br><br>
+            When you SELL — that $24,000 of carry forward losses reduces your capital gain → less CGT to pay.<br><br>
+            <strong>So the loss isn't gone — it's deferred tax relief.</strong>
+          </div>
+          <div class="textbox navy" style="margin-top:8px;">
+            <strong>Personal name carry forward rules:</strong><br>
+            • Losses can carry forward indefinitely<br>
+            • Used to offset future investment income OR capital gains on sale<br>
+            • Cannot be used to offset salary income (under new rules for established)<br><br>
+            <strong>Company carry forward rules:</strong><br>
+            • Same — losses carry forward indefinitely in company<br>
+            • Used to offset future company income<br>
+            • "Continuity of ownership" test must be satisfied to use them<br><br>
+            <strong>Trust carry forward rules:</strong><br>
+            • Losses CANNOT be distributed to beneficiaries<br>
+            • Must be used inside the trust against future trust income<br>
+            • Cannot offset personal income of beneficiaries
+          </div>
+        </div>
+        <div class="panel-r">
+          <div class="panel-label pl-green"><span>NORVAL</span> How I'd explain it to a client</div>
+          <div class="textbox green">
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+            "Here's something really important when people say negative gearing is gone — it's not gone. It's deferred. The loss doesn't disappear, it's just banked.<br><br>
+            Under the old rules, if your property lost $10,000 this year, you got the tax saving this year. Under the new rules for established property, that $10,000 loss gets recorded and banked. Every year your property runs at a loss, that total builds up. Then when you eventually sell the property, all those banked losses reduce your capital gain — which means less capital gains tax.<br><br>
+            So the government hasn't taken the benefit away. They've just moved it from 'now' to 'later.' You don't get the cash flow help this year, but you pay less tax when you sell. The benefit is the same — the timing is different."
+          </div>
+          <div class="textbox green" style="margin-top:8px;">
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+            "And here's why this actually makes new builds even more compelling right now — with a new build, you still get the immediate benefit. The depreciation and the negative gearing reduces your tax bill this year, every year, for the first seven years. That's cash in your hand right now helping you hold the property. The established property just gives you the same benefit later. Same game — different timing."
+          </div>
+          <div class="insight amber" style="margin-top:10px;"><strong>The objection close:</strong> When a client says "I thought negative gearing was gone" — "It's not gone on new builds. And even on established, the loss is banked and used when you sell. The real difference is immediate vs deferred. New builds give you immediate. That's why we focus on new construction."</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARRY FORWARD IN TRUSTS -->
+  <div class="card" style="border-left:5px solid var(--amber);">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-title"><span class="badge amber">Trust Specific</span> Carry Forward Losses Inside a Trust — The Trap</div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="card-body">
+      <div class="card-inner">
+        <div class="textbox navy">This is one of the most misunderstood aspects of trust investing. When a trust makes a loss, that loss is TRAPPED inside the trust. It cannot be distributed to beneficiaries.<br><br>
+        So if your family trust holds an established property that makes a $15,000 loss this year — you cannot use that $15,000 to reduce your personal income. The loss sits in the trust, accumulating, until the trust makes future income to absorb it — or until the property is sold and there's a capital gain to offset it against.</div>
+
+        <div class="pros-cons">
+          <div class="pros"><h4>Personal Name — Carry Forward Losses</h4>
+            <ul>
+              <li>Loss banked against future investment income</li>
+              <li>Loss reduces CGT when property is eventually sold</li>
+              <li>New builds: IMMEDIATE negative gearing benefit against salary</li>
+              <li>Clear, straightforward ATO rules</li>
+            </ul>
+          </div>
+          <div class="cons"><h4>Trust — Carry Forward Losses</h4>
+            <ul>
+              <li>Loss trapped IN the trust — cannot reach beneficiaries</li>
+              <li>Must be absorbed by future TRUST income</li>
+              <li>No immediate or deferred personal tax benefit from trust losses</li>
+              <li>30% minimum tax proposed on distributions even when trust profitable</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="insight red"><strong>Bottom line:</strong> Holding negatively geared property in a trust is often the worst of both worlds — you lose the immediate benefit (it's a trust) AND you can't even get the deferred benefit easily. Personal name is almost always better for negative gearing purposes.</div>
+      </div>
+    </div>
+  </div>
+</div><!-- end neg gearing tab -->
+
+
+<!-- ========== TAB 5: BORROWING CAPACITY ========== -->
+<div class="tab-panel" id="tab-borrowing">
+  <div class="banner">
+    <h2>Unlocking Borrowing Capacity — Jack Henderson's Framework</h2>
+    <p>How the same income and same cash can build a portfolio twice as large through creative structuring. The core insight: putting debt in entities rather than personal name frees up personal borrowing capacity to keep growing.</p>
+  </div>
+
+  <!-- JACK'S SAME INCOME DIFFERENT OUTCOME -->
+  <div class="card" style="border-left:5px solid var(--gold);">
+    <div class="card-header open" onclick="toggleCard(this)">
+      <div class="card-title"><span class="badge gold">Jack Henderson</span> Same Income — Double the Portfolio</div>
+      <div class="chevron open">▼</div>
+    </div>
+    <div class="card-body open">
+      <div class="card-inner">
+        <div class="textbox navy">
+          <strong>The scenario — $850K borrowing capacity, $900K cash:</strong><br><br>
+          <strong>Option 1 (standard):</strong> Buy a $1.7M property. Use $850K borrowing + $850K cash. 50% leverage. Borrowing capacity is now fully used — capped. Can't buy anything else.<br><br>
+          <strong>Option 2 (creative structuring):</strong> Split the same cash and borrowing capacity across multiple entities. Property 1 in personal name. Property 2 in a company or trust. Each entity has separate borrowing — the bank assesses each independently.<br><br>
+          The result: same total invested, but instead of one $1.7M property with 50% leverage and no room to grow — you potentially have two properties, more diversification, and each entity can continue to borrow as properties grow in value and equity builds.
+        </div>
+
+        <div class="insight green"><strong>The key principle:</strong> When debt sits in an entity (company or trust), banks assess it differently to personal debt. As the entity's property income grows and covers its own debt, your personal borrowing capacity may not be fully consumed — leaving room to borrow again in your personal name.</div>
+
+        <!-- EQUITY RELEASE WALKTHROUGH -->
+        <div class="divider"></div>
+        <div class="section-lbl">Jack's Equity Release Walkthrough</div>
+        <div class="textbox navy">
+          <strong>You own a property worth $1.1M with $580K debt.</strong><br><br>
+          Bank lends up to 80% of $1.1M = $880K<br>
+          Existing debt: $580K<br>
+          Available equity: $880K - $580K = <strong>$310,000</strong><br><br>
+          That $310K comes out as cash (equity release) and sits in an offset account.<br>
+          Use it as: 20% deposit ($220K) + 5% stamp/costs ($60K) on a ~$1.1M next purchase.<br>
+          Buffer left: ~$30K<br><br>
+          <strong>Critical — DO NOT cross-securitise.</strong> Don't use the first property as security for the second loan. Do a standalone equity release first, then use that cash as a clean deposit for the second property. If you cross-securitise, the bank controls both assets and can restrict your access to equity if one property value falls.
+        </div>
+
+        <div class="insight red"><strong>Cross-securitisation warning (Jack Henderson):</strong> "The bank will tell you what you can and can't do. If the value on one property falls, they will not allow you to access the equity out of the other because they're tied together. This is wrong. Always do a clean equity release first."</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RECYCLING BORROWING CAPACITY -->
+  <div class="card" style="border-left:5px solid var(--purple);">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-title"><span class="badge purple">Strategy</span> Recycling Borrowing Capacity Through Entities</div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="card-body">
+      <div class="card-inner">
+        <div class="textbox navy">
+          The concept Jack and Col both use: as a property inside a company or trust starts to cover its own debt (rental income matches or exceeds loan repayments), that debt no longer drags on the entity's capacity — and the equity can be recycled into the next purchase.<br><br>
+          <strong>How it works:</strong><br>
+          1. Buy established property in company → cash flow neutral after 3-5 years as rent grows<br>
+          2. Company's debt is now self-serviced by rent<br>
+          3. Company's equity grows as property value rises<br>
+          4. Release equity from company → use as deposit on next property (in personal name or another entity)<br>
+          5. Personal borrowing capacity is preserved for new builds that get tax benefits<br><br>
+          This is the "recycling" concept — the entity's debt services itself, freeing your personal capacity to keep growing.
+        </div>
+        <div class="insight green"><strong>In your words:</strong> "The idea is to keep your personal borrowing capacity clean for the properties that give you the tax benefits — new builds. The established stuff, or the properties that have been around long enough to pay for themselves, those sit in entities. As they cover their own costs, the entity can release equity back to fund the next purchase. It's a cycle."</div>
+      </div>
+    </div>
+  </div>
+</div><!-- end borrowing tab -->
+
+
+<!-- ========== TAB 6: RESI VS COMMERCIAL ========== -->
+<div class="tab-panel" id="tab-resicomm">
+  <div class="banner">
+    <h2>Residential vs Commercial Property</h2>
+    <p>Jack Henderson's full framework — accumulation (resi) then evolution (commercial). Col's framing for the average investor. Side-by-side comparison of how each performs and when the switch makes sense.</p>
+  </div>
+
+  <!-- JACKS PATHWAY -->
+  <div class="card" style="border-left:5px solid var(--gold);">
+    <div class="card-header open" onclick="toggleCard(this)">
+      <div class="card-title"><span class="badge gold">Jack Henderson</span> Accumulation → Evolution Pathway</div>
+      <div class="chevron open">▼</div>
+    </div>
+    <div class="card-body open">
+      <div class="card-inner">
+        <div class="textbox navy">
+          <strong>Phase 1 — Accumulation (Residential):</strong><br>
+          Build a residential portfolio. Use capital growth and equity to fund deposits on subsequent properties. Resi is accessible (lower entry deposits, standard lending), easier to finance, and grows consistently over time in quality locations.<br><br>
+          <strong>Phase 2 — Evolution (Commercial):</strong><br>
+          Once residential equity is substantial, pull equity out (3 properties × $400K equity each = $1.2M) and use it as the 30% deposit + costs on a $3M+ commercial asset.<br><br>
+          <strong>Why commercial eventually?</strong><br>
+          • Leases are longer (typically 3–10 years vs resi 6–12 months)<br>
+          • Tenant pays outgoings (triple net lease) — you keep the gross rent<br>
+          • Rent increases built into lease (CPI or fixed % annually — Jack's example: 4% per year)<br>
+          • Better cash flow at scale — Jack's Burleigh Heads factory: $2.725M purchase, $153K rent/year, 35K positive cash flow after loan repayments
+        </div>
+
+        <div class="diagram">
+          <div class="diagram-title">The Accumulation → Evolution Pathway</div>
+          <div class="entity-row">
+            <div class="entity-box property" style="font-size:11px;">Resi Property 1<br>$1.5M (was $800K)</div>
+            <div class="entity-box property" style="font-size:11px;">Resi Property 2<br>$1.5M (was $800K)</div>
+            <div class="entity-box property" style="font-size:11px;">Resi Property 3<br>$1.5M (was $800K)</div>
+          </div>
+          <div class="entity-row">
+            <div class="arrow">↓ Each releases $400K equity (80% of $1.5M - $800K debt)</div>
+          </div>
+          <div class="entity-row">
+            <div class="entity-box company" style="font-size:12px;">$1.2M total equity released</div>
+            <div class="arrow">→</div>
+            <div class="entity-box smsf" style="font-size:12px;">30% deposit + costs on $3M+ commercial asset</div>
+          </div>
+          <div class="entity-row" style="margin-left:40px; font-size:11px; color:var(--green);">
+            ↓ Commercial generates $35K+ positive cash flow per year (after loan repayments)
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPARISON TABLE -->
+  <div class="card" style="border-left:5px solid var(--navy);">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-title"><span class="badge navy">Comparison</span> Residential vs Commercial — Full Breakdown</div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="card-body">
+      <div class="card-inner">
+        <table class="tbl">
+          <thead><tr><th>Factor</th><th>Residential</th><th>Commercial</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Entry deposit</strong></td><td class="win">10–20% of purchase price</td><td class="lose">25–35% of purchase price</td></tr>
+            <tr><td><strong>Lending</strong></td><td class="win">Standard bank loans, competitive rates</td><td class="lose">Commercial lending, higher rates, stricter criteria</td></tr>
+            <tr><td><strong>Typical yield</strong></td><td class="neutral">3–5% gross (quality areas)</td><td class="win">5–7% net (triple net lease)</td></tr>
+            <tr><td><strong>Who pays outgoings</strong></td><td class="lose">Landlord (rates, insurance, maintenance)</td><td class="win">Tenant (triple net — all outgoings on tenant)</td></tr>
+            <tr><td><strong>Lease length</strong></td><td class="lose">6–12 months (high turnover risk)</td><td class="win">3–10 years (stability, less vacancy)</td></tr>
+            <tr><td><strong>Rent increases</strong></td><td class="neutral">Market-driven, at each lease renewal</td><td class="win">Built into lease — CPI or fixed % annually (e.g. 4%)</td></tr>
+            <tr><td><strong>Vacancy risk</strong></td><td class="neutral">High demand but regular tenant changes</td><td class="neutral">Longer vacancies if tenant leaves, but rarer</td></tr>
+            <tr><td><strong>Capital growth</strong></td><td class="win">Strong in quality locations, predictable</td><td class="neutral">More variable — tied to business demand for space</td></tr>
+            <tr><td><strong>Tax benefits (2026)</strong></td><td class="win">Negative gearing + depreciation on new builds</td><td class="neutral">Interest deductible, depreciation on fit-out</td></tr>
+            <tr><td><strong>Accessibility</strong></td><td class="win">Anyone with deposit + serviceability</td><td class="lose">Requires substantial equity base first</td></tr>
+            <tr><td><strong>Management</strong></td><td class="neutral">Regular — tenant turnover, maintenance</td><td class="win">Simpler — longer leases, tenant pays outgoings</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- BANK VS COMMERCIAL ARGUMENT -->
+  <div class="card" style="border-left:5px solid var(--blue);">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-title"><span class="badge blue">Jack's Argument</span> Why 4% in the Bank Loses to 6% Commercial — The Inflation Argument</div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="card-body">
+      <div class="card-inner">
+        <div class="textbox navy">
+          <strong>The question:</strong> "Why bother with commercial property if the bank gives me 4% with no risk?"<br><br>
+          <strong>$1M in the bank at 4%:</strong><br>
+          • Income: $40,000/year — FIXED, never grows<br>
+          • Inflation at 3.5%: real return = 0.5%<br>
+          • In 5 years: still $1M (no growth)<br>
+          • Your $1M buys less each year due to inflation<br><br>
+          <strong>$1M as deposit on $3M commercial at 6% yield:</strong><br>
+          • Income: $180,000/year (gross)<br>
+          • Loan cost (6.5% on $2M): $130,000/year<br>
+          • Net surplus: $50,000/year — already more than the bank<br>
+          • Rent increases 4%/year (built into lease)<br>
+          • Year 2 income: ~$188K. Year 3: ~$196K<br>
+          • Capital growth: $3M asset growing at even 5%/year = $4.5M+ in 10 years<br>
+          • Your $1M is now part of a $4.5M asset = massive net worth growth
+        </div>
+        <div class="split" style="margin-top:10px;">
+          <div class="panel-l">
+            <div class="panel-label pl-navy"><span>JACK</span> His exact framing</div>
+            <div class="textbox navy" style="font-size:12px;">"Your 4% giving you $40,000 per annum — that's not real. Your real number is 4% minus 3.5% inflation = 0.5% actual return. Meanwhile commercial gives you income tied to inflation PLUS capital growth. You want assets that combat inflation — not fixed income that gets eaten by it."</div>
+          </div>
+          <div class="panel-r">
+            <div class="panel-label pl-green"><span>NORVAL</span> How I'd say it</div>
+            <div class="textbox green">
+              <button class="copy-btn" onclick="copyText(this)">Copy</button>
+              "The bank looks safe because the number is guaranteed. But here's the problem — inflation is running at 3.5%. Your 4% return minus 3.5% inflation means you're actually making 0.5% in real terms. Your million in five years buys less than it does today. Commercial property gives you rent that grows with inflation every year, plus the asset itself grows in value. It's not just a higher yield — it's yield that keeps up with the real world."
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COL'S FRAMING FOR AVERAGE INVESTOR -->
+  <div class="card" style="border-left:5px solid var(--green);">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-title"><span class="badge green">Col's View</span> Why Commercial Is for Later — Not Now</div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="card-body">
+      <div class="card-inner">
+        <div class="textbox navy">Col's framing for the average investor in a strategy session — commercial is the evolution, not the starting point.<br><br>
+        <strong>Col's core position:</strong><br>
+        • Residential is the accumulation vehicle — grow equity in quality locations over time<br>
+        • Commercial requires a substantial equity base FIRST — you need the resi portfolio working before you can lever into commercial<br>
+        • The equilibrium point theory applies to residential — buy the right spec property in the right location at the right price<br>
+        • For the average ADF investor at strategy session stage: residential new build in a growth corridor is the right play — not commercial<br><br>
+        <strong>How Col would debate it for the average investor:</strong><br>
+        "Commercial sounds attractive — and it is, at the right stage. But to get into a quality commercial asset you need 30% deposit plus costs, which on a $3M asset is over $1 million in cash. Where does that come from? It comes from your residential portfolio growing. You can't skip the residential step. And frankly — residential new builds right now, with the depreciation advantage and the negative gearing, are producing returns that rival commercial on a risk-adjusted basis at a much lower entry cost."</div>
+        <div class="insight green"><strong>For your presentations:</strong> Residential first. Always. Commercial is where you go once residential has built the equity to fund it. Trying to enter commercial too early means either not enough deposit, insufficient equity, or taking on too much risk before the foundations are solid.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMMERCIAL SWEET SPOT -->
+  <div class="card" style="border-left:5px solid var(--amber);">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-title"><span class="badge amber">Jack Henderson</span> Commercial Yield Sweet Spot & What to Avoid</div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="card-body">
+      <div class="card-inner">
+        <div class="textbox navy">
+          <strong>Jack's yield sweet spot: 5% to 6.5–7% net</strong><br><br>
+          Below 5% — probably CBD Sydney, blue chip but limited cash flow (petrol stations, fast food franchises — 2.5-3%)<br>
+          5–6.5% — industrial in Brisbane, Gold Coast, Newcastle, Central Coast — the sweet spot<br>
+          Above 7% — higher risk, probably regional or rural, vacancy risk increases<br><br>
+          <strong>The rule: same as residential — higher yield = higher risk.</strong><br><br>
+          <strong>Triple net lease:</strong> Tenant pays ALL outgoings — rates, insurance, maintenance, repairs. You collect the rent and pay the mortgage. Everything else is on the tenant. The yield you see IS the yield you keep.<br><br>
+          <strong>Rent review built in:</strong> Quality commercial leases have annual rent reviews tied to CPI or a fixed % (e.g. 4%). Your income grows every year automatically — unlike residential where you negotiate each time.<br><br>
+          <strong>Best areas (Jack):</strong> Brisbane, Gold Coast, Newcastle, Central Coast, good pockets of Victoria. Adelaide: no stamp duty on commercial — significant advantage.<br><br>
+          <strong>To achieve $500K passive income:</strong> You need $10M in net assets generating 5%. That's the target. Residential gets you there over time through growth + equity + leverage. Then commercial converts that equity into cash flow.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end resi vs commercial tab -->
+
+</div><!-- end content -->
+
+<div class="toast" id="toast">✓ Copied!</div>
+
+<script>
+  function switchTab(tabId) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + tabId).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  function toggleCard(header) {
+    const body = header.nextElementSibling;
+    const chevron = header.querySelector('.chevron');
+    body.classList.toggle('open');
+    header.classList.toggle('open');
+    chevron.classList.toggle('open');
+  }
+
+  function copyText(btn) {
+    const text = btn.parentElement.innerText.replace('Copy','').trim();
+    navigator.clipboard.writeText(text).then(() => showToast());
+  }
+
+  function showToast() {
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+  }
+
+  // Open first card in each tab by default
+  document.querySelectorAll('.card-header.open').forEach(h => {
+    h.nextElementSibling.classList.add('open');
+  });
+</script>
+</body>
+</html>
