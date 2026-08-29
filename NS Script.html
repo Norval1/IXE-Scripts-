@@ -89,20 +89,6 @@
   .obj-answer { display: none; padding: 12px 14px; font-size: 13px; line-height: 1.65; color: #2d3748; background: var(--white); }
   .obj-answer.open { display: block; }
 
-  /* COL FRAMEWORK ACCORDION */
-  .col-section { background: var(--white); border-radius: 10px; margin-bottom: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); overflow: hidden; }
-  .col-header { padding: 12px 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, var(--navy) 0%, #2a4a7f 100%); color: white; }
-  .col-header:hover { background: linear-gradient(135deg, #162a4d 0%, #1F3864 100%); }
-  .col-header-title { font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 8px; }
-  .col-station { background: var(--gold); color: var(--navy); font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 10px; }
-  .col-body { display: none; padding: 14px 16px; }
-  .col-body.open { display: block; }
-  .col-point { padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; line-height: 1.6; }
-  .col-point:last-child { border-bottom: none; }
-  .col-point strong { color: var(--navy); }
-  .col-number { display: inline-block; background: var(--gold); color: var(--navy); font-size: 10px; font-weight: 800; width: 20px; height: 20px; border-radius: 50%; text-align: center; line-height: 20px; margin-right: 6px; flex-shrink: 0; }
-  .col-flex { display: flex; align-items: flex-start; gap: 0; }
-
   /* VOCAB TABLES */
   .vocab-table { width: 100%; border-collapse: collapse; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.08); margin-bottom: 16px; }
   .vocab-table th { background: var(--navy); color: white; padding: 10px 14px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -136,6 +122,13 @@
   .toast { position: fixed; bottom: 20px; right: 20px; background: var(--success); color: white; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; opacity: 0; transition: opacity 0.3s; z-index: 999; pointer-events: none; }
   .toast.show { opacity: 1; }
 
+
+  /* SEARCH BAR */
+  .search-bar { background: #fff; border-bottom: 1px solid var(--border); padding: 10px 16px; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+  .search-bar input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 9px 14px; color: var(--text); font-size: 13px; outline: none; }
+  .search-bar input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(176,141,87,.15); }
+  .search-bar input::placeholder { color: var(--muted); }
+  .search-hidden { display: none !important; }
   /* RESPONSIVE */
   @media (max-width: 600px) {
     .obj-grid { grid-template-columns: 1fr; }
@@ -151,10 +144,12 @@
   <div class="header-badge">IXE LIVE</div>
 </div>
 
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="🔍  Search script, objections, vocab... (works across all tabs)" oninput="filterContent(this.value)">
+</div>
 <div class="tabs">
   <div class="tab active" onclick="switchTab('script')">📋 Script</div>
   <div class="tab" onclick="switchTab('objections')">🛡️ Objections</div>
-  <div class="tab" onclick="switchTab('col')">🎯 Col's Framework</div>
   <div class="tab" onclick="switchTab('vocab')">💬 Vocab</div>
   <div class="tab" onclick="switchTab('templates')">📨 Templates</div>
 </div>
@@ -409,6 +404,7 @@
       <div class="section-body">
         <p style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:14px;text-decoration:underline;">4 Stages of Property Investment:</p>
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;">
+          <!-- Stage 1 -->
           <div style="display:flex;flex-direction:column;">
             <div style="text-align:center;font-size:13px;font-weight:800;color:var(--navy);margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid #b0bedd;">Save, Save, Save</div>
             <div style="background:#c5cfe8;border-radius:8px;padding:12px;flex:1;">
@@ -420,6 +416,7 @@
               </ul>
             </div>
           </div>
+          <!-- Stage 2 -->
           <div style="display:flex;flex-direction:column;">
             <div style="text-align:center;font-size:13px;font-weight:800;color:var(--navy);margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid #1F3864;">Accumulate</div>
             <div style="background:#1F3864;border-radius:8px;padding:12px;flex:1;">
@@ -431,6 +428,7 @@
               </ul>
             </div>
           </div>
+          <!-- Stage 3 -->
           <div style="display:flex;flex-direction:column;">
             <div style="text-align:center;font-size:13px;font-weight:800;color:var(--navy);margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid #2d4f8e;">Consolidate</div>
             <div style="background:#2d4f8e;border-radius:8px;padding:12px;flex:1;">
@@ -441,6 +439,7 @@
               </ul>
             </div>
           </div>
+          <!-- Stage 4 -->
           <div style="display:flex;flex-direction:column;">
             <div style="text-align:center;font-size:13px;font-weight:800;color:var(--navy);margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid #1F3864;">Freedom/Retirement</div>
             <div style="background:#1a2e50;border-radius:8px;padding:12px;flex:1;">
@@ -453,6 +452,12 @@
             </div>
           </div>
         </div>
+        <!-- Mobile fallback note -->
+        <style>
+          @media(max-width:600px){
+            .stages-grid{grid-template-columns:1fr 1fr !important;}
+          }
+        </style>
         <div class="script-text" style="margin-top:4px;">
           <button class="copy-btn" onclick="copyText(this)">Copy</button>
           <strong>Where most ADF members sit:</strong> Stage 1 or early Stage 2. The goal of the Discovery Call is to show them exactly how to move from Save → Accumulate as fast as possible using their ADF entitlements and borrowing capacity.<br><br>
@@ -537,103 +542,6 @@
 
     </div>
   </div><!-- end objections tab -->
-
-
-  <!-- ===== COL'S FRAMEWORK TAB ===== -->
-  <div class="tab-panel" id="tab-col">
-    <div style="margin-bottom:12px; font-size:12px; color:var(--muted);">Col's strategy session frameworks — condensed in your style. Use these as pre-objection handling and education drops.</div>
-
-    <div class="col-section">
-      <div class="col-header" onclick="toggleCol(this)">
-        <div class="col-header-title"><span class="col-station">Station 1</span> Can We Do This Logistically?</div>
-        <div class="chevron" style="color:var(--gold)">▼</div>
-      </div>
-      <div class="col-body">
-        <div class="col-point"><strong>The Two Sides:</strong> Deposit funding on the left — cash, usable equity, defence entitlements, super. Borrowing capacity on the right. No use having one without the other.</div>
-        <div class="col-point"><strong>Investment vs Owner-Occupier Lending:</strong> For a home to live in, banks assess surplus income only. For an investment property, they also count the property's future rental income — which means your investment borrowing capacity is often <em>higher</em> than your home-buyer borrowing capacity. Say this explicitly.</div>
-        <div class="col-point"><strong>Equity Caveat:</strong> Equity is only usable if the person who can borrow against it is on the title, and the property can service more debt. Stuck equity = liquidate and redeploy as cash.</div>
-        <div class="col-point"><strong>Defence Entitlements — Don't Cash Early:</strong> DHA subsidised rent is worth roughly $300/week ($15,600/year). A $30K first home owner grant is paid back in about two years of continued service. Don't trade an ongoing benefit for a one-off number.</div>
-      </div>
-    </div>
-
-    <div class="col-section">
-      <div class="col-header" onclick="toggleCol(this)">
-        <div class="col-header-title"><span class="col-station">Station 2</span> Is Now a Good Time?</div>
-        <div class="chevron" style="color:var(--gold)">▼</div>
-      </div>
-      <div class="col-body">
-        <div class="col-point"><strong>Bonds vs Shares vs Property — Same $200K:</strong><br>• $200K in bonds at 10% = $20K growth<br>• $200K as deposit on $800K property at 10% = $80K growth<br>Same money, same return rate — but 4x more in property because of leverage. Let the arithmetic make the point, not opinion.</div>
-        <div class="col-point"><strong>Offset Account:</strong> Money in an offset effectively earns you your mortgage rate (say 6.5%) completely tax-free. To earn the same spendable outcome from shares, you'd need a gross return of 10–11% before tax. The comparison isn't 6.5% vs 6.5% — it's 6.5% tax-free vs 10–11% taxed.</div>
-        <div class="col-point"><strong>Budget / Negative Gearing:</strong> If you disincentivise investors from owning rental stock, you decrease rental supply without changing rental demand — so rents go up. This happened in Australia in the 1980s and reversed within two years. Same thing in New Zealand. Historical proof of concept, not opinion. Today's vacancy rates (0.3–1.8%) are half what they were in the 80s — the same policy causes more damage now.</div>
-        <div class="col-point"><strong>Apple Tree Analogy:</strong> Funnelling investors toward new construction only doesn't create more homes — it just adds more competition for the same limited build volume. If the tree only grows 5 apples a year and you double demand, you still only get 5 apples.</div>
-      </div>
-    </div>
-
-    <div class="col-section">
-      <div class="col-header" onclick="toggleCol(this)">
-        <div class="col-header-title"><span class="col-station">Station 3</span> New vs Established</div>
-        <div class="chevron" style="color:var(--gold)">▼</div>
-      </div>
-      <div class="col-body">
-        <div class="col-point"><strong>Definition first:</strong> "Established" is a legal/tax classification, not an age description. A brand-new home someone else built and sold to you is considered established by the ATO.</div>
-        <div class="col-point"><strong>Stamp Duty Gap:</strong> New build — duty on land component only (~$15K on a $1M property). Established — duty on full price (~$45–55K). That gap alone is $30–40K before you've even compared anything else.</div>
-        <div class="col-point"><strong>Depreciation Gap — the big one:</strong><br>• Established: prime cost method, structure only, flat 2.5% over 40 years<br>• New build: diminishing value method, structure AND fixtures/fittings, front-loaded in first 5–7 years<br>• Under 2026 budget rules, established properties get zero negative gearing benefit at all<br>• New build can return $11K+ tax return vs near-zero for established on identical properties<br>• Over 7 years, that's $100K+ more in deductions from a new build</div>
-        <div class="col-point"><strong>Structural Guarantee:</strong> New build inspected and signed off at slab, frame, and enclosed — with photos and certification. Established: zero structural guarantee or warranty from vendor. Car warranty analogy — would you buy the 1-year or 10-year warranty?</div>
-        <div class="col-point"><strong>Holding Costs vs Stamp Duty:</strong> Construction period costs (~$30K, tax-deductible) are less than established stamp duty alone (~$40K+, not deductible) — before the depreciation gap is even counted.</div>
-      </div>
-    </div>
-
-    <div class="col-section">
-      <div class="col-header" onclick="toggleCol(this)">
-        <div class="col-header-title"><span class="col-station">Station 4</span> Equilibrium Point Theory</div>
-        <div class="chevron" style="color:var(--gold)">▼</div>
-      </div>
-      <div class="col-body">
-        <div class="col-point"><strong>The Core Idea:</strong> Property investing is a science, not an art. There's a mathematical sweet spot — an equilibrium point — where the price, land size, and specification align with what the actual owner-occupier market in that location can afford and wants to buy.</div>
-        <div class="col-point"><strong>You're building for the buyer, not yourself:</strong> You're building the house the largest pool of future owner-occupier buyers in that suburb can afford and would want — because they drive your capital growth and resale value.</div>
-        <div class="col-point"><strong>Don't overcapitalise:</strong><br>• Biggest land on the street = odd one out, smaller resale pool<br>• 5 bedrooms in a young-couple suburb = wrong demographic<br>• Pool = half your buyers see it as a liability, not a bonus<br>More spend is not automatically more growth — it can actually shrink your buyer pool at resale.</div>
-      </div>
-    </div>
-
-    <div class="col-section">
-      <div class="col-header" onclick="toggleCol(this)">
-        <div class="col-header-title"><span class="col-station">Locations</span> Why We Buy Where We Buy</div>
-        <div class="chevron" style="color:var(--gold)">▼</div>
-      </div>
-      <div class="col-body">
-        <div class="col-point"><strong>Urban Growth Boundary:</strong> Every capital city has a planning boundary past which land can't be rezoned. Growth gets pushed to satellite corridors sitting inside or just outside it — and those corridors fill in over 15–20 years as infrastructure and population catch up.</div>
-        <div class="col-point"><strong>The Investment Thesis:</strong> Identify a growth corridor while land is comparatively cheap and infrastructure is still being built — then let population growth, employment, and transport investment close the price gap to established suburbs nearer the CBD. That gap closing IS the growth.</div>
-        <div class="col-point"><strong>Don't sell on vibes:</strong> Show specifically funded, approved infrastructure and population trajectory. Frame the current price gap to a comparable established suburb as the growth still left to capture. That's what makes it science, not a guess.</div>
-      </div>
-    </div>
-
-    <div class="col-section">
-      <div class="col-header" onclick="toggleCol(this)">
-        <div class="col-header-title"><span class="col-station">PPOR vs IP</span> Investment First — Why It Makes Sense</div>
-        <div class="chevron" style="color:var(--gold)">▼</div>
-      </div>
-      <div class="col-body">
-        <div class="col-point"><strong>PPOR = lifestyle decision wearing a financial costume.</strong> Investment property = financial decision that might become a lifestyle decision later, once it's done its job.</div>
-        <div class="col-point"><strong>The Sequencing Argument:</strong> Investment property first = higher borrowing capacity (rental income counted) + tax deductions working for you. A home first = no deductions, lower borrowing capacity for everything that follows.</div>
-        <div class="col-point"><strong>Nothing stops you</strong> from turning an investment property into your home later — once it's paid down and worked for you first.</div>
-      </div>
-    </div>
-
-    <div class="col-section">
-      <div class="col-header" onclick="toggleCol(this)">
-        <div class="col-header-title"><span class="col-station">Col Style</span> Col's Delivery Habits to Steal</div>
-        <div class="chevron" style="color:var(--gold)">▼</div>
-      </div>
-      <div class="col-body">
-        <div class="col-point"><strong>The Train Track:</strong> Narrate the shape of the conversation as you go — "So that's the first station on the train track... the next station is..." Keeps the client oriented and makes it feel like a deliberate methodology.</div>
-        <div class="col-point"><strong>The Verdict Habit:</strong> Ask the station question plainly, answer in one word, pause, then explain. "Can you do this logistically? Yes." The pause does the work.</div>
-        <div class="col-point"><strong>Analogy First:</strong> Every abstract concept gets a plain analogy before the numbers — apple tree (supply), car warranty (build quality), offset (tax-free savings). Analogy → numbers → verdict.</div>
-        <div class="col-point"><strong>Pre-empt Objections:</strong> State the objection yourself before the client raises it — then answer with a worked number or historical precedent. Never a vague reassurance.</div>
-        <div class="col-point"><strong>Always Close with One Concrete Next Step:</strong> Never end on "let's stay in touch." Name the exact next action and when it happens.</div>
-      </div>
-    </div>
-
-  </div><!-- end col tab -->
 
 
   <!-- ===== VOCAB TAB ===== -->
@@ -820,6 +728,61 @@ Integrity Property Investment</div>
     navigator.clipboard.writeText(text).then(() => showToast());
   }
 
+
+  function filterContent(q) {
+    const allCards = document.querySelectorAll('.section-card, .obj-card, .template-card');
+    const allRows = document.querySelectorAll('tbody tr');
+
+    if (!q) {
+      // Reset everything
+      allCards.forEach(el => {
+        el.classList.remove('search-hidden');
+        el.style.outline = '';
+      });
+      allRows.forEach(el => {
+        el.classList.remove('search-hidden');
+        el.style.background = '';
+      });
+      // Restore to first tab only
+      document.querySelectorAll('.tab-panel').forEach((p,i) => p.classList.toggle('active', i===0));
+      document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', i===0));
+      // Close all section bodies, leave first open
+      document.querySelectorAll('.section-body').forEach((b,i) => {
+        b.classList.toggle('open', i===0);
+      });
+      document.querySelectorAll('.section-header').forEach((h,i) => {
+        h.classList.toggle('open', i===0);
+      });
+      return;
+    }
+
+    const term = q.toLowerCase();
+
+    // Open all tabs so search spans everything
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+
+    // Open ALL section bodies so content is visible and searchable
+    document.querySelectorAll('.section-body').forEach(b => b.classList.add('open'));
+    document.querySelectorAll('.section-header').forEach(h => h.classList.add('open'));
+    document.querySelectorAll('.obj-answer').forEach(a => a.classList.add('open'));
+    document.querySelectorAll('.obj-trigger').forEach(t => t.classList.add('open'));
+    document.querySelectorAll('.concept-body').forEach(b => b.classList.add('open'));
+
+    // Filter cards
+    allCards.forEach(el => {
+      const match = el.innerText.toLowerCase().includes(term);
+      el.classList.toggle('search-hidden', !match);
+      el.style.outline = match ? '2px solid var(--gold)' : '';
+    });
+
+    // Filter vocab table rows
+    allRows.forEach(el => {
+      const match = el.innerText.toLowerCase().includes(term);
+      el.classList.toggle('search-hidden', !match);
+      el.style.background = match ? '#fef9ec' : '';
+    });
+  }
   function showToast() {
     const toast = document.getElementById('toast');
     toast.classList.add('show');
