@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Norval — Strategy Session Study Guide</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #1F3864;
+    --gold: #B08D57;
+    --gold-light: #d4ae78;
+    --bg: #f0f2f5;
+    --white: #ffffff;
+    --text: #1a1a2e;
+    --muted: #6b7280;
+    --border: #e2e4e9;
+    --col-bg: #eef1f8;
+    --norval-bg: #f0fff4;
+    --col-border: #1F3864;
+    --norval-border: #10b981;
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.65; }
+
+  .header { background: var(--navy); color: white; padding: 12px 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: space-between; }
+  .header-title { font-size: 16px; font-weight: 800; letter-spacing: 0.5px; }
+  .header-title span { color: var(--gold); }
+  .header-sub { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+  .header-badge { background: var(--gold); color: var(--navy); font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 20px; }
+
+  .tabs { background: var(--navy); display: flex; padding: 0 16px; gap: 2px; overflow-x: auto; border-bottom: 3px solid var(--gold); }
+  .tab { padding: 10px 18px; color: rgba(255,255,255,0.55); cursor: pointer; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; white-space: nowrap; border-bottom: 3px solid transparent; margin-bottom: -3px; transition: all 0.2s; text-transform: uppercase; }
+  .tab:hover { color: rgba(255,255,255,0.9); }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  .content { padding: 16px; max-width: 1100px; margin: 0 auto; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* SESSION INTRO BANNER */
+  .session-banner { background: linear-gradient(135deg, var(--navy) 0%, #2a4a7f 100%); color: white; border-radius: 12px; padding: 16px 20px; margin-bottom: 16px; }
+  .session-banner h2 { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+  .session-banner p { font-size: 12px; color: rgba(255,255,255,0.7); }
+  .session-banner .tags { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .session-tag { background: rgba(255,255,255,0.15); color: white; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); }
+  .session-tag.gold { background: var(--gold); color: var(--navy); border-color: var(--gold); }
+
+  /* TOPIC BLOCKS */
+  .topic-block { background: var(--white); border-radius: 12px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); overflow: hidden; }
+  .topic-header { padding: 12px 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--navy); background: var(--white); user-select: none; }
+  .topic-header:hover { background: #f8f9ff; }
+  .topic-header.open { background: #f0f4ff; }
+  .topic-title { font-weight: 700; font-size: 13px; color: var(--navy); display: flex; align-items: center; gap: 8px; }
+  .topic-tag { background: var(--navy); color: white; font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 10px; text-transform: uppercase; }
+  .topic-tag.gold { background: var(--gold); color: var(--navy); }
+  .topic-tag.green { background: #10b981; }
+  .chevron { color: var(--muted); font-size: 12px; transition: transform 0.2s; }
+  .chevron.open { transform: rotate(180deg); }
+
+  .topic-body { display: none; }
+  .topic-body.open { display: block; }
+
+  /* SPLIT PANEL */
+  .split-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  @media (max-width: 700px) { .split-panel { grid-template-columns: 1fr; } }
+
+  .col-panel { background: var(--col-bg); padding: 14px 16px; border-right: 1px solid var(--border); }
+  .norval-panel { background: var(--norval-bg); padding: 14px 16px; }
+
+  .panel-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; padding-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+  .col-label { color: var(--navy); border-bottom: 2px solid var(--navy); }
+  .norval-label { color: #10b981; border-bottom: 2px solid #10b981; }
+  .panel-label span { background: var(--navy); color: white; padding: 2px 6px; border-radius: 4px; font-size: 9px; }
+  .norval-label span { background: #10b981; }
+
+  .col-text { font-size: 13px; line-height: 1.7; color: #2d3748; }
+  .col-text strong { color: var(--navy); }
+  .col-text em { color: var(--gold); font-style: italic; }
+
+  .norval-text { font-size: 13px; line-height: 1.7; color: #065f46; }
+  .norval-text strong { color: #065f46; }
+
+  .quote-box { background: rgba(31,56,100,0.08); border-left: 3px solid var(--navy); border-radius: 0 6px 6px 0; padding: 10px 12px; margin: 8px 0; font-size: 12px; font-style: italic; color: #374151; }
+  .my-version { background: rgba(16,185,129,0.1); border-left: 3px solid #10b981; border-radius: 0 6px 6px 0; padding: 10px 12px; margin: 8px 0; font-size: 13px; color: #065f46; font-weight: 500; }
+
+  .key-insight { background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 10px 12px; margin: 10px 0; font-size: 12px; color: #92400e; }
+  .key-insight strong { color: #78350f; }
+
+  .number-example { background: #f0f4ff; border-radius: 8px; padding: 12px; margin: 8px 0; font-size: 12px; }
+  .number-example strong { color: var(--navy); display: block; margin-bottom: 6px; }
+
+  /* ANALOGY CARDS */
+  .analogy-strip { display: flex; gap: 8px; flex-wrap: wrap; padding: 12px 16px; border-top: 1px solid var(--border); background: #fafbff; }
+  .analogy-card { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 11px; flex: 1; min-width: 160px; }
+  .analogy-card strong { color: var(--navy); display: block; margin-bottom: 3px; font-size: 10px; text-transform: uppercase; }
+
+  /* PHRASES SECTION */
+  .phrase-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; padding: 14px 16px; }
+  .phrase-card { background: var(--white); border-radius: 8px; padding: 12px; border: 1px solid var(--border); }
+  .phrase-original { font-size: 12px; font-style: italic; color: #374151; background: var(--col-bg); padding: 8px 10px; border-radius: 6px; border-left: 3px solid var(--navy); margin-bottom: 8px; }
+  .phrase-why { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+  .phrase-mine { font-size: 12px; color: #065f46; background: var(--norval-bg); padding: 8px 10px; border-radius: 6px; border-left: 3px solid #10b981; font-weight: 600; }
+
+  /* TABLE */
+  .compare-table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 12px; }
+  .compare-table th { background: var(--navy); color: white; padding: 8px 12px; text-align: left; }
+  .compare-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+  .compare-table tr:nth-child(even) td { background: #f8f9ff; }
+  .compare-table .win { color: #10b981; font-weight: 700; }
+  .compare-table .lose { color: #ef4444; font-weight: 700; }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 20px; right: 20px; background: #10b981; color: white; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; opacity: 0; transition: opacity 0.3s; z-index: 999; pointer-events: none; }
+  .toast.show { opacity: 1; }
+
+  .copy-btn { background: var(--navy); color: white; border: none; border-radius: 4px; padding: 2px 8px; font-size: 10px; cursor: pointer; float: right; margin-left: 8px; }
+  .copy-btn:hover { background: var(--gold); color: var(--navy); }
+
+  .divider { height: 1px; background: var(--border); margin: 12px 0; }
+  .section-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-title">NORVAL <span>// STUDY GUIDE</span></div>
+    <div class="header-sub">Col's Strategy Sessions — Broken Down & In Your Words</div>
+  </div>
+  <div class="header-badge">PERSONAL</div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('session1')">📘 Session 1</div>
+  <div class="tab" onclick="switchTab('session2')">📗 Session 2</div>
+  <div class="tab" onclick="switchTab('session3')">📙 Session 3</div>
+  <div class="tab" onclick="switchTab('phrases')">🗣️ Key Phrases</div>
+  <div class="tab" onclick="switchTab('delivery')">🎯 Col's Delivery</div>
+</div>
+
+<div class="content">
+
+  <!-- ===== SESSION 1 ===== -->
+  <div class="tab-panel active" id="tab-session1">
+    <div class="session-banner">
+      <h2>Session 1 — Can We Do This Logistically?</h2>
+      <p>Client: Tom. First session. Col lays the groundwork — the train track framework, two sides of the property equation, bonds vs shares vs property, the budget and negative gearing argument.</p>
+      <div class="tags">
+        <span class="session-tag gold">Station 1 — Logistical</span>
+        <span class="session-tag">Station 2 — Timing</span>
+        <span class="session-tag">Bonds vs Shares vs Property</span>
+        <span class="session-tag">Budget & Negative Gearing</span>
+        <span class="session-tag">ADF Entitlements</span>
+      </div>
+    </div>
+
+    <!-- OPENING -->
+    <div class="topic-block">
+      <div class="topic-header" onclick="toggleTopic(this)">
+        <div class="topic-title"><span class="topic-tag">Opening</span> How Col Opens a Strategy Session</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="topic-body">
+        <div class="split-panel">
+          <div class="col-panel">
+            <div class="panel-label col-label"><span>COL</span> What he does & says</div>
+            <div class="col-text">
+              Col opens with two diagnostic questions before saying a single word about property. He's checking in — not pitching.<br><br>
+              <div class="quote-box">"Is there anything in particular that you want to get out of this session today? Are there any questions you wanted to ask before we do the deep dive — anything?"</div>
+              Then he introduces himself as an investor and peer — not a salesman. He positions himself as someone who's done this himself, not someone teaching from a textbook.<br><br>
+              <div class="quote-box">"My goal is not to regurgitate theory to you. My goal is to talk to you about what actually works on the ground."</div>
+              He also narrates the train track upfront — tells the client exactly what's coming and what order it'll be covered. This keeps them calm and makes it feel like a proper methodology.
+            </div>
+          </div>
+          <div class="norval-panel">
+            <div class="panel-label norval-label"><span>NORVAL</span> How I'd say it</div>
+            <div class="norval-text">
+              Start every session with those two questions — no exceptions. Let them talk first.<br><br>
+              <div class="my-version">"Before we dive in — is there anything specific you wanted to get out of today? Any questions before we get into it?"</div>
+              Then position yourself as a veteran investor, not a salesman:<br><br>
+              <div class="my-version">"Look, I'm going to talk to you from the position of someone who actually invests in property myself — not just theory. My goal is to make sure you leave this call knowing more than when you came in."</div>
+              Then lay out the train track so they know what's coming — it removes anxiety and makes you sound structured.
+              <div class="my-version">"Here's how I want to run this today — I want to cover whether you can actually do this logistically, whether now is the right time, and then we'll get specific on strategy. Sound good?"</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATION 1 - TWO SIDES -->
+    <div class="topic-block">
+      <div class="topic-header" onclick="toggleTopic(this)">
+        <div class="topic-title"><span class="topic-tag gold">Station 1</span> The Two Sides of the Property Equation</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="topic-body">
+        <div class="split-panel">
+          <div class="col-panel">
+            <div class="panel-label col-label"><span>COL</span> What he does & says</div>
+            <div class="col-text">
+              Col frames every client's buying power as one equation — two sides, both need to work.<br><br>
+              <div class="quote-box">"There are two sides to the property equation. On the left side we've got deposit funds, and on the right side we have borrowing capacity. There's no use having one without the other."</div>
+              <strong>Left side — Deposit funding checklist (in order):</strong>
+              <ul style="margin: 8px 0 8px 16px; font-size: 13px;">
+                <li>Cash (obvious)</li>
+                <li>Equity (but always checks if it's actually usable)</li>
+                <li>Defence / civilian entitlements</li>
+                <li>Superannuation (planted as a future seed, not covered now)</li>
+              </ul>
+              <strong>Equity caveat:</strong> Only usable if you're on the title and the property can service more debt. If a spouse's property and they're not working — it's stuck equity. Solution: sell and redeploy as cash.<br><br>
+              <strong>Right side — Investment vs owner-occupier lending:</strong><br>
+              For a home to live in — banks assess surplus income only.<br>
+              For an investment property — banks also count the property's future rental income.<br><br>
+              <div class="quote-box">"For a home to live in, what they use to determine how much they'll lend is your surplus income. For an investment property, they also take the future rental income of the property you're looking to acquire into consideration."</div>
+              This means investment borrowing capacity is often <strong>higher</strong> than home-buyer borrowing capacity for the same person.
+            </div>
+          </div>
+          <div class="norval-panel">
+            <div class="panel-label norval-label"><span>NORVAL</span> How I'd say it</div>
+            <div class="norval-text">
+              <div class="my-version">"When we look at whether you can actually do this, there are two things we need to have in place — deposit funds on one side, and your borrowing capacity on the other. No point having one without the other."</div>
+              Walk through their deposit sources one by one — cash, equity, entitlements.<br><br>
+              On equity — always check if it's actually deployable before assuming it is:<br>
+              <div class="my-version">"The equity question is important — it's only usable if your name is on the title and the bank will let you borrow against it. If it's sitting in a property under someone else's name, it can't actually do anything for you."</div>
+              On investment vs owner-occupier lending — this is a huge reframe, use it every time:<br>
+              <div class="my-version">"Here's something most people don't realise — when the bank assesses you for an investment property, they don't just look at your income. They also count the rent the property's going to bring in. Which means your borrowing capacity for an investment property is often higher than it would be for a home to live in. That surprises a lot of people."</div>
+              <div class="key-insight"><strong>Why this matters:</strong> When a client says "I can't afford a house," they might actually be able to afford an investment property. Flip the conversation — investing first is often the path that's actually available sooner.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DEFENCE ENTITLEMENTS -->
+    <div class="topic-block">
+      <div class="topic-header" onclick="toggleTopic(this)">
+        <div class="topic-title"><span class="topic-tag">ADF</span> Defence Entitlements — Don't Cash In Early</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="topic-body">
+        <div class="split-panel">
+          <div class="col-panel">
+            <div class="panel-label col-label"><span>COL</span> What he does & says</div>
+            <div class="col-text">
+              Col runs a worked comparison to show why cashing in entitlements for the FHOG is a bad trade.<br><br>
+              DHA subsidised rent: client paying $600/week market rent, but DHA means they pay $600/fortnight. That's $300/week saved = $15,600/year.<br><br>
+              Queensland FHOG = $30,000 lump sum.<br><br>
+              Two years of continued service = $31,200 in rental assistance. Already worth more than the grant.<br><br>
+              <div class="quote-box">"It is certainly not the appropriate time to do that... you'd be forfeiting access to rental assistance, and you might as well destroy your ability to invest."</div>
+              He also killed the idea of gaming the FHOG by separating from a spouse temporarily — cleanly, without moralising, just by running the real numbers and showing it wasn't worth it.
+            </div>
+          </div>
+          <div class="norval-panel">
+            <div class="panel-label norval-label"><span>NORVAL</span> How I'd say it</div>
+            <div class="norval-text">
+              This one I know personally — veteran to veteran:<br><br>
+              <div class="my-version">"Look, I get why the first home owner grant sounds appealing — $30,000 looks like free money. But here's the reality. If you're still in uniform and you've got access to DHA accommodation, that rental assistance is worth around $15,000 a year to you. Two years in and you've already outperformed the grant — and that's before we even talk about the opportunity cost of what that deposit could do in an investment property instead."</div>
+              <div class="my-version">"The entitlements aren't a bonus — they're a serious financial asset. We need to make sure we use them at the right time, not just cash them out for a one-off payment."</div>
+              <div class="key-insight"><strong>Bottom line to remember:</strong> Ongoing benefit always beats a one-off lump sum if the timeline makes sense. Run the numbers, don't just assume the grant is worth taking.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATION 2 - BONDS VS SHARES VS PROPERTY -->
+    <div class="topic-block">
+      <div class="topic-header" onclick="toggleTopic(this)">
+        <div class="topic-title"><span class="topic-tag gold">Station 2</span> Bonds vs Shares vs Property — The Leverage Comparison</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="topic-body">
+        <div class="split-panel">
+          <div class="col-panel">
+            <div class="panel-label col-label"><span>COL</span> What he does & says</div>
+            <div class="col-text">
+              Col never argues property is better on vibes. He runs the same dollar amount through all three and lets the maths do the work.<br><br>
+              <div class="number-example">
+                <strong>Same $200K, same 10% return:</strong>
+                $200K in bonds → $20K growth<br>
+                $200K as deposit on $800K property → $80K growth<br>
+                <em>Same money, same rate — 4x more in property because of leverage.</em>
+              </div>
+              <div class="quote-box">"It's the same 200K. It's the same 10% return, but because it's parked in a property, you make 400% more — four times as much — because of access to leverage."</div>
+              On shares — the critique is volatility and concentration risk, named specifically:<br>
+              • 90% of S&P 500 weighting in 7 tech companies<br>
+              • US adding $100B to debt every 100 days<br>
+              • Geopolitical exposure — US/China, Iran, Ukraine, tariffs<br><br>
+              <div class="quote-box">"I love stocks and stocks can be lucrative, but when I have a look at where I want my family's money parked... I would rather not be invested into a volatile asset class if there was a safe asset class sitting somewhere else."</div>
+            </div>
+          </div>
+          <div class="norval-panel">
+            <div class="panel-label norval-label"><span>NORVAL</span> How I'd say it</div>
+            <div class="norval-text">
+              Don't argue property vs other assets in general terms — run the numbers:<br><br>
+              <div class="my-version">"Let me show you something that surprises most people. If you took $200,000 and got a 10% return in bonds, you'd make $20,000. But if you took that same $200,000 and used it as a deposit on an $800,000 property — at the same 10% growth — you'd make $80,000. Same money, same return rate, four times the result. That's what leverage does."</div>
+              On shares — be balanced, don't trash them, just name the current risks:<br><br>
+              <div class="my-version">"I'm not saying shares are bad — I invest in them myself. But right now, 90% of the S&P 500's weighting sits in seven tech companies. Add in what's happening geopolitically and with US debt — it's a volatile place to park your family's money when there's a safer asset class available."</div>
+              <div class="key-insight"><strong>Key move:</strong> Always run an actual dollar comparison with the SAME number through both scenarios. Never argue in percentages alone — it's too abstract. Make the leverage gap visible arithmetic.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BUDGET / NEGATIVE GEARING -->
+    <div class="topic-block">
+      <div class="topic-header" onclick="toggleTopic(this)">
+        <div class="topic-title"><span class="topic-tag">Budget</span> Negative Gearing — Historical Precedent Over Opinion</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="topic-body">
+        <div class="split-panel">
+          <div class="col-panel">
+            <div class="panel-label col-label"><span>COL</span> What he does & says</div>
+            <div class="col-text">
+              Col never argues the politics — he reaches for historical precedent and a plain supply mechanism.<br><br>
+              <strong>The mechanism in one breath:</strong>
+              <div class="quote-box">"If you disincentivise investors from owning rental stock... you've decreased the supply of rentals. And then you've got the same amount of people that need them, which means there's more competition for the existing rental stock, and therefore the rental price is increased."</div>
+              <strong>Historical precedent:</strong><br>
+              • 1980s Australia — abolished negative gearing, rents rose sharply within 18 months, reversed after ~2 years<br>
+              • New Zealand — same policy experiment, same result, reversed after ~2 years<br>
+              • Today's vacancy rates (0.3–1.8%) are half what they were in the 80s — same policy causes more damage now<br><br>
+              <strong>Apple tree analogy:</strong>
+              <div class="quote-box">"If I've got an apple tree that can grow 5 apples a year, and 10 people want those 5 apples, and now 50 people want those 5 apples — I haven't created any more apples."</div>
+              Funnelling investors toward new construction only doesn't fix supply — it concentrates more competition onto the same limited build volume.
+            </div>
+          </div>
+          <div class="norval-panel">
+            <div class="panel-label norval-label"><span>NORVAL</span> How I'd say it</div>
+            <div class="norval-text">
+              When anyone brings up the budget as a reason to hesitate — go straight to the historical precedent:<br><br>
+              <div class="my-version">"Here's the thing — this has actually happened before. We abolished negative gearing in the 1980s. Within 18 months, rents went up so sharply they had to reverse the decision two years later. New Zealand did the exact same thing and reversed it two years after. That's not my opinion — that's documented history."</div>
+              Then the supply mechanism — keep it simple:<br><br>
+              <div class="my-version">"And here's the part most people miss — taking negative gearing off established properties and pushing investors toward new construction doesn't actually create more homes. If the industry can only build 160,000 homes a year, and you double the demand for those homes, you've still only got 160,000 homes. The apple tree doesn't grow more apples just because more people want them."</div>
+              <div class="key-insight"><strong>The real close:</strong> Budget changes actually create more urgency to act on new construction now — because they funnel all investor demand into the exact properties we source, driving more competition and more growth on those assets.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WHY COL DOES TWO SESSIONS -->
+    <div class="topic-block">
+      <div class="topic-header" onclick="toggleTopic(this)">
+        <div class="topic-title"><span class="topic-tag green">Debrief</span> Why Col Never Closes in One Session</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="topic-body">
+        <div class="split-panel">
+          <div class="col-panel">
+            <div class="panel-label col-label"><span>COL</span> His reasoning (verbatim debrief with Norval)</div>
+            <div class="col-text">
+              <div class="quote-box">"If I'd hopped onto that strategy session and by the end of it told that guy he should be getting a property, he wouldn't have closed. There's no way... a lot of presenters look like bad presenters when they don't close deals — but actually it's because the client wasn't adequately prepared. They would've had a significant amount of objections, because there's so much to cover to get people to trust us and understand the correct way to invest. You can't do that in an hour."</div>
+              The goal of session 1 is trust and education — not a close. The close happens naturally at session 2 or 3 once the client understands the why behind every decision.
+            </div>
+          </div>
+          <div class="norval-panel">
+            <div class="panel-label norval-label"><span>NORVAL</span> The takeaway for me</div>
+            <div class="norval-text">
+              Don't rush a client to a property presentation before they're ready. A client who doesn't understand the strategy will object at the presentation — and it makes the presenter look bad, not the client.<br><br>
+              <div class="my-version">"My job in the strategy session isn't to close — it's to make sure they understand everything so well that when they see the property, it's a natural yes. The close happens in the education, not the pitch."</div>
+              Always end session 1 by teasing session 2 and giving the client action items — referrals, things to think about. Makes them feel looked after and builds momentum.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end session 1 -->
+
+
+  <!-- ===== SESSION 2 ===== -->
+  <div class="tab-panel" id="tab-session2">
+    <div class="session-banner">
+      <h2>Session 2 — Offset Accounts & Delayed Registration</h2>
+      <p>Client: Tom & Lana. Col recaps session 1, then goes deep on the offset account (the net vs gross return argument) and the delayed registration strategy.</p>
+      <div class="tags">
+        <span class="session-tag gold">Offset Account Deep Dive</span>
+        <span class="session-tag">Delayed Registration Strategy</span>
+        <span class="session-tag">Conditional-Based Investors</span>
+        <span class="session-tag">Builder Accountability</span>
+      </div>
+    </div>
+
+    <!-- RECAP HABIT -->
+    <div class="topic-block">
+      <div class="topic-header" onclick="toggleTopic(this)">
+        <div class="topic-title"><span class="topic-tag">Habit</span> How Col Recaps the Previous Session</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="topic-body">
+        <div class="split-panel">
+          <div class="col-panel">
+            <div class="panel-label col-label"><span>COL</span> What he does</div>
+            <div class="col-text">
+              Col opens every follow-up session by recapping what was covered last time — using the train track language — and checking if any questions came up in between.<br><br>
+              <div class="quote-box">"Thomas, do you have any questions for me based on what we covered last session?"</div>
+              Then he recaps the key conclusions: the two sides of the equation, where the client sits on both, and what their tick-in-the-box outcome was. This re-anchors confidence before introducing new material.<br><br>
+              He also follows up on any referrals or action items he promised — DVA introduction, accountant referral — before moving on. Shows accountability and builds trust.
+            </div>
+          </div>
+          <div class="norval-panel">
+            <div class="panel-label norval-label"><span>NORVAL</span> How I'd say it</div>
+            <div class="norval-text">
+              Always open a follow-up session with a check-in and a recap — don't just dive into new content:<br><br>
+              <div class="my-version">"Good to catch up again. Before we get into today's stuff — did anything come up after our last chat? Any questions from you or your partner?"</div>
+              Then recap the wins from last session to rebuild confidence:<br><br>
+              <div class="my-version">"Last time we established that you're in a really strong position — solid deposit side, good borrowing capacity. That's the foundation. Today I want to build on that and show you how to make that money work even harder for you."</div>
+              And always follow up on any referrals or promises made — it's a massive trust signal.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OFFSET ACCOUNT -->
+    <div class="topic-block">
+      <div class="topic-header" onclick="toggleTopic(this)">
+        <div class="topic-title"><span class="topic-tag gold">Offset</span> The Offset Account — Net vs Gross Return Argument</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="topic-body">
+        <div class="split-panel">
+          <div class="col-panel">
+            <div class="panel-label col-label"><span>COL</span> The full explanation</div>
+            <div class="col-text">
+              This is one of Col's most rehearsed pieces — he uses a near-identical version in multiple sessions. The core insight: money in an offset earns you your mortgage rate tax-free, which is worth more than a higher gross return elsewhere after tax.<br><br>
+              <div class="number-example">
+                <strong>The comparison — $100K, where does it go?</strong>
+                Option A: Stocks at 8% gross → after tax (~30%), net ≈ 5.6%<br>
+                Option B: Offset account at 6.5% → net 6.5% (tax-free)<br>
+                To earn the same spendable 6.5% from stocks, you'd need ~10–11% gross return
+              </div>
+              <div class="quote-box">"The $6,500 that you are saving in the offset account is actually earning you the equivalent of 10 to 11% if you had it in stocks... you don't have to pay tax on money that you've saved inside an offset account."</div>
+              The other key point: money in the offset is still yours. It's liquid. It's not gone — it's just parked in the most tax-efficient position available.<br><br>
+              <div class="quote-box">"We'd rather keep our money in our pocket than give it to Westpac."</div>
+            </div>
+          </div>
+          <div class="norval-panel">
+            <div class="panel-label norval-label"><span>NORVAL</span> How I'd say it</div>
+            <div class="norval-text">
+              This is a brilliant reframe — most people have never had it explained this way:<br><br>
+              <div class="my-version">"Here's something that catches a lot of people off guard. If you've got cash sitting somewhere, and you compare putting it in the offset account versus stocks — most people look at the numbers and think stocks are better because the return looks higher. But that's not comparing apples to apples."</div>
+              <div class="my-version">"If your mortgage rate is 6.5%, and you put money in the offset — you're saving 6.5% in interest, and that saving is completely tax-free. To get the same spendable outcome from shares, you'd need to earn around 10 or 11% gross, because you'd have to pay tax on whatever you made before you could actually spend it. So the offset is often the better place for your cash — and the money is still yours, still liquid, still there if you need it."</div>
+              <div class="key-insight"><strong>The punchline:</strong> Offset = tax-free 6.5%. Shares = need 10–11% gross to match it. Most clients have never heard this and it genuinely surprises them.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DELAYED REGISTRATION -->
+    <div class="topic-block">
+      <div class="topic-header" onclick="toggleTopic(this)">
+        <div class="topic-title"><span class="topic-tag gold">Strategy</span> Delayed Registration — How It Works & Why It Matters</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="topic-body">
+        <div class="split-panel">
+          <div class="col-panel">
+            <div class="panel-label col-label"><span>COL</span> The full explanation</div>
+            <div class="col-text">
+              Col introduces delayed registration as the solution for "conditional-based investors" — clients who need a condition met (sale of property, DVA payout, etc.) before they can fully commit.<br><br>
+              <strong>The developer staging mechanism:</strong>
+              <div class="quote-box">"If you're a developer and you have 100 blocks, you're not going to release all 100 at once... they release in stages — 40, 50, 100 lots at a time — so that demand always slightly outpaces the supply they've chosen to release."</div>
+              Two reasons developers stage:<br>
+              1. Manufactured scarcity — 1,000 people fighting over 20 blocks instead of 100<br>
+              2. Manufactured equity — each stage priced higher than the last<br><br>
+              <strong>The strategy:</strong> Put an expression of interest in on a future stage now, at today's pricing. Lock in July 2026 prices for a property that doesn't register until March 2027. Any growth between now and then belongs to you — before you've laid a single brick or made a repayment.<br><br>
+              <strong>Real example — The Robinsons (Deebing Heights):</strong>
+              <div class="quote-box">Put property on hold mid-2025 for ~$820K. Land just registered. Property now valued at $1.05M+. $170K in equity — without breaking ground yet.</div>
+            </div>
+          </div>
+          <div class="norval-panel">
+            <div class="panel-label norval-label"><span>NORVAL</span> How I'd say it</div>
+            <div class="norval-text">
+              Lead with naming the client's situation before explaining the solution:<br><br>
+              <div class="my-version">"So here's where your situation is interesting — you've got everything in place, but you've got a condition that needs to be met first before you can pull the trigger completely. That's actually pretty common, and there's a strategy built specifically for it."</div>
+              Then explain delayed registration simply:<br><br>
+              <div class="my-version">"Developers release land in stages rather than all at once — they do it deliberately to keep demand ahead of supply and push prices up with each release. What we can do is get in on a future stage now, at today's price. So by the time that land registers — say six to nine months from now — any growth that's happened belongs to you, even though you haven't started building yet and haven't made a single repayment."</div>
+              Then the real numbers:<br><br>
+              <div class="my-version">"We had clients put a property on hold in Deebing Heights in mid-2025 for around $820,000. The land just registered. It's now worth over a million. They made $170,000 in equity before the build even started. That's delayed registration working exactly as it should."</div>
+              <div class="key-insight"><strong>The key objection to pre-empt:</strong> "What if the builder goes bust while we're waiting?" Answer: we only work with vetted boutique builders with strong balance sheets — not volume builders. And we always have a second builder lined up as contingency. We've never had to use it.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONDITIONAL BASED INVESTOR -->
+    <div class="topic-block">
+      <div class="topic-header" onclick="toggleTopic(this)">
+        <div class="topic-title"><span class="topic-tag">Framing</span> Naming the Client's Situation — Conditional-Based Investor</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="topic-body">
+        <div class="split-panel">
+          <div class="col-panel">
+            <div class="panel-label col-label"><span>COL</span> What he does</div>
+            <div class="col-text">
+              Col gives the client's situation a name before offering a solution. This is a powerful technique — it makes the client feel understood, and it frames the solution as specifically designed for their type of situation, not a generic pitch.<br><br>
+              <div class="quote-box">"You are what's known as a conditional-based investor — you've got some form of condition that needs to be met before you can go and make the best investment decision."</div>
+              By naming it, he validates their hesitation without agreeing that they should wait — and then immediately pivots to a solution designed specifically for that situation.
+            </div>
+          </div>
+          <div class="norval-panel">
+            <div class="panel-label norval-label"><span>NORVAL</span> How I'd use this</div>
+            <div class="norval-text">
+              Steal this technique — name the client's situation before pitching the solution:<br><br>
+              <div class="my-version">"You're what we call a conditional investor — you've got something that needs to happen first before you can go all in. That's not a problem, that's actually pretty normal. And the good news is there's a strategy specifically for where you're at."</div>
+              The two options Col always presents:<br><br>
+              <div class="my-version">"Option one is to wait until your condition is met and then go looking. The problem is you'll be paying 2027 prices for a property you could lock in at today's price right now — and that difference could be $70,000 to $100,000. Option two is delayed registration — we lock in today's price on a property that won't register until your condition's been met. You get both the better price and the time you need."</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end session 2 -->
+
+
+  <!-- ===== SESSION 3 ===== -->
+  <div class="tab-panel" id="tab-session3">
+    <div class="session-banner">
+      <h2>Session 3 — New vs Established Property Theory</h2>
+      <p>Client: Tom & Lana. Col walks through the complete new vs established framework — stamp duty, depreciation, worked example, structural guarantees, why no house-and-land packages, and when established still makes sense.</p>
+      <div class="tags">
+        <span class="session-tag gold">Stamp Duty Gap</span>
+        <span class="session-tag">Depreciation Deep Dive</span>
+        <span class="session-tag">Worked Example — $130K Earner</span>
+        <span class="session-tag">Build Quality & Warranties</span>
+        <span class="session-tag">Why No H&L Packages</span>
+      </div>
+    </div>
+
+    <!-- STAMP DUTY -->
+    <div class="topic-block">
+      <div class="topic-header" onclick="toggleTopic(this)">
+        <div class="topic-title"><span class="topic-tag">Difference 1</span> Stamp Duty — The $40K Head Start</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="topic-body">
+        <div class="split-panel">
+          <div class="col-panel">
+            <div class="panel-label col-label"><span>COL</span> What he says</div>
+            <div class="col-text">
+              <strong>Definition first — always:</strong>
+              <div class="quote-box">"The definition of an established property is that it's one second old when you purchase it... even if it's a brand-new build that somebody else has built, and you have purchased it from them, then it's considered established in the eyes of the ATO."</div>
+              <strong>On $1M properties:</strong><br>
+              New build — duty on land component only ≈ $15,000<br>
+              Established — duty on full purchase price ≈ $45,000–$55,000<br>
+              Gap = $30,000–$40,000<br><br>
+              <div class="quote-box">"That extra $40K in stamp duty doesn't go towards the property, doesn't go towards the loan — it's just money you're pissing away to the state revenue office."</div>
+              Col then immediately downplays the stamp duty point to set up the depreciation argument as the bigger deal — "I don't mean to sound like a wanker, but $40K isn't the world's biggest deal in property investing... the points I'm about to share are even more compelling."
+            </div>
+          </div>
+          <div class="norval-panel">
+            <div class="panel-label norval-label"><span>NORVAL</span> How I'd say it</div>
+            <div class="norval-text">
+              Lead with the definition — it surprises people:<br><br>
+              <div class="my-version">"Before I go into the comparison, the definition of established is important. It doesn't mean old. An established property is literally anything someone else has bought before you — it could be brand new, built six months ago. The moment it's changed hands, the ATO considers it established. That matters for what I'm about to show you."</div>
+              Then the stamp duty gap:<br><br>
+              <div class="my-version">"On a million-dollar new build, you're paying roughly $15,000 in stamp duty — because you're only paying duty on the land. On a million-dollar established property, you're looking at $45,000 to $55,000 — on the full price, at a higher rate because you're an investor. That's up to $40,000 gone before you've done anything — and it doesn't go to the property, it doesn't reduce your loan. It's just gone."</div>
+              Then set up the next point:<br><br>
+              <div class="my-version">"And honestly, the stamp duty gap is just the start. What I'm about to show you next is where the real difference is."</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DEPRECIATION -->
+    <div class="topic-block">
+      <div class="topic-header" onclick="toggleTopic(this)">
+        <div class="topic-title"><span class="topic-tag gold">Difference 2</span> Depreciation — The Six-Figure Gap</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="topic-body">
+        <div class="split-panel">
+          <div class="col-panel">
+            <div class="panel-label col-label"><span>COL</span> The full breakdown</div>
+            <div class="col-text">
+              <strong>Two methods to know cold:</strong><br>
+              <strong>Prime cost</strong> — established only. Structure only, no fixtures/fittings. Flat 2.5% per year over 40 years.<br>
+              <strong>Diminishing value</strong> — new builds only. Structure AND plant/equipment. Front-loads the bulk of claims into first 5–7 years, then tapers.<br><br>
+              <strong>Why the front-loading matters:</strong>
+              <div class="quote-box">"The time when you need, and want, the most tax benefit is in the first 7 years of ownership. That's when you want the tax returns to be so large they're actually helping you cover the holding costs."</div>
+              After 7 years, the rent has typically grown 5–7x in the right area — so rent takes over from where the tax benefit tapers off.<br><br>
+              <strong>2026 budget rule change:</strong>
+              <div class="quote-box">"Based on the new budget, you cannot negatively gear an established property at all anymore, even if you bought it when it was one minute old. So you now get zero tax benefit back in that financial year for the established property."</div>
+            </div>
+          </div>
+          <div class="norval-panel">
+            <div class="panel-label norval-label"><span>NORVAL</span> How I'd say it</div>
+            <div class="norval-text">
+              Explain depreciation simply first, then the gap:<br><br>
+              <div class="my-version">"Depreciation is basically this — even though your property is going up in value in the real world, on paper the carpets, the blinds, the appliances are getting older. A quantity surveyor puts a dollar figure on that theoretical wear, and you can claim it on your tax return. You're reducing your taxable income without actually spending anything. That's powerful."</div>
+              Then the difference between new and established:<br><br>
+              <div class="my-version">"On a new build, you can claim on the structure and everything in it — the full fit-out — using a method that front-loads most of the claim into the first five to seven years, when you need it most to help cover holding costs. On an established property, under the new budget rules, you get zero — you can't negatively gear it at all anymore."</div>
+              The punchline:<br><br>
+              <div class="my-version">"Over the first seven years of ownership, the difference in claimable tax deductions between a new build and an established property next door — identical in every other way — is over $100,000. That's not the stamp duty. That's the depreciation gap alone."</div>
+            </div>
+          </div>
+        </div>
+        <!-- Worked Example Table -->
+        <div style="padding: 14px 16px; border-top: 1px solid var(--border);">
+          <div class="section-label">Worked Example — $130K earner, identical properties, $40K holding cost, $35K rent</div>
+          <table class="compare-table">
+            <thead>
+              <tr><th>Factor</th><th>Established (2026 rules)</th><th>New Build</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Depreciation claimable</td><td class="lose">$0 (can't negatively gear)</td><td class="win">≈ $20,000/yr (diminishing value)</td></tr>
+              <tr><td>Total taxable income reduction</td><td class="lose">$0</td><td class="win">≈ $25,000 (incl. $5K shortfall)</td></tr>
+              <tr><td>Approx. tax return</td><td class="lose">$0</td><td class="win">≈ $11,000+</td></tr>
+              <tr><td>Total income (rent + tax)</td><td class="lose">$35,000</td><td class="win">$46,000</td></tr>
+              <tr><td>Net result vs $40K cost</td><td class="lose">-$5,000/yr (negative)</td><td class="win">+$6,000/yr (positive cash flow)</td></tr>
+              <tr><td>7-year depreciation advantage</td><td class="lose">$0</td><td class="win">$100,000+</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- STRUCTURAL GUARANTEES -->
+    <div class="topic-block">
+      <div class="topic-header" onclick="toggleTopic(this)">
+        <div class="topic-title"><span class="topic-tag">Difference 3</span> Structural Guarantees & Build Quality</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="topic-body">
+        <div class="split-panel">
+          <div class="col-panel">
+            <div class="panel-label col-label"><span>COL</span> What he says</div>
+            <div class="col-text">
+              <div class="quote-box">"If I walk into Great Wall and they warranty the car for a year, and then I walk into Toyota and they warranty it for 10 years... I know which car is the better car. Same thing with a builder."</div>
+              Col has seen 6-month structural warranties from volume builders. His builders offer 25-year structural guarantees.<br><br>
+              Every stage of construction is scrutinised — slab, frame, enclosed — with photos and certification before moving to the next stage. The client gets progress updates from the operations team throughout.<br><br>
+              <div class="quote-box">"We literally watch the skeleton being built, and everything is scrutinised. That's how you know you're getting an investment property geared towards longevity."</div>
+              On his own portfolio: over $100K in repairs on established properties in the last 12 months. On new builds: smoke alarm testing, garage door servicing, pest control sprays. That's the difference.
+            </div>
+          </div>
+          <div class="norval-panel">
+            <div class="panel-label norval-label"><span>NORVAL</span> How I'd say it</div>
+            <div class="norval-text">
+              Use the car warranty analogy — it's simple and it lands:<br><br>
+              <div class="my-version">"Think about it like buying a car. If one manufacturer offers a one-year warranty and another offers a ten-year warranty — you know straight away which one is built better. Same logic applies here. Volume builders can offer warranties as short as six months. The builders we work with offer structural guarantees of up to 25 years. That alone tells you a lot about the quality."</div>
+              Then give the real-world comparison:<br><br>
+              <div class="my-version">"And it's not just about paperwork. Every stage of the construction — slab, frame, lock-up — gets inspected, photographed, and signed off before the next stage starts. You get those updates. You can see exactly what's being built and how it's progressing. On an established property, you're buying something someone else built and hoping it holds up."</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WHY NO HOUSE AND LAND -->
+    <div class="topic-block">
+      <div class="topic-header" onclick="toggleTopic(this)">
+        <div class="topic-title"><span class="topic-tag">IXE Difference</span> Why We Don't Do House-and-Land Packages</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="topic-body">
+        <div class="split-panel">
+          <div class="col-panel">
+            <div class="panel-label col-label"><span>COL</span> What he says</div>
+            <div class="col-text">
+              Volume builders sell house-and-land packages on a single contract — you get "Lot 75" and whatever the developer bundles it with. No choice on builder, no competition on price.<br><br>
+              Col's model: source the best block independently first, then commission from a vetted panel of builders on a separate build contract — they compete on price and inclusions.<br><br>
+              <div class="quote-box">"You are paying the cost — the intrinsic value of that property is what you are paying. You're paying for the land, and you're paying for the build... If you're going to buy an established property in one of these premium developments, somebody else has already paid the cost basis for it... they're now going to sell it to you for that, plus their desired profit margin on top."</div>
+              <strong>Builder accountability — the $22.5M argument:</strong>
+              <div class="quote-box">"If we send 50 clients a year to a builder at $450K per build — that's a $22.5 million revenue stream. If they did the wrong thing by you and Lana, they'd be jeopardising $20 million-plus in annual recurring revenue. There's no incentive for them not to look after you."</div>
+            </div>
+          </div>
+          <div class="norval-panel">
+            <div class="panel-label norval-label"><span>NORVAL</span> How I'd say it</div>
+            <div class="norval-text">
+              <div class="my-version">"We don't do house-and-land packages — and here's why that matters for you. When you buy a package, you're locked into one builder on one contract. You're paying whatever they've priced it at, with no competition and no flexibility. We do it differently — we find the best block for your strategy first, then bring our panel of vetted builders in and let them compete on price and inclusions. That means you're paying the actual cost of the land plus the actual cost of the build — not someone else's profit margin on top."</div>
+              Then the accountability argument:<br><br>
+              <div class="my-version">"And here's something that gives a lot of people comfort — the builders we work with aren't just accountable to you as one family. We send some of them 50 clients a year. At around $450,000 a build, that's over $20 million in revenue for them annually. If they did the wrong thing by you, they'd be putting that entire relationship at risk. The commercial incentive to look after you properly is enormous."</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WHEN ESTABLISHED MAKES SENSE -->
+    <div class="topic-block">
+      <div class="topic-header" onclick="toggleTopic(this)">
+        <div class="topic-title"><span class="topic-tag green">Balance</span> When Established Still Makes Sense — Two Exceptions</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="topic-body">
+        <div class="split-panel">
+          <div class="col-panel">
+            <div class="panel-label col-label"><span>COL</span> What he says</div>
+            <div class="col-text">
+              Col always presents both sides — he's not biased toward new, he's data-driven. Two situations where established still makes sense:<br><br>
+              1. <strong>Buying your own home to live in (PPOR)</strong> — no tax deductibility either way, so the new vs established tax argument doesn't apply the same way. If there are no suitable blocks in the area you want to live, established is fine.<br><br>
+              2. <strong>Commercial investing</strong> — "We're not going to go and build the fucking Woolworths." Buy the established commercial premises and let the tenants fit it out.<br><br>
+              For residential investing — new builds are a "lay-down misère" versus established in 2026.
+            </div>
+          </div>
+          <div class="norval-panel">
+            <div class="panel-label norval-label"><span>NORVAL</span> How I'd say it</div>
+            <div class="norval-text">
+              Always present both sides — it builds credibility:<br><br>
+              <div class="my-version">"Look, I want to be upfront — there are situations where established still makes sense. If you're buying a home to live in and there are no suitable land releases in the area you want, established is completely fine — because you're not getting tax deductions on your own home either way. And for commercial investing, obviously you're not building the shopping centre yourself."</div>
+              <div class="my-version">"But for residential investment property in 2026 — new construction isn't even close. Less stamp duty, six figures more in tax deductions, structural warranties, visibility over the build quality, and the ability to use delayed registration to lock in today's pricing. It's not an arm wrestle anymore."</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end session 3 -->
+
+
+  <!-- ===== KEY PHRASES ===== -->
+  <div class="tab-panel" id="tab-phrases">
+    <div class="session-banner">
+      <h2>Col's Key Phrases — Pulled Apart</h2>
+      <p>Each phrase below is from Col's actual sessions. Study the pattern: name the client's motive before they say it, use one clean analogy before showing numbers, always close with a concrete next step.</p>
+      <div class="tags">
+        <span class="session-tag gold">Memorise These</span>
+        <span class="session-tag">Adapt to Your Voice</span>
+      </div>
+    </div>
+
+    <div class="phrase-grid">
+
+      <div class="phrase-card">
+        <div class="phrase-original">"Is there anything in particular you want to get out of this session today? Any questions before we do the deep dive?"</div>
+        <div class="phrase-why">Why it works: Diagnostic opener — lets the client talk first. Positions you as consultative, not pitchy.</div>
+        <div class="phrase-mine">"Before we get into it — is there anything specific you wanted to get out of today? Any questions sitting with you from last time?"</div>
+      </div>
+
+      <div class="phrase-card">
+        <div class="phrase-original">"My goal is not to regurgitate theory. My goal is to talk to you about what actually works on the ground."</div>
+        <div class="phrase-why">Why it works: Disarms the "salesy" perception. Positions you as a practitioner, not a theorist.</div>
+        <div class="phrase-mine">"I'm not going to talk theory at you. I want to talk about what actually works — from someone who invests themselves."</div>
+      </div>
+
+      <div class="phrase-card">
+        <div class="phrase-original">"It sounds like this is about legacy for you. It's not about driving a purple Lamborghini — it's about setting up your family."</div>
+        <div class="phrase-why">Why it works: Names their real motive before they do. Makes them feel deeply understood.</div>
+        <div class="phrase-mine">"From what you've told me, this isn't about getting rich quick — it sounds like it's about security. Making sure your family's taken care of long term. Is that right?"</div>
+      </div>
+
+      <div class="phrase-card">
+        <div class="phrase-original">"Can you do this logistically? Yes. Is it a good time? Yes."</div>
+        <div class="phrase-why">Why it works: The verdict habit — state the answer plainly before elaborating. Confidence without arrogance.</div>
+        <div class="phrase-mine">"Can you do this? Yes. Is now the right time? Yes. Let me show you why."</div>
+      </div>
+
+      <div class="phrase-card">
+        <div class="phrase-original">"It's the same $200K, same 10% return — but in property you make 400% more because of leverage."</div>
+        <div class="phrase-why">Why it works: Makes the leverage gap visible arithmetic, not opinion. Concrete numbers beat abstract percentages.</div>
+        <div class="phrase-mine">"Same money, same return rate — four times the result in property. That's what leverage does. Let me run the numbers for your situation."</div>
+      </div>
+
+      <div class="phrase-card">
+        <div class="phrase-original">"If I've got an apple tree that grows 5 apples and 50 people want them — I haven't created any more apples."</div>
+        <div class="phrase-why">Why it works: Reduces a complex policy argument to one clean image. Impossible to misunderstand.</div>
+        <div class="phrase-mine">"Funnelling more buyers toward new construction doesn't build more homes. If the industry can only build 160,000 a year, putting more people in the queue for those 160,000 doesn't grow the tree."</div>
+      </div>
+
+      <div class="phrase-card">
+        <div class="phrase-original">"You are what's known as a conditional-based investor."</div>
+        <div class="phrase-why">Why it works: Names their situation specifically. Validates their position and sets up a tailored solution.</div>
+        <div class="phrase-mine">"You're in what we call a conditional position — you've got something that needs to happen first. That's actually common, and there's a strategy specifically designed for it."</div>
+      </div>
+
+      <div class="phrase-card">
+        <div class="phrase-original">"In ten years there'll be the people who own property, and the people who don't."</div>
+        <div class="phrase-why">Why it works: Creates urgency without being pushy. Positions inaction as the real risk.</div>
+        <div class="phrase-mine">"The reality is, in ten years there are going to be two groups of people — those who own assets and those who don't. My job is to make sure you're on the right side of that."</div>
+      </div>
+
+      <div class="phrase-card">
+        <div class="phrase-original">"We'd rather keep our money in our pocket than give it to Westpac."</div>
+        <div class="phrase-why">Why it works: Simple, relatable, memorable. Reframes the offset account as obviously sensible.</div>
+        <div class="phrase-mine">"The money stays in your account, it's still yours, still liquid — but it's working for you at a better rate than any savings account. Why give it to the bank when you don't have to?"</div>
+      </div>
+
+      <div class="phrase-card">
+        <div class="phrase-original">"A lot of presenters look like bad presenters because clients aren't adequately prepared."</div>
+        <div class="phrase-why">Why it works: Explains why thorough strategy sessions matter — for the client AND the presenter's success.</div>
+        <div class="phrase-mine">"My job in the strategy session is to make sure you understand the why so completely that when you see the property, it's a natural yes — not a session of objections."</div>
+      </div>
+
+    </div>
+  </div><!-- end phrases -->
+
+
+  <!-- ===== DELIVERY HABITS ===== -->
+  <div class="tab-panel" id="tab-delivery">
+    <div class="session-banner">
+      <h2>Col's Delivery Habits — The Texture Underneath</h2>
+      <p>These are the recurring habits across all three sessions. Pick ONE to deliberately practise this week — don't try to adopt all six at once.</p>
+      <div class="tags">
+        <span class="session-tag gold">Pick 1 to practise this week</span>
+      </div>
+    </div>
+
+    <div class="topic-block">
+      <div class="topic-header" onclick="toggleTopic(this)">
+        <div class="topic-title"><span class="topic-tag gold">Habit 1</span> Meta-Narration — He Tells You What He's Doing While He's Doing It</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="topic-body">
+        <div class="split-panel">
+          <div class="col-panel">
+            <div class="panel-label col-label"><span>COL</span> The habit</div>
+            <div class="col-text">Col constantly narrates the shape of the conversation as it unfolds. "So what I'm going to do now is..." / "This next bit is going to feel a bit maths-heavy, bear with me..." / "So there's the first station on the train track — the next station is..."<br><br>This keeps the client oriented and makes complex material feel guided rather than dumped on them.</div>
+          </div>
+          <div class="norval-panel">
+            <div class="panel-label norval-label"><span>NORVAL</span> How to use it</div>
+            <div class="norval-text">
+              <div class="my-version">"Okay, so I've just covered the deposit side — now I want to show you the borrowing capacity side, and this is where it gets interesting for your situation specifically."</div>
+              <div class="my-version">"This next part is a bit number-heavy but stick with me — it's the most important part."</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="topic-block">
+      <div class="topic-header" onclick="toggleTopic(this)">
+        <div class="topic-title"><span class="topic-tag gold">Habit 2</span> The Verdict Habit — Answer First, Explain Second</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="topic-body">
+        <div class="split-panel">
+          <div class="col-panel">
+            <div class="panel-label col-label"><span>COL</span> The habit</div>
+            <div class="col-text">Col never leaves a station open-ended. He asks the question plainly, answers it in one word or a short phrase, pauses, and only then explains. "Can you do this logistically? Yes." The pause after the one-word answer is doing all the work — it reads as confident and decisive.</div>
+          </div>
+          <div class="norval-panel">
+            <div class="panel-label norval-label"><span>NORVAL</span> How to use it</div>
+            <div class="norval-text">
+              Before any explanation, state the verdict first:
+              <div class="my-version">"Can you do this? Yes. [pause] Here's why..."</div>
+              <div class="my-version">"Is now the right time? Yes. [pause] And here's what the data shows..."</div>
+              <div class="my-version">"Should you do new or established? New. [pause] Let me show you the numbers."</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="topic-block">
+      <div class="topic-header" onclick="toggleTopic(this)">
+        <div class="topic-title"><span class="topic-tag gold">Habit 3</span> Analogy First — Always Before the Numbers</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="topic-body">
+        <div class="split-panel">
+          <div class="col-panel">
+            <div class="panel-label col-label"><span>COL</span> The habit</div>
+            <div class="col-text">Every abstract concept gets tied to a plain everyday analogy before the numbers are shown. Apple tree (supply). Car warranty (build quality). Offset account vs savings account (keeping money in your pocket). Analogy → numbers → verdict. Every time.</div>
+          </div>
+          <div class="norval-panel">
+            <div class="panel-label norval-label"><span>NORVAL</span> My analogies to use</div>
+            <div class="norval-text">
+              <div class="my-version">Leverage: "Same $200K, same 10% return — but in property you make four times more. That's the power of leverage."</div>
+              <div class="my-version">Supply: "You can't grow more apples just because more people want them."</div>
+              <div class="my-version">Build quality: "Great Wall vs Toyota warranty — you know immediately which one is better built."</div>
+              <div class="my-version">Offset: "Why give the money to the bank when it can stay in your pocket and do the same job?"</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="topic-block">
+      <div class="topic-header" onclick="toggleTopic(this)">
+        <div class="topic-title"><span class="topic-tag gold">Habit 4</span> Pre-Empt Objections — State Them Yourself Before They're Raised</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="topic-body">
+        <div class="split-panel">
+          <div class="col-panel">
+            <div class="panel-label col-label"><span>COL</span> The habit</div>
+            <div class="col-text">Col almost never waits for an objection to be raised. He states it himself, out loud, before the client can — which strips it of its power and makes him look transparent rather than defensive. "Now, some people hear this and say... and here's why that's not actually the issue." The pattern: name the concern, answer with a worked number or historical precedent.</div>
+          </div>
+          <div class="norval-panel">
+            <div class="panel-label norval-label"><span>NORVAL</span> How to use it</div>
+            <div class="norval-text">
+              Before they can object — name it yourself:
+              <div class="my-version">"Now, a lot of people hear 'new construction' and immediately think — what if I have to wait six months for it to be tenanted? Fair question. Here's the reality..."</div>
+              <div class="my-version">"I know what you're probably thinking — what about the builder going bust while we're waiting? That's a reasonable concern. Here's how we handle it..."</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="topic-block">
+      <div class="topic-header" onclick="toggleTopic(this)">
+        <div class="topic-title"><span class="topic-tag gold">Habit 5</span> Personal Skin-in-the-Game — He References His Own Portfolio</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="topic-body">
+        <div class="split-panel">
+          <div class="col-panel">
+            <div class="panel-label col-label"><span>COL</span> The habit</div>
+            <div class="col-text">Rather than citing abstract statistics, Col repeatedly references his own portfolio, his own decisions, and his family's financial choices as lived evidence. "On my established portfolio, I've poured $100K into repairs in the last 12 months. On my new-build portfolio — smoke alarm tests and pest control." This is far more credible than third-party testimonials because he's demonstrably not asking clients to do anything he hasn't already done himself.</div>
+          </div>
+          <div class="norval-panel">
+            <div class="panel-label norval-label"><span>NORVAL</span> How to use it</div>
+            <div class="norval-text">
+              Use your own journey — veteran to veteran:
+              <div class="my-version">"I'm on the same path myself — building my own portfolio the same way I'm showing you. I'm not asking you to do anything I'm not doing."</div>
+              And use the Robinsons case study (Deebing Heights) as your go-to real example:
+              <div class="my-version">"We had clients put a property on hold in Deebing Heights in mid-2025 for around $820K. Land just registered. It's now worth over a million. $170K in equity before they broke ground."</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="topic-block">
+      <div class="topic-header" onclick="toggleTopic(this)">
+        <div class="topic-title"><span class="topic-tag gold">Habit 6</span> Always End With One Concrete Next Step + Timeframe</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="topic-body">
+        <div class="split-panel">
+          <div class="col-panel">
+            <div class="panel-label col-label"><span>COL</span> The habit</div>
+            <div class="col-text">Every session ends with a specific, named next action and a specific timeframe. Never "let's stay in touch." Never "think about it and get back to me." Always a concrete commitment — "I'll send you the introduction today" / "Let's book Friday the 17th" / "Once you've chatted to Lana, let me know and we'll get moving."</div>
+          </div>
+          <div class="norval-panel">
+            <div class="panel-label norval-label"><span>NORVAL</span> How to use it</div>
+            <div class="norval-text">
+              Never leave a session without a named next step:
+              <div class="my-version">"So here's what happens next — I'm going to send you the webinar link today. Watch it with your partner if you can. Then let's lock in a time this week or next for the follow-up session. What days work for you?"</div>
+              <div class="my-version">"Before we finish — action items from my end: I'll get you the referral to [accountant/DVA] by end of day. From your end, just have a think about what we covered and jot down any questions. Then we'll pick this up on [day]."</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end delivery -->
+
+</div><!-- end content -->
+
+<div class="toast" id="toast">✓ Copied!</div>
+
+<script>
+  function switchTab(tabId) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + tabId).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  function toggleTopic(header) {
+    const body = header.nextElementSibling;
+    const chevron = header.querySelector('.chevron');
+    body.classList.toggle('open');
+    header.classList.toggle('open');
+    chevron.classList.toggle('open');
+  }
+
+  function showToast() {
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2000);
+  }
+</script>
+
+</body>
+</html>
