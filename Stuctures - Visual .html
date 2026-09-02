@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>Property Structures — Visual Guide</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --navy:#1F3864;--gold:#F5C518;--gold-d:#d4a800;
+    --blue:#2563eb;--blue-l:#dbeafe;--blue-b:#93c5fd;
+    --green:#16a34a;--green-l:#dcfce7;--green-b:#86efac;
+    --red:#dc2626;--red-l:#fee2e2;--red-b:#fca5a5;
+    --yellow:#F5C518;--yellow-l:#fefce8;--yellow-b:#fde047;
+    --text:#111827;--muted:#6b7280;--border:#e5e7eb;--bg:#ffffff;
+  }
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.65;min-height:100vh}
+
+  /* HEADER */
+  .hdr{background:var(--navy);color:#fff;padding:14px 20px;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+  .hdr-title{font-size:15px;font-weight:800;letter-spacing:.3px}
+  .hdr-title span{color:var(--gold)}
+  .hdr-pill{background:var(--gold);color:var(--navy);font-size:10px;font-weight:800;padding:3px 12px;border-radius:20px}
+
+  /* SEARCH */
+  .search-wrap{background:#f9fafb;border-bottom:1px solid var(--border);padding:10px 16px}
+  .search-wrap input{width:100%;background:#fff;border:1px solid var(--border);border-radius:8px;padding:9px 14px;font-size:13px;color:var(--text);outline:none}
+  .search-wrap input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(245,197,24,.2)}
+  .search-wrap input::placeholder{color:var(--muted)}
+  .search-hidden{display:none!important}
+
+  /* TABS */
+  .tabs{background:var(--navy);display:flex;overflow-x:auto;padding:0 10px;border-bottom:3px solid var(--gold);-webkit-overflow-scrolling:touch}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{padding:10px 16px;color:rgba(255,255,255,.55);cursor:pointer;font-size:11px;font-weight:700;white-space:nowrap;border-bottom:3px solid transparent;margin-bottom:-3px;transition:all .2s;text-transform:uppercase;letter-spacing:.4px;-webkit-tap-highlight-color:transparent}
+  .tab:hover{color:rgba(255,255,255,.85)}
+  .tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+
+  /* CONTENT */
+  .content{padding:16px;max-width:900px;margin:0 auto}
+  .panel{display:none}.panel.active{display:block}
+
+  /* ACCORDION */
+  .acc{background:#fff;border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+  .acc-hdr{padding:14px 16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;-webkit-tap-highlight-color:transparent}
+  .acc-hdr:hover{background:#fafafa}
+  .acc-title{font-weight:700;font-size:13px;color:var(--navy);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .acc-body{display:none;border-top:1px solid var(--border);padding:16px}
+  .acc-body.open{display:block}
+  .chevron{color:var(--muted);font-size:11px;transition:transform .2s;flex-shrink:0}
+  .chevron.open{transform:rotate(180deg)}
+  .badge{font-size:9px;font-weight:800;padding:2px 8px;border-radius:10px;white-space:nowrap}
+  .badge-gold{background:var(--yellow);color:var(--navy)}
+  .badge-blue{background:var(--blue);color:#fff}
+  .badge-green{background:var(--green);color:#fff}
+  .badge-red{background:var(--red);color:#fff}
+  .badge-navy{background:var(--navy);color:#fff}
+
+  /* DIAGRAM */
+  .diagram{background:#f9fafb;border:1px solid var(--border);border-radius:12px;padding:20px;margin:14px 0;font-size:12px}
+  .diag-title{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:16px}
+
+  /* ENTITY BOXES */
+  .ebox{border-radius:10px;padding:10px 18px;font-weight:700;font-size:13px;text-align:center;display:inline-block;min-width:140px;border:2px solid transparent}
+  .ebox-yellow{background:var(--yellow-l);border-color:var(--gold-d);color:var(--navy)}
+  .ebox-blue{background:var(--blue-l);border-color:var(--blue);color:var(--blue)}
+  .ebox-green{background:var(--green-l);border-color:var(--green);color:var(--green)}
+  .ebox-red{background:var(--red-l);border-color:var(--red);color:var(--red)}
+
+  /* FLOW LINES */
+  .flow-row{display:flex;align-items:center;justify-content:center;gap:8px;margin:8px 0;flex-wrap:wrap}
+  .flow-col{display:flex;flex-direction:column;align-items:center;gap:4px}
+  .arrow-d{color:var(--navy);font-size:20px;text-align:center;line-height:1}
+  .arrow-r{color:var(--navy);font-size:16px}
+  .flow-label{font-size:10px;font-weight:700;color:var(--muted);text-align:center;max-width:100px}
+  .flow-label.green{color:var(--green)}
+  .flow-label.blue{color:var(--blue)}
+  .flow-label.red{color:var(--red)}
+
+  /* PROS CONS */
+  .pros-cons{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+  @media(max-width:520px){.pros-cons{grid-template-columns:1fr}}
+  .pros-box{background:var(--green-l);border:1px solid var(--green-b);border-radius:10px;padding:14px}
+  .cons-box{background:var(--red-l);border:1px solid var(--red-b);border-radius:10px;padding:14px}
+  .pros-box h4{color:var(--green);font-size:11px;font-weight:800;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
+  .cons-box h4{color:var(--red);font-size:11px;font-weight:800;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
+  .pros-box li,.cons-box li{font-size:12px;padding:5px 0 5px 18px;position:relative;border-bottom:1px solid rgba(0,0,0,.06);list-style:none}
+  .pros-box li:last-child,.cons-box li:last-child{border-bottom:none}
+  .pros-box li:before{content:"✓";color:var(--green);position:absolute;left:0;font-weight:800}
+  .cons-box li:before{content:"✗";color:var(--red);position:absolute;left:0;font-weight:800}
+
+  /* INFO BOXES */
+  .info-box{border-radius:8px;padding:12px 14px;margin:10px 0;font-size:13px;line-height:1.7}
+  .info-navy{background:#eef2f8;border-left:3px solid var(--navy)}
+  .info-yellow{background:var(--yellow-l);border-left:3px solid var(--gold-d)}
+  .info-blue{background:var(--blue-l);border-left:3px solid var(--blue)}
+  .info-green{background:var(--green-l);border-left:3px solid var(--green)}
+  .info-red{background:var(--red-l);border-left:3px solid var(--red)}
+  .info-box strong{color:var(--navy)}
+  .copy-btn{float:right;background:var(--navy);color:#fff;border:none;border-radius:4px;padding:2px 8px;font-size:9px;font-weight:800;cursor:pointer;margin-left:8px}
+  .copy-btn:hover{background:var(--gold-d);color:var(--navy)}
+
+  /* STEPS */
+  .steps{margin:12px 0}
+  .step{display:flex;gap:12px;margin-bottom:14px}
+  .step-n{background:var(--gold);color:var(--navy);font-weight:900;font-size:12px;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+  .step-body{flex:1}
+  .step-title{font-weight:800;color:var(--navy);margin-bottom:4px;font-size:13px}
+  .step-text{font-size:13px;color:#374151;line-height:1.65}
+
+  /* TABLE */
+  .tbl{width:100%;border-collapse:collapse;font-size:12px;margin:10px 0;border-radius:8px;overflow:hidden;border:1px solid var(--border)}
+  .tbl th{background:var(--navy);color:#fff;padding:8px 12px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.5px}
+  .tbl td{padding:9px 12px;border-bottom:1px solid var(--border);background:#fff;vertical-align:top}
+  .tbl tr:last-child td{border-bottom:none}
+  .tbl tr:hover td{background:#f9fafb}
+  .win{color:var(--green);font-weight:700}
+  .lose{color:var(--red);font-weight:700}
+  .neutral{color:#d97706;font-weight:700}
+
+  /* DIVIDER */
+  .divider{height:1px;background:var(--border);margin:14px 0}
+  .slbl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:14px 0 8px;display:flex;align-items:center;gap:8px}
+  .slbl::after{content:'';flex:1;height:1px;background:var(--border)}
+
+  /* TOAST */
+  .toast{position:fixed;bottom:20px;right:20px;background:var(--green);color:#fff;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:800;opacity:0;transition:opacity .3s;z-index:999;pointer-events:none}
+  .toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-title">NORVAL <span>// PROPERTY STRUCTURES</span></div>
+  <div class="hdr-pill">VISUAL GUIDE</div>
+</div>
+
+<div class="search-wrap">
+  <input type="text" id="srch" placeholder="🔍  Search any structure, concept, or term..." oninput="doSearch(this.value)">
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('overview',this)">🏗️ Overview</div>
+  <div class="tab" onclick="switchTab('company',this)">🏢 Company Structure</div>
+  <div class="tab" onclick="switchTab('holding',this)">💼 Holding Co</div>
+  <div class="tab" onclick="switchTab('tic',this)">🤝 Tenants in Common</div>
+  <div class="tab" onclick="switchTab('cgt',this)">📊 CGT & Indexation</div>
+  <div class="tab" onclick="switchTab('raquel',this)">👤 Case Study</div>
+</div>
+
+<div class="content">
+
+<!-- ===== OVERVIEW ===== -->
+<div class="panel active" id="panel-overview">
+
+  <div class="acc" style="border-top:3px solid var(--gold)">
+    <div class="acc-hdr" onclick="tog(this)">
+      <div class="acc-title"><span class="badge badge-gold">Start Here</span> Why Structure Matters — The Big Picture</div>
+      <div class="chevron open">▼</div>
+    </div>
+    <div class="acc-body open">
+      <div class="info-box info-navy">
+        Most people buy property in their personal name. It's the simplest way — but it's not always the most effective. As your portfolio grows, the structure you use determines how much tax you pay, how much you can borrow next, and how protected your assets are if something goes wrong.<br><br>
+        <strong>There are three main ways to own property in Australia:</strong>
+      </div>
+      <div class="flow-row" style="margin-top:14px;gap:12px;flex-wrap:wrap">
+        <div class="flow-col">
+          <div class="ebox ebox-blue">Personal Name</div>
+          <div class="flow-label" style="margin-top:6px">Simple. Full tax benefits on new builds. No asset protection.</div>
+        </div>
+        <div class="flow-col">
+          <div class="ebox ebox-yellow">Company Structure</div>
+          <div class="flow-label" style="margin-top:6px">Tax efficient. Asset protection. No CGT discount.</div>
+        </div>
+        <div class="flow-col">
+          <div class="ebox ebox-green">Tenants in Common</div>
+          <div class="flow-label" style="margin-top:6px">Two entities. Split ownership. Maximum tax efficiency.</div>
+        </div>
+      </div>
+
+      <div class="slbl">The Core Trade-Off</div>
+      <table class="tbl">
+        <thead><tr><th>Factor</th><th>Personal Name</th><th>Company</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Negative gearing (new builds)</strong></td><td class="win">✓ Full benefit — offsets salary</td><td class="lose">✗ Losses stay in company</td></tr>
+          <tr><td><strong>CGT discount (12+ months)</strong></td><td class="win">✓ 50% discount</td><td class="lose">✗ None — full gain taxed</td></tr>
+          <tr><td><strong>Tax rate on income</strong></td><td class="neutral">Your marginal rate (up to 47%)</td><td class="win">Flat 25–30%</td></tr>
+          <tr><td><strong>Asset protection</strong></td><td class="lose">✗ Personal assets at risk</td><td class="win">✓ Company assets separate</td></tr>
+          <tr><td><strong>Borrowing capacity</strong></td><td class="neutral">Assessed against your income</td><td class="win">✓ Assessed against company</td></tr>
+          <tr><td><strong>Franking credits</strong></td><td class="lose">✗ Not available</td><td class="win">✓ Available on dividends</td></tr>
+          <tr><td><strong>Lenders available</strong></td><td class="win">✓ All major banks</td><td class="lose">✗ Fewer — mostly non-bank</td></tr>
+          <tr><td><strong>Interest rates</strong></td><td class="win">✓ Standard residential rates</td><td class="lose">✗ Higher — commercial rates</td></tr>
+        </tbody>
+      </table>
+      <div class="info-box info-yellow" style="margin-top:10px">
+        <strong>Bottom line:</strong> Personal name wins for new builds where you want immediate tax benefits. Company wins when you want asset protection, serviceability separation, or you're holding established property where the CGT discount matters less.
+      </div>
+    </div>
+  </div>
+
+</div><!-- end overview -->
+
+
+<!-- ===== COMPANY STRUCTURE ===== -->
+<div class="panel" id="panel-company">
+
+  <div class="acc" style="border-top:3px solid var(--blue)">
+    <div class="acc-hdr" onclick="tog(this)">
+      <div class="acc-title"><span class="badge badge-blue">Foundation</span> What Is a Company Structure?</div>
+      <div class="chevron open">▼</div>
+    </div>
+    <div class="acc-body open">
+      <div class="info-box info-navy">
+        A Pty Ltd company is a separate legal entity. It can own assets, earn income, borrow money, and pay tax — all in its own name. When a company buys a property, the property belongs to the company, not to you personally.
+      </div>
+
+      <div class="slbl">Simple Visual — How It Works</div>
+      <div class="diagram">
+        <div class="diag-title">Basic Company Property Structure</div>
+        <div class="flow-col">
+          <div class="ebox ebox-yellow">You (Director + Shareholder)</div>
+          <div class="arrow-d">↓</div>
+          <div class="flow-label blue" style="max-width:200px;font-size:11px">Own and control the company</div>
+          <div class="arrow-d">↓</div>
+          <div class="ebox ebox-blue" style="min-width:180px">Pty Ltd Company</div>
+          <div class="arrow-d">↓</div>
+          <div class="flow-label blue" style="max-width:200px;font-size:11px">Company borrows money, buys property</div>
+          <div class="arrow-d">↓</div>
+          <div class="ebox ebox-green" style="min-width:180px">Investment Property</div>
+          <div class="arrow-d">↓</div>
+          <div class="flow-label green" style="max-width:200px;font-size:11px">Rental income flows back to company<br>Profit distributed to you as dividends</div>
+        </div>
+      </div>
+
+      <div class="slbl">Pros & Cons</div>
+      <div class="pros-cons">
+        <div class="pros-box">
+          <h4>✓ Benefits</h4>
+          <ul>
+            <li>Tax effective — flat 25–30% company tax rate (vs up to 47% personal)</li>
+            <li>Franking credits on dividends paid to shareholders</li>
+            <li>Hold money inside the company at lower tax rate</li>
+            <li>Asset protection — personal assets separate from company</li>
+            <li>Serviceability protection — borrowing doesn't show on personal credit</li>
+            <li>Can loan money between entities within the structure</li>
+          </ul>
+        </div>
+        <div class="cons-box">
+          <h4>✗ Downsides</h4>
+          <ul>
+            <li>More expensive to set up and maintain (ASIC fees, accountant)</li>
+            <li>Higher interest rates — typically 0.5–1.5% above residential</li>
+            <li>Less lenders — mostly non-bank or commercial lending</li>
+            <li>No 50% CGT discount — full capital gain is taxed</li>
+            <li>No negative gearing flowing through to personal income</li>
+            <li>Losses trapped inside company — can't offset your salary</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="slbl">Franking Credits — What They Are</div>
+      <div class="acc">
+        <div class="acc-hdr" onclick="tog(this)">
+          <div class="acc-title"><span class="badge badge-yellow">Tax</span> Franking Credits — Simple Explanation</div>
+          <div class="chevron">▼</div>
+        </div>
+        <div class="acc-body">
+          <div class="info-box info-blue">
+            When a company pays tax on its profit, and then distributes that profit to shareholders as a dividend — the shareholders would normally be taxed again on that same money. Franking credits prevent that double taxation.<br><br>
+            <strong>How it works:</strong><br>
+            Company earns $100 profit → pays 30% company tax = $30 tax paid → distributes $70 to you as a dividend + attaches a $30 franking credit.<br><br>
+            When you lodge your tax return, you declare the full $100 as income but get a $30 tax credit applied. If your personal tax on $100 is $37 — you only pay the extra $7. The company already paid the rest.<br><br>
+            <strong>If your marginal rate is lower than the company rate — you can actually get a refund of the difference.</strong>
+          </div>
+          <div class="info-box info-yellow">
+            <strong>Why it matters:</strong> If you're retired or on a lower income, franking credits can generate a tax refund. For investors building long-term wealth through a company, franking credits make dividends significantly more tax efficient than taking the money as personal income.
+          </div>
+        </div>
+      </div>
+
+      <div class="slbl">Serviceability Protection — What It Means</div>
+      <div class="acc">
+        <div class="acc-hdr" onclick="tog(this)">
+          <div class="acc-title"><span class="badge badge-green">Borrowing</span> Serviceability Protection Explained</div>
+          <div class="chevron">▼</div>
+        </div>
+        <div class="acc-body">
+          <div class="info-box info-green">
+            When you borrow money in your personal name, banks assess your personal debt-to-income ratio. Every loan you take reduces how much you can borrow next time — because your personal serviceability shrinks.<br><br>
+            <strong>When debt sits inside a company:</strong> Banks assess the company separately. The company's loan is against the company's income (rent) and assets (the property). Your personal borrowing capacity can remain largely intact — freeing you to borrow again in your personal name for a new build where you want the tax benefits.<br><br>
+            <strong>This is how serious investors build large portfolios</strong> — they separate entities strategically so no single structure gets maxed out.
+          </div>
+          <div class="info-box info-navy">
+            <button class="copy-btn" onclick="copyBox(this)">Copy</button>
+            <strong>How to explain it to a client:</strong> "The bank doesn't see you as a person anymore — they see a business. A business that owns a cash-flowing asset, has equity, and is generating income. Age doesn't matter. Salary doesn't matter. They're assessing the entity, not the individual."
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- end company -->
+
+
+<!-- ===== HOLDING COMPANY ===== -->
+<div class="panel" id="panel-holding">
+
+  <div class="acc" style="border-top:3px solid var(--yellow-b)">
+    <div class="acc-hdr" onclick="tog(this)">
+      <div class="acc-title"><span class="badge badge-gold">Advanced</span> The Holding Company Structure</div>
+      <div class="chevron open">▼</div>
+    </div>
+    <div class="acc-body open">
+      <div class="info-box info-navy">
+        A holding company sits above all your operating entities. It doesn't trade or take on business risk — it simply holds assets, receives income from the entities below it, and distributes money strategically. The trading activity and the risk stays in separate companies underneath.
+      </div>
+
+      <div class="slbl">Visual Structure</div>
+      <div class="diagram">
+        <div class="diag-title">Holding Company — Full Structure Map</div>
+
+        <!-- TOP -->
+        <div class="flow-col" style="align-items:center">
+          <div class="ebox ebox-yellow" style="min-width:180px">Pty Ltd Company<br><span style="font-size:10px;font-weight:400">(You — Director + Shareholder)</span></div>
+          <div class="arrow-d">↓</div>
+          <div class="ebox ebox-blue" style="min-width:200px;font-size:14px;padding:12px 20px"><strong>Holding Company</strong><br><span style="font-size:10px;font-weight:400">Controls everything below</span></div>
+        </div>
+
+        <!-- BRANCHES -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;max-width:600px;margin-left:auto;margin-right:auto">
+          <div class="flow-col">
+            <div class="flow-label blue" style="max-width:200px">Dividends (no DWT)<br>↑ flows up to holding co</div>
+            <div style="height:8px"></div>
+            <div class="ebox ebox-green" style="width:100%;text-align:center">Trading Company<br><span style="font-size:10px;font-weight:400">Business operations<br>Revenue + expenses</span></div>
+          </div>
+          <div class="flow-col">
+            <div class="flow-label blue" style="max-width:200px">Loans<br>↓ holding co lends down</div>
+            <div style="height:8px"></div>
+            <div class="ebox ebox-blue" style="width:100%;text-align:center">Investment Company<br><span style="font-size:10px;font-weight:400">Holds investments<br>No trading risk</span></div>
+            <div class="arrow-d">↓</div>
+            <div class="flow-label green">Investments flow down</div>
+            <div style="height:4px"></div>
+            <div class="ebox ebox-green" style="width:100%;text-align:center">Property Portfolio<br><span style="font-size:10px;font-weight:400">Assets. Growth. Income.</span></div>
+          </div>
+        </div>
+
+        <div class="info-box info-yellow" style="margin-top:16px;font-size:12px">
+          <strong>The key principle:</strong> The entity that faces business risk (trading company — can be sued, faces liabilities) is kept completely separate from the entity that holds valuable assets (investment company). A lawsuit against the trading company cannot reach the property portfolio.
+        </div>
+      </div>
+
+      <div class="slbl">What Each Entity Does</div>
+
+      <div class="acc">
+        <div class="acc-hdr" onclick="tog(this)">
+          <div class="acc-title"><span class="badge badge-yellow">Role</span> Holding Company — What It Actually Does</div>
+          <div class="chevron">▼</div>
+        </div>
+        <div class="acc-body">
+          <ul style="list-style:none;padding:0">
+            <li style="padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">💰 <strong>Holds money</strong> — profits from the trading company flow up as dividends (no dividend withholding tax between Australian companies). Money sits in the holding company at company tax rate (25–30%) rather than your personal rate.</li>
+            <li style="padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">🏦 <strong>Loans money down</strong> — holding company can lend money to the investment company at a commercial interest rate. That interest is deductible for the investment company and income for the holding company — all within your structure.</li>
+            <li style="padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">🛡️ <strong>Asset protection</strong> — valuable assets never sit in the entity that faces business or legal risk. The holding company and investment company are clean.</li>
+            <li style="padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">📊 <strong>Franking credits</strong> — when the holding company pays dividends to you as shareholder, those dividends carry franking credits for the tax already paid at company level. You avoid being taxed twice on the same dollar.</li>
+            <li style="padding:8px 0;font-size:13px">🔄 <strong>Income flexibility</strong> — you control when and how much dividend you pay yourself. In a low income year — pay yourself more. In a high income year — leave it in the company at the lower rate.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="acc">
+        <div class="acc-hdr" onclick="tog(this)">
+          <div class="acc-title"><span class="badge badge-green">Loans</span> How the Holding Company Loans Money</div>
+          <div class="chevron">▼</div>
+        </div>
+        <div class="acc-body">
+          <div class="info-box info-blue">
+            <strong>The inter-company loan:</strong><br><br>
+            Trading company makes profit → pays dividend (franked) up to holding company → holding company now has cash sitting at 30% tax rate.<br><br>
+            Instead of paying that cash out to you personally (where it becomes income), the holding company loans it to the investment company to fund a property purchase.<br><br>
+            <strong>Why this is powerful:</strong><br>
+            The investment company gets access to capital without going to a bank. The interest paid to the holding company is deductible for the investment company. The holding company receives interest income — all staying within your structure, at company tax rates.
+          </div>
+          <div class="info-box info-yellow">
+            <strong>ATO rules:</strong> Inter-company loans must be at a commercial arm's length interest rate — you can't lend at 0%. The ATO sets a benchmark rate each year. Get your accountant to document this properly.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- end holding -->
+
+
+<!-- ===== TENANTS IN COMMON ===== -->
+<div class="panel" id="panel-tic">
+
+  <div class="acc" style="border-top:3px solid var(--green)">
+    <div class="acc-hdr" onclick="tog(this)">
+      <div class="acc-title"><span class="badge badge-green">Strategy</span> Tenants in Common — What It Is</div>
+      <div class="chevron open">▼</div>
+    </div>
+    <div class="acc-body open">
+      <div class="info-box info-navy">
+        Tenants in Common means two or more entities own a property together — but each owns a <strong>defined, separate share</strong>. Unlike joint tenants (where both own 100% together), tenants in common allows you to split ownership in any ratio: 50/50, 60/40, 99/1 — whatever makes the most financial sense.<br><br>
+        <strong>The key:</strong> Each owner's share is treated as their own asset for tax purposes. So a personal name gets personal name tax treatment on their share. A company gets company tax treatment on its share.
+      </div>
+
+      <div class="slbl">Visual — Personal Name + Company</div>
+      <div class="diagram">
+        <div class="diag-title">Tenants in Common — Two Entities, One Property</div>
+        <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:start;max-width:550px;margin:0 auto">
+          <div class="flow-col">
+            <div class="ebox ebox-blue" style="width:100%;font-size:12px">You<br>(Personal Name)<br><span style="font-size:10px;font-weight:400">50% share</span></div>
+            <div style="font-size:11px;color:var(--green);margin-top:8px;text-align:center">✓ Negative gearing<br>✓ 50% CGT discount<br>✓ Full depreciation</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding-top:20px">
+            <div style="font-size:20px;color:var(--muted)">+</div>
+          </div>
+          <div class="flow-col">
+            <div class="ebox ebox-yellow" style="width:100%;font-size:12px">Your Company<br>(Pty Ltd)<br><span style="font-size:10px;font-weight:400">50% share</span></div>
+            <div style="font-size:11px;color:var(--blue);margin-top:8px;text-align:center">✓ Asset protection<br>✓ 25–30% tax rate<br>✓ Serviceability separate</div>
+          </div>
+        </div>
+        <div class="arrow-d" style="margin-top:12px">↓</div>
+        <div class="flow-col" style="align-items:center">
+          <div class="ebox ebox-green" style="min-width:200px">House & Land Package<br><span style="font-size:10px;font-weight:400">One property. Two structures. Maximum efficiency.</span></div>
+        </div>
+      </div>
+
+      <div class="slbl">Why This Works — The Tax Split</div>
+      <div class="info-box info-green">
+        By splitting ownership across two entities, you get the best of both worlds:<br><br>
+        • <strong>Personal name share</strong> — qualifies for negative gearing on new builds, 50% CGT discount, full depreciation. All the immediate tax benefits flow through to reduce your personal taxable income.<br><br>
+        • <strong>Company share</strong> — sits at a lower flat tax rate, asset protected, doesn't affect your personal borrowing capacity. Losses stay in the company and carry forward indefinitely.
+      </div>
+
+      <div class="slbl">Important — What We Do at Integrity</div>
+      <div class="info-box info-yellow">
+        <strong>We do House and Land packages — not YAMs or HEFs.</strong><br><br>
+        The tenants in common strategy applies directly to H&L. You can go under contract as two parties — yourself personally and your company — on the same H&L package. The split is documented from day one.<br><br>
+        The new build in your personal name still qualifies for full depreciation and negative gearing — because you are the first owner of your share of the build. The company holds its share for asset protection and tax efficiency.<br><br>
+        Always structure this with a solicitor and accountant before signing contracts. The documentation needs to be correct from the start.
+      </div>
+
+      <div class="acc">
+        <div class="acc-hdr" onclick="tog(this)">
+          <div class="acc-title"><span class="badge badge-navy">Compare</span> Joint Tenants vs Tenants in Common</div>
+          <div class="chevron">▼</div>
+        </div>
+        <div class="acc-body">
+          <table class="tbl">
+            <thead><tr><th>Factor</th><th>Joint Tenants</th><th>Tenants in Common</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Ownership split</strong></td><td class="neutral">Always 50/50 — equal, can't change</td><td class="win">Any ratio — 50/50, 99/1, whatever works</td></tr>
+              <tr><td><strong>On death</strong></td><td class="lose">Automatically passes to surviving owner</td><td class="win">Passes to estate — you control it in your Will</td></tr>
+              <tr><td><strong>Can mix entity types</strong></td><td class="lose">✗ — must be same type of owner</td><td class="win">✓ — personal + company, trust, SMSF</td></tr>
+              <tr><td><strong>Tax treatment</strong></td><td class="neutral">Same for both — shared equally</td><td class="win">Each owner taxed on their share separately</td></tr>
+              <tr><td><strong>Used for strategy</strong></td><td class="lose">Rarely — basic co-ownership only</td><td class="win">✓ — the sophisticated investor's tool</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- end tic -->
+
+
+<!-- ===== CGT & INDEXATION ===== -->
+<div class="panel" id="panel-cgt">
+
+  <div class="acc" style="border-top:3px solid var(--red)">
+    <div class="acc-hdr" onclick="tog(this)">
+      <div class="acc-title"><span class="badge badge-red">Tax</span> CGT & Indexation — Explained Simply</div>
+      <div class="chevron open">▼</div>
+    </div>
+    <div class="acc-body open">
+
+      <div class="slbl">What is Capital Gains Tax?</div>
+      <div class="info-box info-navy">
+        When you sell an investment property for more than you paid for it — the profit is called a <strong>capital gain</strong>. The ATO taxes that gain. How much you pay depends on your structure and how long you held the asset.
+      </div>
+
+      <div class="slbl">The Three CGT Methods</div>
+      <div class="acc">
+        <div class="acc-hdr" onclick="tog(this)">
+          <div class="acc-title"><span class="badge badge-blue">Method 1</span> 50% CGT Discount — Personal Name (Most Common)</div>
+          <div class="chevron">▼</div>
+        </div>
+        <div class="acc-body">
+          <div class="info-box info-blue">
+            <strong>Who gets it:</strong> Individuals and trusts — if the asset is held for 12+ months.<br><br>
+            <strong>How it works:</strong> You only pay tax on 50% of the capital gain. The other half is tax-free.<br><br>
+            <strong>Example:</strong><br>
+            Buy for $600K → sell for $900K = $300K gain<br>
+            50% discount applied → taxed on $150K only<br>
+            At 37% marginal rate → tax = $55,500<br><br>
+            <strong>Without the discount you'd pay $111,000. The discount saves you $55,500.</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc">
+        <div class="acc-hdr" onclick="tog(this)">
+          <div class="acc-title"><span class="badge badge-yellow">Method 2</span> Indexation — Unit Trusts (Pre-1999 Assets)</div>
+          <div class="chevron">▼</div>
+        </div>
+        <div class="acc-body">
+          <div class="info-box info-yellow">
+            <strong>What indexation was:</strong> Instead of halving the gain, you adjusted your original purchase price upward to account for inflation before calculating the gain. This reduced the taxable profit in line with how much prices rose generally.<br><br>
+            <strong>Example from the transcript:</strong><br>
+            Buy for $1M → sell for $2M = $1M gain on face value<br>
+            But over 10 years, inflation was 50%<br>
+            So indexed cost base = $1.5M<br>
+            Taxable gain = $2M − $1.5M = <strong>$500K only</strong><br><br>
+            <strong>Inside a unit trust</strong> you can still access indexation (for assets acquired before 11:45am 21 September 1999). For newer assets, unit trusts can access the 50% discount instead — just like individuals.<br><br>
+            <strong>Key point from the transcript:</strong> "Inside of a unit trust, you do get the indexation — which means if you buy for $1M and sell for $2M, but over 10 years there was 50% inflation, your cost base becomes $1.5M. You only pay tax on the $500K above that."
+          </div>
+        </div>
+      </div>
+
+      <div class="acc">
+        <div class="acc-hdr" onclick="tog(this)">
+          <div class="acc-title"><span class="badge badge-red">Method 3</span> Company — No Discount, No Indexation</div>
+          <div class="chevron">▼</div>
+        </div>
+        <div class="acc-body">
+          <div class="info-box info-red">
+            <strong>Companies get neither the 50% discount nor indexation.</strong><br><br>
+            Every dollar of capital gain is taxed at the full company rate — 25% (base rate entities) or 30% (larger companies).<br><br>
+            <strong>Same example:</strong><br>
+            Buy for $600K → sell for $900K = $300K gain<br>
+            No discount → taxed on full $300K<br>
+            At 25% company rate → tax = $75,000<br><br>
+            Compare to personal name: $55,500 with the 50% discount<br><br>
+            <strong>So in this example the company pays $19,500 MORE in CGT — even though the tax rate is lower.</strong><br><br>
+            This is why companies are typically better for buy-and-hold strategies where you're not planning to sell — and personal name is better when eventual capital gains are large.
+          </div>
+        </div>
+      </div>
+
+      <div class="slbl">Side by Side — Same Sale, Three Structures</div>
+      <div class="diagram">
+        <div class="diag-title">Buy $600K → Sell $900K → $300K Gain</div>
+        <table class="tbl">
+          <thead><tr><th>Structure</th><th>Taxable Amount</th><th>Tax Rate</th><th>Tax Paid</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Personal Name (37% bracket)</strong></td><td class="win">$150K (50% discount applied)</td><td>37%</td><td class="win">$55,500</td></tr>
+            <tr><td><strong>Unit Trust (via indexation if held 10yrs)</strong></td><td class="win">$0–$150K (depends on inflation)</td><td>Individual rate</td><td class="win">Could be lower</td></tr>
+            <tr><td><strong>Company</strong></td><td class="lose">$300K (no discount)</td><td>25–30%</td><td class="lose">$75,000–$90,000</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- end cgt -->
+
+
+<!-- ===== CASE STUDY ===== -->
+<div class="panel" id="panel-raquel">
+
+  <div class="acc" style="border-top:3px solid var(--green)">
+    <div class="acc-hdr" onclick="tog(this)">
+      <div class="acc-title"><span class="badge badge-green">Case Study</span> How a Company Structure Unlocks Borrowing Capacity</div>
+      <div class="chevron open">▼</div>
+    </div>
+    <div class="acc-body open">
+      <div class="info-box info-navy">
+        This is a real-world example of how repositioning an existing property into a company structure can completely change what the bank will lend — without changing your income, your deposit, or the property itself.
+      </div>
+
+      <div class="slbl">The 5-Step Journey</div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-n">1</div>
+          <div class="step-body">
+            <div class="step-title">What You've Already Got</div>
+            <div class="step-text">You own a property worth $1M. It's positively cash-flowed — meaning the rent coming in is greater than the holding costs. That property is paying for itself and putting money in your pocket. That's the foundation.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-n">2</div>
+          <div class="step-body">
+            <div class="step-title">The Structure Shift</div>
+            <div class="step-text">Instead of owning that property in your personal name, we put it inside a company structure. Your company. So now the company owns the asset — not you personally. The property hasn't changed. The tenant hasn't changed. But the ownership entity has.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-n">3</div>
+          <div class="step-body">
+            <div class="step-title">What the Bank Now Sees</div>
+            <div class="step-text">When the bank looks at your company's loan application, they see a completely different picture. They see a business that owns a $1M asset, that is cash-flow positive, that has equity. Suddenly — age doesn't matter. Whether you're single or partnered doesn't matter. They're lending to a business, not a person. The assessment criteria shifts entirely.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-n">4</div>
+          <div class="step-body">
+            <div class="step-title">New Borrowing Power</div>
+            <div class="step-text">In personal name, borrowing capacity might be capped at $400K. Inside the company structure — looking at $950K to $1M in borrowing capacity. That's an extra $550–600K that simply didn't exist before. Same person. Same property. Different structure.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-n">5</div>
+          <div class="step-body">
+            <div class="step-title">What You Do With It</div>
+            <div class="step-text">Take that extra $550–600K and buy the next property. Same process — positive cash flow target, company owns it. As the portfolio grows and properties become self-funding, the company's ability to borrow again resets. Rinse and repeat. This is the compounding engine.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="slbl">The Safety Net</div>
+      <div class="pros-cons">
+        <div class="pros-box">
+          <h4>✓ What's Protected</h4>
+          <ul>
+            <li>Personal liability stays the same — company is separate</li>
+            <li>Clean structure — company assets ring-fenced</li>
+            <li>Tax-efficient — income taxed at 25–30% not personal rate</li>
+            <li>You're not personally on the hook for company debt</li>
+          </ul>
+        </div>
+        <div class="cons-box">
+          <h4>✗ What to Watch</h4>
+          <ul>
+            <li>Higher interest rates on company loans vs personal</li>
+            <li>No 50% CGT discount if you ever sell</li>
+            <li>Fewer lenders to choose from</li>
+            <li>Needs proper accounting and documentation</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="slbl">The Visual — Before vs After</div>
+      <div class="diagram">
+        <div class="diag-title">Same Property. Different Structure. Different Outcome.</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div>
+            <div style="font-size:11px;font-weight:800;color:var(--red);margin-bottom:8px;text-transform:uppercase">Before — Personal Name</div>
+            <div class="ebox ebox-blue" style="width:100%;margin-bottom:8px;font-size:12px">You (Personal)<br>owns $1M property</div>
+            <div style="font-size:12px;color:var(--text)">
+              Rent: covers costs ✓<br>
+              Borrowing capacity: <span class="lose">$400K max</span><br>
+              Asset protection: <span class="lose">None</span><br>
+              Tax on income: <span class="lose">Up to 47%</span>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:800;color:var(--green);margin-bottom:8px;text-transform:uppercase">After — Company Structure</div>
+            <div class="ebox ebox-yellow" style="width:100%;margin-bottom:4px;font-size:12px">You (Director)</div>
+            <div class="arrow-d" style="font-size:14px">↓</div>
+            <div class="ebox ebox-blue" style="width:100%;margin-bottom:4px;font-size:12px">Pty Ltd Company<br>owns $1M property</div>
+            <div style="font-size:12px;color:var(--text);margin-top:4px">
+              Rent: covers costs ✓<br>
+              Borrowing capacity: <span class="win">$950K–$1M</span><br>
+              Asset protection: <span class="win">✓ Company separate</span><br>
+              Tax on income: <span class="win">25–30% flat</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box info-green" style="margin-top:14px">
+        <button class="copy-btn" onclick="copyBox(this)">Copy</button>
+        <strong>How to explain it simply:</strong> "You've got equity sitting in a property that's working hard for you. We're just repositioning it so the bank sees a business — not a person. That changes everything about how much they'll lend. Same property. Same equity. Different structure. An extra $550K in borrowing capacity that simply didn't exist before."
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- end raquel -->
+
+</div><!-- content -->
+<div class="toast" id="toast">✓ Copied!</div>
+
+<script>
+function switchTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  if(el) el.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function tog(hdr){
+  const body=hdr.nextElementSibling;
+  const chev=hdr.querySelector('.chevron');
+  body.classList.toggle('open');
+  if(chev) chev.classList.toggle('open');
+}
+
+function copyBox(btn){
+  const box=btn.parentElement;
+  const tmp=box.cloneNode(true);
+  tmp.querySelector('.copy-btn')?.remove();
+  navigator.clipboard.writeText(tmp.innerText.trim()).catch(()=>{
+    const ta=document.createElement('textarea');
+    ta.value=tmp.innerText.trim();
+    document.body.appendChild(ta);ta.select();
+    document.execCommand('copy');document.body.removeChild(ta);
+  });
+  showToast();
+}
+
+function doSearch(q){
+  const allAcc=document.querySelectorAll('.acc');
+  if(!q){
+    allAcc.forEach(a=>{a.classList.remove('search-hidden');a.style.outline='';});
+    document.querySelectorAll('.panel').forEach((p,i)=>p.classList.toggle('active',i===0));
+    document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===0));
+    document.querySelectorAll('.acc-body').forEach(b=>b.classList.remove('open'));
+    document.querySelectorAll('.chevron').forEach(c=>c.classList.remove('open'));
+    return;
+  }
+  const term=q.toLowerCase();
+  document.querySelectorAll('.panel').forEach(p=>p.classList.add('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.acc-body').forEach(b=>b.classList.add('open'));
+  document.querySelectorAll('.chevron').forEach(c=>c.classList.add('open'));
+  allAcc.forEach(a=>{
+    const match=a.innerText.toLowerCase().includes(term);
+    a.classList.toggle('search-hidden',!match);
+    a.style.outline=match?'2px solid var(--gold)':'';
+  });
+}
+
+function showToast(){
+  const t=document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2000);
+}
+
+// Open first acc in each panel
+document.querySelectorAll('.panel').forEach(panel=>{
+  const first=panel.querySelector('.acc-hdr');
+  if(first){
+    first.nextElementSibling.classList.add('open');
+    const c=first.querySelector('.chevron');
+    if(c) c.classList.add('open');
+  }
+});
+</script>
+</body>
+</html>
