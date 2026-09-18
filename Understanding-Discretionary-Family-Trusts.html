@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Understanding Discretionary Family Trusts</title>
+<style>
+:root{
+  --navy:#0A2540;--navy-deep:#061a30;--teal:#0FB5BA;--teal-light:#7FE3E8;--teal-soft:#E6F8F9;
+  --white:#fff;--bg:#F7F9FC;--amber:#F4A742;--red:#E04E4E;--green:#2FB573;
+  --text:#1A1F2E;--muted:#5A6478;--border:#E2E8F0;--shadow:0 4px 12px rgba(10,37,64,.08);
+  --shadow-lg:0 12px 32px rgba(10,37,64,.12);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:120px}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px;line-height:1.65;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased}
+img,svg{max-width:100%;display:block}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+a{color:var(--teal);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* Progress bar */
+.progress-bar{position:fixed;top:0;left:0;height:4px;background:var(--teal);width:0%;z-index:1000;transition:width .1s linear}
+
+/* Nav */
+.nav{position:sticky;top:0;background:rgba(10,37,64,.97);backdrop-filter:blur(8px);z-index:900;
+  border-bottom:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow)}
+.nav-inner{max-width:1200px;margin:0 auto;padding:.85rem 1.5rem;display:flex;align-items:center;gap:1.5rem}
+.brand{color:#fff;font-weight:700;font-size:.95rem;white-space:nowrap;letter-spacing:.3px}
+.brand .dot{color:var(--teal)}
+.nav-links{display:flex;gap:.25rem;overflow-x:auto;flex:1;scrollbar-width:thin}
+.nav-links::-webkit-scrollbar{height:4px}
+.nav-links::-webkit-scrollbar-thumb{background:var(--teal);border-radius:2px}
+.nav-links a{color:#cbd5e0;font-size:.82rem;padding:.45rem .7rem;border-radius:6px;white-space:nowrap;
+  transition:all .2s;text-decoration:none}
+.nav-links a:hover{color:#fff;background:rgba(255,255,255,.08)}
+.nav-links a.active{color:var(--navy);background:var(--teal);font-weight:600}
+.nav-toggle{display:none;color:#fff;font-size:1.4rem;padding:.4rem .6rem}
+
+/* Hero */
+.hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-deep) 100%);color:#fff;
+  padding:5rem 1.5rem 6rem;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;top:-50%;right:-20%;width:60%;height:200%;
+  background:radial-gradient(circle,rgba(15,181,186,.15) 0%,transparent 60%)}
+.hero-inner{max-width:1100px;margin:0 auto;position:relative}
+.hero .eyebrow{color:var(--teal-light);font-size:.85rem;letter-spacing:2px;text-transform:uppercase;font-weight:600;margin-bottom:1rem}
+.hero h1{font-size:clamp(2rem,5vw,3.5rem);line-height:1.15;margin-bottom:1.25rem;font-weight:800;letter-spacing:-1px}
+.hero .lede{font-size:clamp(1rem,1.6vw,1.2rem);max-width:760px;color:#cbd5e0;margin-bottom:2rem}
+.hero-meta{display:flex;flex-wrap:wrap;gap:1rem;margin-top:2rem}
+.hero-pill{background:rgba(15,181,186,.15);border:1px solid rgba(15,181,186,.4);color:var(--teal-light);
+  padding:.5rem 1rem;border-radius:999px;font-size:.85rem;font-weight:500}
+.scroll-hint{margin-top:3rem;color:var(--teal-light);font-size:.9rem;display:flex;align-items:center;gap:.5rem;animation:bounce 2s infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+
+/* Layout */
+main{max-width:1100px;margin:0 auto;padding:0 1.5rem}
+section{padding:5rem 0;border-bottom:1px solid var(--border);scroll-margin-top:90px}
+section:last-of-type{border-bottom:none}
+.section-num{display:inline-block;background:var(--teal-soft);color:var(--teal);font-weight:700;
+  padding:.35rem .8rem;border-radius:999px;font-size:.78rem;letter-spacing:1px;margin-bottom:1rem}
+h2{font-size:clamp(1.6rem,3.2vw,2.4rem);color:var(--navy);font-weight:800;margin-bottom:1rem;line-height:1.2;letter-spacing:-.5px}
+h3{font-size:1.25rem;color:var(--navy);font-weight:700;margin:1.5rem 0 .75rem}
+h4{font-size:1.05rem;color:var(--navy);font-weight:700;margin-bottom:.5rem}
+.summary{font-size:1.1rem;color:var(--muted);max-width:780px;margin-bottom:2rem;line-height:1.7}
+p{margin-bottom:1rem}
+ul,ol{margin:0 0 1rem 1.25rem}
+li{margin-bottom:.4rem}
+
+/* Cards */
+.grid{display:grid;gap:1.25rem}
+.grid-2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.grid-3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.grid-4{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.card{background:#fff;border-radius:14px;padding:1.5rem;box-shadow:var(--shadow);
+  border:1px solid var(--border);transition:transform .25s,box-shadow .25s}
+.card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+.card-icon{width:44px;height:44px;border-radius:10px;background:var(--teal-soft);color:var(--teal);
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.2rem;margin-bottom:1rem}
+.card-icon.navy{background:var(--navy);color:#fff}
+.card-icon.amber{background:#FEF3E2;color:var(--amber)}
+.card-icon.red{background:#FCE8E8;color:var(--red)}
+.card-icon.green{background:#E2F5EB;color:var(--green)}
+.card.featured{border:2px solid var(--teal);position:relative}
+.card .badge{position:absolute;top:-10px;right:14px;background:var(--teal);color:#fff;
+  padding:.25rem .65rem;border-radius:999px;font-size:.7rem;font-weight:700;letter-spacing:.5px}
+.card p{font-size:.95rem;color:var(--muted);margin-bottom:.5rem}
+.card ul{font-size:.92rem;color:var(--muted)}
+
+/* Tooltip */
+.term{border-bottom:1px dotted var(--teal);cursor:help;position:relative;font-weight:500}
+.term::after{content:attr(data-tip);position:absolute;bottom:130%;left:50%;transform:translateX(-50%);
+  background:var(--navy);color:#fff;font-weight:400;font-size:.82rem;padding:.6rem .8rem;border-radius:8px;
+  width:max-content;max-width:260px;line-height:1.4;opacity:0;pointer-events:none;transition:opacity .2s;
+  box-shadow:var(--shadow-lg);z-index:100;text-align:left;white-space:normal}
+.term:hover::after,.term:focus::after{opacity:1}
+
+/* Callouts */
+.callout{padding:1.25rem 1.5rem;border-radius:12px;margin:1.5rem 0;border-left:4px solid;display:flex;gap:1rem;align-items:flex-start}
+.callout-icon{font-size:1.4rem;flex-shrink:0}
+.callout.info{background:var(--teal-soft);border-color:var(--teal);color:var(--navy-deep)}
+.callout.warn{background:#FEF6E7;border-color:var(--amber);color:#7a4a0c}
+.callout.danger{background:#FCEAEA;border-color:var(--red);color:#7a1f1f}
+.callout.success{background:#E5F6ED;border-color:var(--green);color:#1f5d3a}
+.callout strong{display:block;margin-bottom:.25rem;font-size:1rem}
+
+/* Roles diagram */
+.roles-wrap{margin-top:2rem}
+.roles-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:2rem}
+.role-card{background:#fff;border-radius:12px;padding:1.25rem;border:2px solid var(--border);transition:all .25s;cursor:pointer}
+.role-card[data-role="settlor"]{--rc:#9F7AEA}
+.role-card[data-role="trustee"]{--rc:var(--teal)}
+.role-card[data-role="appointor"]{--rc:var(--navy)}
+.role-card[data-role="beneficiaries"]{--rc:var(--amber)}
+.role-card.active,.role-card:hover{border-color:var(--rc);box-shadow:0 8px 20px rgba(0,0,0,.08);transform:translateY(-2px)}
+.role-tag{font-size:.7rem;font-weight:700;letter-spacing:1px;color:var(--rc);text-transform:uppercase;margin-bottom:.4rem}
+.role-card h4{color:var(--rc)}
+.role-card p{font-size:.88rem;color:var(--muted);margin-top:.5rem}
+.diagram{background:#fff;border-radius:14px;padding:1.5rem;border:1px solid var(--border);overflow-x:auto}
+.diagram svg{margin:0 auto;max-width:100%;height:auto}
+.diagram svg .node{transition:all .3s}
+.diagram svg .link{transition:opacity .3s,stroke-width .3s}
+
+/* Trustee structures */
+.steps{display:grid;grid-template-columns:1fr auto 1fr;gap:1rem;align-items:center;margin:2rem 0}
+.step-card{background:#fff;border-radius:12px;padding:1.5rem;border:1px solid var(--border);box-shadow:var(--shadow)}
+.step-card h4{color:var(--navy);margin-bottom:.5rem}
+.step-card .pros,.step-card .cons{font-size:.88rem;color:var(--muted)}
+.step-arrow{font-size:2rem;color:var(--teal);text-align:center}
+
+/* Beneficiary tiers */
+.tiers{display:flex;flex-direction:column;gap:.75rem;margin:2rem 0}
+.tier{background:#fff;border-radius:12px;padding:1.25rem;border:1px solid var(--border);
+  display:grid;grid-template-columns:auto 1fr;gap:1.25rem;align-items:center}
+.tier-num{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-weight:800;color:#fff;font-size:1.1rem}
+.tier.t1 .tier-num{background:var(--navy)}
+.tier.t2 .tier-num{background:var(--teal)}
+.tier.t3 .tier-num{background:var(--amber)}
+.tier.t4 .tier-num{background:var(--muted)}
+
+/* Flow stepper */
+.flow{background:#fff;border-radius:14px;padding:1.5rem;border:1px solid var(--border);margin:2rem 0}
+.flow-steps{display:flex;flex-direction:column;gap:.75rem;margin:1.5rem 0}
+.flow-step{display:grid;grid-template-columns:auto 1fr;gap:1rem;padding:1rem;border-radius:10px;
+  background:var(--bg);border:1px solid var(--border);transition:all .3s;opacity:.55}
+.flow-step.active{opacity:1;background:var(--teal-soft);border-color:var(--teal);transform:translateX(4px)}
+.flow-step .num{width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem}
+.flow-step.active .num{background:var(--teal)}
+.flow-controls{display:flex;justify-content:space-between;align-items:center;margin-top:1rem}
+.btn{background:var(--navy);color:#fff;padding:.6rem 1.2rem;border-radius:8px;font-weight:600;font-size:.9rem;transition:all .2s}
+.btn:hover{background:var(--teal);transform:translateY(-1px)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn.outline{background:transparent;color:var(--navy);border:2px solid var(--navy)}
+.btn.outline:hover{background:var(--navy);color:#fff}
+
+/* Calculator */
+.calc{background:linear-gradient(135deg,#fff 0%,#F7F9FC 100%);border-radius:16px;padding:2rem;
+  border:1px solid var(--border);box-shadow:var(--shadow-lg);margin-top:2rem}
+.calc h3{margin-top:0}
+.calc-input{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.calc-input label{font-weight:600;color:var(--navy)}
+.calc-input input{padding:.6rem 1rem;border:2px solid var(--border);border-radius:8px;font-size:1rem;width:160px;font-family:inherit}
+.calc-input input:focus{outline:none;border-color:var(--teal)}
+.allocators{display:grid;gap:1rem;margin:1.5rem 0}
+.allocator{background:#fff;padding:1rem 1.25rem;border-radius:10px;border:1px solid var(--border)}
+.allocator-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;flex-wrap:wrap;gap:.5rem}
+.allocator-name{font-weight:600;color:var(--navy)}
+.allocator-name small{color:var(--muted);font-weight:400;font-size:.78rem;display:block}
+.allocator-amount{font-weight:700;color:var(--teal);font-family:Consolas,monospace}
+.allocator input[type="range"]{width:100%;accent-color:var(--teal);height:6px}
+.allocator-tax{font-size:.82rem;color:var(--muted);margin-top:.4rem;display:flex;justify-content:space-between}
+.calc-results{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-top:1.5rem;padding-top:1.5rem;border-top:2px dashed var(--border)}
+.result-tile{background:#fff;padding:1.25rem;border-radius:10px;border:1px solid var(--border);text-align:center}
+.result-label{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem}
+.result-value{font-size:1.6rem;font-weight:800;color:var(--navy);font-family:Consolas,monospace}
+.result-tile.saving{background:linear-gradient(135deg,var(--green) 0%,#26935E 100%);color:#fff;border:none}
+.result-tile.saving .result-label,.result-tile.saving .result-value{color:#fff}
+.calc-disclaimer{font-size:.78rem;color:var(--muted);margin-top:1rem;font-style:italic}
+
+/* Scenarios */
+.scenarios{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:2rem 0}
+.scenario{background:#fff;border-radius:12px;padding:1.5rem;border:1px solid var(--border)}
+.scenario.a{border-top:4px solid var(--red)}
+.scenario.b{border-top:4px solid var(--green)}
+.scenario h4{display:flex;justify-content:space-between;align-items:center}
+.scenario .tax{font-size:1.6rem;font-weight:800;font-family:Consolas,monospace;margin:.5rem 0}
+.scenario.a .tax{color:var(--red)}
+.scenario.b .tax{color:var(--green)}
+.scenario table{width:100%;border-collapse:collapse;font-size:.88rem;margin-top:.5rem}
+.scenario td{padding:.4rem 0;border-bottom:1px dashed var(--border)}
+.scenario td:last-child{text-align:right;font-family:Consolas,monospace;color:var(--navy);font-weight:600}
+
+/* Tables */
+.table-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border);background:#fff;margin:1.5rem 0}
+table.data{width:100%;border-collapse:collapse;font-size:.92rem}
+table.data th,table.data td{padding:.85rem 1rem;text-align:left;border-bottom:1px solid var(--border)}
+table.data th{background:var(--navy);color:#fff;font-weight:600;font-size:.85rem;letter-spacing:.3px}
+table.data tr:last-child td{border-bottom:none}
+table.data tr:nth-child(even) td{background:#FAFBFD}
+
+/* Checklist */
+.checklist{background:#fff;border-radius:14px;padding:1.5rem;border:1px solid var(--border);margin:1.5rem 0}
+.check-item{display:flex;align-items:flex-start;gap:.85rem;padding:.85rem;border-radius:8px;cursor:pointer;transition:background .2s}
+.check-item:hover{background:var(--bg)}
+.check-item input{width:20px;height:20px;margin-top:2px;accent-color:var(--teal);cursor:pointer;flex-shrink:0}
+.check-item.done .check-label{text-decoration:line-through;color:var(--muted)}
+.check-label{font-weight:500;color:var(--navy)}
+.check-detail{font-size:.85rem;color:var(--muted);display:block;margin-top:.2rem;font-weight:400}
+
+/* Glossary */
+.glossary{background:#fff;border-radius:14px;border:1px solid var(--border);overflow:hidden;margin-top:2rem}
+.gloss-item{border-bottom:1px solid var(--border)}
+.gloss-item:last-child{border-bottom:none}
+.gloss-q{width:100%;text-align:left;padding:1.1rem 1.5rem;font-weight:600;color:var(--navy);
+  display:flex;justify-content:space-between;align-items:center;font-size:1rem;transition:background .2s}
+.gloss-q:hover{background:var(--bg)}
+.gloss-q::after{content:"+";font-size:1.4rem;color:var(--teal);transition:transform .25s;font-weight:300}
+.gloss-item.open .gloss-q::after{transform:rotate(45deg)}
+.gloss-item.open .gloss-q{background:var(--teal-soft)}
+.gloss-a{padding:0 1.5rem;max-height:0;overflow:hidden;transition:max-height .3s,padding .3s;color:var(--muted);font-size:.95rem}
+.gloss-item.open .gloss-a{padding:0 1.5rem 1.25rem;max-height:300px}
+
+/* Footer */
+footer{background:var(--navy);color:#cbd5e0;padding:3rem 1.5rem;margin-top:2rem;text-align:center}
+.foot-inner{max-width:900px;margin:0 auto}
+footer h4{color:#fff;margin-bottom:1rem}
+footer p{font-size:.9rem;line-height:1.6;margin-bottom:1rem}
+.print-btn{margin-top:1rem}
+
+/* Bucket diagram */
+.bucket-diag{background:#fff;border-radius:14px;padding:2rem;border:1px solid var(--border);margin:2rem 0}
+.bar-compare{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.5rem}
+.bar{background:var(--bg);padding:1rem;border-radius:10px;text-align:center}
+.bar .b-track{height:140px;background:#fff;border-radius:8px;display:flex;align-items:flex-end;justify-content:center;padding:.5rem;border:1px solid var(--border)}
+.b-fill{width:60%;border-radius:6px 6px 0 0;display:flex;align-items:flex-end;justify-content:center;color:#fff;font-weight:700;padding-bottom:.4rem;font-size:.85rem}
+.bar.high .b-fill{height:100%;background:var(--red)}
+.bar.low .b-fill{height:53%;background:var(--green)}
+.bar h4{margin-top:.5rem}
+
+/* JV diagram */
+.jv-svg-wrap{background:#fff;border-radius:14px;padding:1.5rem;border:1px solid var(--border);margin:2rem 0;overflow-x:auto}
+
+/* Responsive */
+@media (max-width:768px){
+  .nav-inner{padding:.7rem 1rem;gap:.75rem}
+  .brand{font-size:.85rem}
+  .nav-links{font-size:.78rem}
+  .nav-links a{padding:.4rem .55rem;font-size:.78rem}
+  .hero{padding:3rem 1.25rem 4rem}
+  section{padding:3rem 0}
+  main{padding:0 1.25rem}
+  .scenarios{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr;gap:.5rem}
+  .step-arrow{transform:rotate(90deg);padding:.25rem}
+  .bar-compare{grid-template-columns:1fr 1fr}
+  .term::after{max-width:200px;font-size:.75rem}
+  .tier{grid-template-columns:1fr;text-align:left}
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+
+/* Print */
+@media print{
+  .progress-bar,.nav,.scroll-hint,.flow-controls,.print-btn,.calc-input input{display:none!important}
+  body{background:#fff;font-size:11pt}
+  .hero{background:#fff;color:var(--navy);padding:1rem 0;page-break-after:avoid}
+  .hero::before{display:none}
+  .hero h1,.hero .lede{color:var(--navy)}
+  .hero-pill{background:#fff;border:1px solid var(--navy);color:var(--navy)}
+  section{padding:1.5rem 0;page-break-inside:avoid;border-color:#ccc}
+  h2{page-break-after:avoid}
+  .card,.flow,.calc,.checklist,.glossary,.diagram,.scenario,.bucket-diag,.jv-svg-wrap{
+    box-shadow:none;page-break-inside:avoid;border:1px solid #ccc}
+  .gloss-item .gloss-a{max-height:none!important;padding:0 1.5rem 1rem!important}
+  .gloss-item .gloss-q::after{display:none}
+  .flow-step{opacity:1!important;background:#fff!important}
+  footer{background:#fff;color:#333;border-top:2px solid var(--navy)}
+  footer h4,footer p{color:#333}
+  a{color:var(--navy);text-decoration:none}
+  .term{border:none}
+  .term::after{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar" aria-hidden="true"></div>
+
+<nav class="nav" aria-label="Section navigation">
+  <div class="nav-inner">
+    <div class="brand">Family Trusts<span class="dot">.</span></div>
+    <div class="nav-links" id="navLinks">
+      <a href="#s1">1. Basics</a>
+      <a href="#s2">2. Roles</a>
+      <a href="#s3">3. Types</a>
+      <a href="#s4">4. Structures</a>
+      <a href="#s5">5. Beneficiaries</a>
+      <a href="#s6">6. Income Flow</a>
+      <a href="#s7">7. Tax Efficiency</a>
+      <a href="#s8">8. Bucket Co</a>
+      <a href="#s9">9. Div 7A</a>
+      <a href="#s10">10. Variations</a>
+      <a href="#s11">11. JV Example</a>
+      <a href="#s12">12. Admin</a>
+      <a href="#s13">13. Mistakes</a>
+      <a href="#s14">14. Glossary</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">Internal Training Resource</div>
+    <h1>Understanding Discretionary Family Trusts</h1>
+    <p class="lede">A plain-English guide to how trusts work in Australia — the people involved, how income flows, the tax savings they unlock, and the rules you must follow to stay on the right side of the ATO. No prior knowledge required.</p>
+    <div class="hero-meta">
+      <span class="hero-pill">14 sections</span>
+      <span class="hero-pill">Interactive calculator</span>
+      <span class="hero-pill">Print-friendly</span>
+      <span class="hero-pill">~25 min read</span>
+    </div>
+    <div class="scroll-hint">Scroll to begin ↓</div>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ 1. BASICS ============ -->
+<section id="s1">
+  <div class="section-num">Section 01</div>
+  <h2>What Is a Trust? — The Basics</h2>
+  <p class="summary">A trust is a legal arrangement where one party (the <span class="term" data-tip="The legal owner who holds and manages assets for others">trustee</span>) holds and manages assets on behalf of another party (the <span class="term" data-tip="A person or entity who can receive distributions of trust income or capital">beneficiaries</span>). It's not a company. It's not a person. It's a relationship — and that relationship is what gives it power.</p>
+
+  <p>Think of a trust like a safe-deposit box that someone holds the keys to on your behalf. The person holding the keys (the trustee) doesn't <em>own</em> what's inside in any meaningful sense — they're legally obligated to look after it for someone else. That "someone else" is the beneficiary.</p>
+
+  <h3>The Three Certainties</h3>
+  <p>For a trust to be legally valid in Australia, three things must be clear from day one. If any one of these is missing, the trust fails.</p>
+  <div class="grid grid-3">
+    <div class="card">
+      <div class="card-icon">1</div>
+      <h4>Certainty of Intention</h4>
+      <p>It must be obvious that the person setting up the trust genuinely <em>intended</em> to create one. Vague gifts or loose "I'll hold this for you" arrangements aren't enough — there must be a clear intention to bind the trustee to fiduciary duties.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">2</div>
+      <h4>Certainty of Subject Matter</h4>
+      <p>The assets in the trust must be clearly identifiable. "Some of my shares" is not certain. "All 1,000 of my BHP shares" is. The trust property has to be defined with enough precision that everyone knows what's in and what's out.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">3</div>
+      <h4>Certainty of Objects</h4>
+      <p>The beneficiaries must be identifiable. They don't all have to be named — a class like "the children of James Mitchell" is fine — but it has to be possible to say with certainty whether any given person falls inside or outside the class.</p>
+    </div>
+  </div>
+
+  <h3>Legal vs Beneficial Ownership</h3>
+  <div class="callout info">
+    <div class="callout-icon">🏠</div>
+    <div>
+      <strong>An everyday analogy</strong>
+      Imagine James Mitchell holds the house deed in his name, but the house was bought with his daughter's inheritance and is meant for her when she turns 25. James is the <em>legal</em> owner — his name's on the title, he can sign documents, he handles the rates. But his daughter is the <em>beneficial</em> owner — she's the one who actually benefits from the property, and James is legally bound to look after it for her. That split between "whose name is on the paperwork" and "who actually benefits" is the heart of every trust.
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2. ROLES ============ -->
+<section id="s2">
+  <div class="section-num">Section 02</div>
+  <h2>The Key Roles</h2>
+  <p class="summary">Every discretionary family trust has four roles. Understanding who does what — and crucially, where the real power sits — is the single most important thing to grasp before you set one up.</p>
+
+  <div class="roles-grid">
+    <div class="role-card" data-role="settlor" tabindex="0">
+      <div class="role-tag">Role 1</div>
+      <h4>Settlor</h4>
+      <p>An independent third party (often the lawyer or accountant) who hands over the initial $10 to start the trust. After that, they walk away. They cannot be a beneficiary, and they cannot influence the trust again — that independence is what makes the trust valid for tax purposes.</p>
+    </div>
+    <div class="role-card" data-role="trustee" tabindex="0">
+      <div class="role-tag">Role 2</div>
+      <h4>Trustee</h4>
+      <p>The legal owner of trust assets and the day-to-day decision maker. Owes <span class="term" data-tip="Strict legal duties of loyalty, good faith and acting in beneficiaries' best interests">fiduciary duties</span> to the beneficiaries. Can be an individual or a company (Mitchell Trustee Pty Ltd). Signs contracts, lodges tax returns, makes distributions.</p>
+    </div>
+    <div class="role-card" data-role="appointor" tabindex="0">
+      <div class="role-tag">Role 3 — Most Powerful</div>
+      <h4>Appointor</h4>
+      <p>Has the power to hire and fire the trustee. This is where the <em>real</em> control of the trust sits. Whoever holds this role effectively controls the trust, because they can replace any trustee who isn't acting in line with their wishes.</p>
+    </div>
+    <div class="role-card" data-role="beneficiaries" tabindex="0">
+      <div class="role-tag">Role 4</div>
+      <h4>Beneficiaries</h4>
+      <p>The people and entities who <em>can</em> receive distributions. Split into Primary, Secondary and Tertiary classes. Important: being listed as a beneficiary doesn't entitle you to anything — the trustee chooses each year who actually gets paid.</p>
+    </div>
+  </div>
+
+  <h3>How They Connect</h3>
+  <p>Hover or tap a role above to see how it relates to the others.</p>
+  <div class="diagram">
+    <svg viewBox="0 0 700 360" id="rolesDiagram" role="img" aria-label="Diagram showing how Settlor, Appointor, Trustee and Beneficiaries connect">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,0 L10,5 L0,10 Z" fill="#5A6478"/>
+        </marker>
+      </defs>
+      <!-- Links -->
+      <g stroke="#94a3b8" stroke-width="2" fill="none">
+        <path class="link" data-link="settlor-trustee" d="M120,90 Q280,60 350,170" marker-end="url(#arrow)"/>
+        <path class="link" data-link="appointor-trustee" d="M580,90 Q420,60 350,170" marker-end="url(#arrow)"/>
+        <path class="link" data-link="trustee-beneficiaries" d="M350,210 L350,275" marker-end="url(#arrow)"/>
+        <path class="link" data-link="appointor-trustee" d="M580,110 Q500,170 410,180" marker-end="url(#arrow)" stroke-dasharray="4 4"/>
+      </g>
+      <!-- Nodes -->
+      <g>
+        <rect class="node" data-node="settlor" x="40" y="50" width="160" height="60" rx="10" fill="#9F7AEA"/>
+        <text x="120" y="78" text-anchor="middle" fill="#fff" font-weight="700" font-size="14">Settlor</text>
+        <text x="120" y="98" text-anchor="middle" fill="#fff" font-size="11" opacity=".85">$10 → walks away</text>
+      </g>
+      <g>
+        <rect class="node" data-node="appointor" x="500" y="50" width="160" height="60" rx="10" fill="#0A2540"/>
+        <text x="580" y="78" text-anchor="middle" fill="#fff" font-weight="700" font-size="14">Appointor</text>
+        <text x="580" y="98" text-anchor="middle" fill="#fff" font-size="11" opacity=".85">Hires/fires trustee</text>
+      </g>
+      <g>
+        <rect class="node" data-node="trustee" x="270" y="160" width="160" height="60" rx="10" fill="#0FB5BA"/>
+        <text x="350" y="188" text-anchor="middle" fill="#fff" font-weight="700" font-size="14">Trustee</text>
+        <text x="350" y="208" text-anchor="middle" fill="#fff" font-size="11" opacity=".9">Mitchell Trustee Pty Ltd</text>
+      </g>
+      <g>
+        <rect class="node" data-node="beneficiaries" x="200" y="275" width="300" height="60" rx="10" fill="#F4A742"/>
+        <text x="350" y="303" text-anchor="middle" fill="#fff" font-weight="700" font-size="14">Beneficiaries</text>
+        <text x="350" y="323" text-anchor="middle" fill="#fff" font-size="11" opacity=".95">James, Sarah, family, bucket co</text>
+      </g>
+    </svg>
+  </div>
+  <div class="callout info">
+    <div class="callout-icon">💡</div>
+    <div><strong>Why the appointor matters most</strong>The trustee makes day-to-day decisions, but the appointor can replace the trustee at any time. So in practice, the appointor is the person who controls the trust. When advisers talk about "passing control of the trust to the next generation", what they really mean is changing who holds the appointor role.</div>
+  </div>
+</section>
+
+<!-- ============ 3. TYPES ============ -->
+<section id="s3">
+  <div class="section-num">Section 03</div>
+  <h2>Types of Trusts in Australia</h2>
+  <p class="summary">Australian law recognises several types of trust. They look similar on the surface, but the rules around who can receive what — and how flexibly — are very different.</p>
+  <div class="grid grid-2">
+    <div class="card featured">
+      <span class="badge">Most Common</span>
+      <div class="card-icon">DT</div>
+      <h4>Discretionary (Family) Trust</h4>
+      <p>The trustee has full discretion to decide each year which beneficiaries receive distributions and in what proportions. No beneficiary has a fixed entitlement. This is the structure used by most Australian families and small businesses for asset protection and tax planning.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">UT</div>
+      <h4>Unit Trust</h4>
+      <p>Beneficiaries (called "unit holders") own fixed units in the trust, similar to shares in a company. Distributions are made strictly in proportion to units held. Common for unrelated parties investing together in property or business.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">FT</div>
+      <h4>Fixed Trust</h4>
+      <p>Beneficiaries have a fixed, defined entitlement to income and capital. The trustee has no discretion. Often used to satisfy specific tax or land-tax rules where flexibility isn't required.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">HT</div>
+      <h4>Hybrid Trust</h4>
+      <p>A mix of unit and discretionary features. Some beneficiaries hold fixed units, others receive discretionary distributions. Once popular, but the ATO has tightened the rules and these are used much less today.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">TT</div>
+      <h4>Testamentary Trust</h4>
+      <p>Created by a person's Will and only comes into existence on their death. Highly tax-effective for distributions to minor children, who are taxed at adult marginal rates rather than penalty rates.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">BT</div>
+      <h4>Bare Trust</h4>
+      <p>The simplest form — the trustee holds an asset purely as nominee for a single beneficiary, with no active duties. Often used in SMSF property purchases under limited recourse borrowing arrangements.</p>
+    </div>
+  </div>
+  <div class="callout success">
+    <div class="callout-icon">✓</div>
+    <div><strong>For most individuals and small businesses</strong>The discretionary (family) trust is the default choice. Its flexibility — being able to decide who gets what each year — is exactly what makes it so powerful for tax planning and protecting family wealth.</div>
+  </div>
+</section>
+
+<!-- ============ 4. STRUCTURES ============ -->
+<section id="s4">
+  <div class="section-num">Section 04</div>
+  <h2>The Three Trustee Structures</h2>
+  <p class="summary">When you set up a trust, you choose whether the trustee is a person or a company. Most people start with an individual trustee for simplicity, then upgrade as the trust grows.</p>
+
+  <div class="steps">
+    <div class="step-card">
+      <h4>① Individual Trustee</h4>
+      <p class="pros"><strong style="color:var(--green)">Pros:</strong> Cheapest and fastest to set up. No ASIC fees. Simple paperwork.</p>
+      <p class="cons" style="margin-top:.5rem"><strong style="color:var(--red)">Cons:</strong> The individual is personally liable for trust debts. If the trust is sued, the trustee's personal assets are exposed. If the trustee dies, the trust must change trustees, which can be messy.</p>
+    </div>
+    <div class="step-arrow">→</div>
+    <div class="step-card">
+      <h4>② Corporate Trustee</h4>
+      <p class="pros"><strong style="color:var(--green)">Pros:</strong> The company (e.g., Mitchell Trustee Pty Ltd) takes the legal risk, not James personally. Cleaner governance, easier succession, looks more professional to banks and counterparties.</p>
+      <p class="cons" style="margin-top:.5rem"><strong style="color:var(--red)">Cons:</strong> Costs ~$500 to set up, ~$310 ASIC annual fee, slightly more paperwork.</p>
+    </div>
+  </div>
+
+  <div class="callout success">
+    <div class="callout-icon">🔄</div>
+    <div><strong>Upgrading without triggering CGT</strong>You can change from an individual trustee to a corporate trustee at any time. Because the trust itself stays the same — only the legal name on the asset registers changes — there's no <span class="term" data-tip="Capital Gains Tax — the tax payable on the increase in value of an asset when it's sold or transferred">CGT</span> event and no stamp duty in most states. Your accountant updates the trust deed, registers the new trustee with the ATO, ASIC and the bank, and the trust carries on as before.</div>
+  </div>
+</section>
+
+<!-- ============ 5. BENEFICIARY CLASSES ============ -->
+<section id="s5">
+  <div class="section-num">Section 05</div>
+  <h2>The Beneficiary Classes Explained</h2>
+  <p class="summary">A discretionary trust deed defines who <em>could</em> receive a distribution. The list is usually drafted very widely, in three tiers, plus a default-beneficiary safety net. Below is how it looks for The Mitchell Family Trust.</p>
+
+  <div class="tiers">
+    <div class="tier t1">
+      <div class="tier-num">P</div>
+      <div>
+        <h4>Primary Beneficiaries</h4>
+        <p style="margin:0;color:var(--muted)"><strong>James Mitchell</strong> personally. The named individual the trust is set up for.</p>
+      </div>
+    </div>
+    <div class="tier t2">
+      <div class="tier-num">S</div>
+      <div>
+        <h4>Secondary Beneficiaries</h4>
+        <p style="margin:0;color:var(--muted)"><strong>Sarah Mitchell</strong> (spouse/partner), future children, parents, siblings, and extended family of the primary beneficiary.</p>
+      </div>
+    </div>
+    <div class="tier t3">
+      <div class="tier-num">T</div>
+      <div>
+        <h4>Tertiary Beneficiaries</h4>
+        <p style="margin:0;color:var(--muted)"><strong>Mitchell Investments Pty Ltd</strong> (the bucket company), any associated SMSF, related companies and trusts, and registered charities.</p>
+      </div>
+    </div>
+    <div class="tier t4">
+      <div class="tier-num">D</div>
+      <div>
+        <h4>Default Beneficiary</h4>
+        <p style="margin:0;color:var(--muted)">If no distribution resolution is made by 30 June, income falls automatically to the default beneficiary (usually James). This stops the trust paying penalty tax — but it dumps all the income on one person at the highest rate, so you never want to rely on it.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <div class="callout-icon">⚠️</div>
+    <div><strong>Listed ≠ Entitled</strong>Being named as a beneficiary doesn't guarantee you anything. The trustee decides each financial year — between 1 July and 30 June — who actually receives a distribution and how much. A distant relative listed as a tertiary beneficiary may never see a cent. That flexibility is exactly the point: the trustee can react to each year's circumstances.</div>
+  </div>
+</section>
+
+<!-- ============ 6. INCOME FLOW ============ -->
+<section id="s6">
+  <div class="section-num">Section 06</div>
+  <h2>How Income Flows Through the Trust</h2>
+  <p class="summary">A trust doesn't pay tax itself — the income flows through to whoever the trustee chooses, and they pay tax at their own rate. Step through the flow below.</p>
+
+  <div class="flow">
+    <h3 style="margin-top:0">Annual Income Flow — Step by Step</h3>
+    <div class="flow-steps" id="flowSteps">
+      <div class="flow-step active"><div class="num">1</div><div><strong>Income arrives in the trust</strong><br><small style="color:var(--muted)">Dividends from shares, business profits, capital gains, interest from term deposits — anything earned by trust-owned assets.</small></div></div>
+      <div class="flow-step"><div class="num">2</div><div><strong>Trustee makes a distribution resolution before 30 June</strong><br><small style="color:var(--muted)">A signed written decision stating exactly who gets what percentage of which type of income. This must be done <em>before</em> midnight 30 June — not after.</small></div></div>
+      <div class="flow-step"><div class="num">3</div><div><strong>Income flows to chosen beneficiaries</strong><br><small style="color:var(--muted)">James, Sarah, Mitchell Investments Pty Ltd, family members — each takes their share into their own tax return at their own marginal rate.</small></div></div>
+      <div class="flow-step"><div class="num">4</div><div><strong>Streaming: different income types to different beneficiaries</strong><br><small style="color:var(--muted)">The trustee can stream <span class="term" data-tip="Tax credits attached to dividends from Australian companies, representing tax already paid by the company">franking credits</span> to one beneficiary and capital gains to another, optimising for each person's tax position.</small></div></div>
+      <div class="flow-step"><div class="num">5</div><div><strong>Beneficiaries pay tax at their own rates</strong><br><small style="color:var(--muted)">Franking credits travel with dividend distributions, reducing the receiving beneficiary's tax bill — and may even produce a refund for low-income beneficiaries.</small></div></div>
+      <div class="flow-step"><div class="num">6</div><div><strong style="color:var(--red)">⚠️ Miss 30 June and the trustee pays 47% on all undistributed income</strong><br><small style="color:var(--muted)">If no valid resolution exists, the trustee is taxed on the income at the top marginal rate of 47%. This is the single most expensive admin mistake in trust land.</small></div></div>
+    </div>
+    <div class="flow-controls">
+      <button class="btn outline" id="flowPrev" disabled>← Previous</button>
+      <span style="color:var(--muted);font-size:.9rem"><span id="flowCounter">1</span> of 6</span>
+      <button class="btn" id="flowNext">Next →</button>
+    </div>
+  </div>
+
+  <div class="callout danger">
+    <div class="callout-icon">🚨</div>
+    <div><strong>The 30 June deadline is non-negotiable</strong>The resolution must be signed and dated <em>on or before</em> 30 June. The ATO does not accept excuses. Missing it triggers tax at 47% on the trust's net income — typically tens of thousands of dollars wasted on a single missed signature.</div>
+  </div>
+</section>
+
+<!-- ============ 7. TAX EFFICIENCY ============ -->
+<section id="s7">
+  <div class="section-num">Section 07</div>
+  <h2>Tax Efficiency — The Real Benefit</h2>
+  <p class="summary">The headline reason families set up a trust: by spreading income across multiple beneficiaries instead of piling it on one person, you push less of it into the highest tax brackets. Here's a worked example.</p>
+
+  <div class="scenarios">
+    <div class="scenario a">
+      <h4>Scenario A — All to James <span style="color:var(--red);font-size:.8rem">Personal</span></h4>
+      <p style="color:var(--muted);font-size:.9rem">$300,000 earned personally by James in his own name.</p>
+      <div class="tax">~$110,438</div>
+      <table>
+        <tr><td>James — $300,000 @ marginal</td><td>$110,438</td></tr>
+        <tr><td>Effective rate</td><td>36.8%</td></tr>
+      </table>
+    </div>
+    <div class="scenario b">
+      <h4>Scenario B — Through Trust <span style="color:var(--green);font-size:.8rem">Split</span></h4>
+      <p style="color:var(--muted);font-size:.9rem">$300,000 distributed across four beneficiaries.</p>
+      <div class="tax">~$56,388</div>
+      <table>
+        <tr><td>James — $90,000</td><td>$20,038</td></tr>
+        <tr><td>Sarah — $45,000</td><td>$5,188</td></tr>
+        <tr><td>Family member — $45,000</td><td>$5,188</td></tr>
+        <tr><td>Mitchell Investments Pty Ltd — $120,000</td><td>$30,000</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="callout success">
+    <div class="callout-icon">💰</div>
+    <div><strong>Tax saved: roughly $54,000 every year.</strong>Same $300,000 of income, same family — but by splitting it instead of stacking it, the household keeps tens of thousands more. Compounded over 10–20 years, that's life-changing money.</div>
+  </div>
+
+  <div class="calc">
+    <h3>Try It Yourself — Income Splitting Calculator</h3>
+    <p style="color:var(--muted);font-size:.92rem">Enter your trust's total income, then drag the sliders to allocate it. We compare the trust outcome against the same total earned by James personally.</p>
+    <div class="calc-input">
+      <label for="totalInc">Total trust income:</label>
+      <span style="font-weight:700;color:var(--navy)">$</span>
+      <input type="number" id="totalInc" value="300000" min="10000" max="2000000" step="10000">
+    </div>
+    <div class="allocators" id="allocators">
+      <div class="allocator" data-bene="james" data-type="ind">
+        <div class="allocator-head">
+          <div class="allocator-name">James Mitchell <small>Individual — marginal rates</small></div>
+          <div class="allocator-amount" data-amt>$90,000</div>
+        </div>
+        <input type="range" min="0" max="100" value="30" data-pct>
+        <div class="allocator-tax"><span data-pct-label>30%</span><span data-tax>Tax: $20,038</span></div>
+      </div>
+      <div class="allocator" data-bene="sarah" data-type="ind">
+        <div class="allocator-head">
+          <div class="allocator-name">Sarah Mitchell <small>Individual — marginal rates</small></div>
+          <div class="allocator-amount" data-amt>$45,000</div>
+        </div>
+        <input type="range" min="0" max="100" value="15" data-pct>
+        <div class="allocator-tax"><span data-pct-label>15%</span><span data-tax>Tax: $5,188</span></div>
+      </div>
+      <div class="allocator" data-bene="family" data-type="ind">
+        <div class="allocator-head">
+          <div class="allocator-name">Family member <small>e.g. parent — marginal rates</small></div>
+          <div class="allocator-amount" data-amt>$45,000</div>
+        </div>
+        <input type="range" min="0" max="100" value="15" data-pct>
+        <div class="allocator-tax"><span data-pct-label>15%</span><span data-tax>Tax: $5,188</span></div>
+      </div>
+      <div class="allocator" data-bene="bucket" data-type="co">
+        <div class="allocator-head">
+          <div class="allocator-name">Mitchell Investments Pty Ltd <small>Bucket company — flat 25%</small></div>
+          <div class="allocator-amount" data-amt>$120,000</div>
+        </div>
+        <input type="range" min="0" max="100" value="40" data-pct>
+        <div class="allocator-tax"><span data-pct-label>40%</span><span data-tax>Tax: $30,000</span></div>
+      </div>
+    </div>
+    <div style="text-align:center;font-size:.85rem;color:var(--muted)">Allocation total: <strong id="allocTotal" style="color:var(--navy)">100%</strong></div>
+    <div class="calc-results">
+      <div class="result-tile">
+        <div class="result-label">Tax — Personal</div>
+        <div class="result-value" id="taxPersonal">$110,438</div>
+      </div>
+      <div class="result-tile">
+        <div class="result-label">Tax — Through Trust</div>
+        <div class="result-value" id="taxTrust">$60,413</div>
+      </div>
+      <div class="result-tile saving">
+        <div class="result-label">You Save</div>
+        <div class="result-value" id="taxSaved">$50,025</div>
+      </div>
+    </div>
+    <p class="calc-disclaimer">Illustrative only. Uses 2024-25 resident marginal rates plus 2% Medicare levy on individual income above $26,000 and a flat 25% rate on the bucket company. Excludes offsets, levies, franking credits and individual circumstances. Always confirm with your accountant.</p>
+  </div>
+</section>
+
+<!-- ============ 8. BUCKET COMPANY ============ -->
+<section id="s8">
+  <div class="section-num">Section 08</div>
+  <h2>The Bucket Company</h2>
+  <p class="summary">A bucket company is a private company set up purely to receive trust distributions and "catch" income that doesn't need to be paid out to individuals. It pays a flat 25% corporate tax — far less than personal top rates — and lets profits compound inside the company.</p>
+
+  <div class="bucket-diag">
+    <h3 style="margin-top:0">How it works</h3>
+    <p>Each year, after distributing what James and Sarah personally need, the trustee streams the remaining trust income to <strong>Mitchell Investments Pty Ltd</strong>. The company pays 25% corporate tax on that distribution. The after-tax money stays inside the company, where it can be reinvested in shares, property or other assets.</p>
+    <p>When James eventually wants to access the money — perhaps in retirement when his personal income is low — the company pays him a franked dividend. The 25% tax already paid travels with the dividend as a <span class="term" data-tip="A tax credit attached to a company dividend, representing tax already paid by the company">franking credit</span>, so James only tops up to his marginal rate.</p>
+
+    <div class="bar-compare">
+      <div class="bar high">
+        <div class="b-track"><div class="b-fill">47%</div></div>
+        <h4>James personally (top rate)</h4>
+      </div>
+      <div class="bar low">
+        <div class="b-track"><div class="b-fill">25%</div></div>
+        <h4>Mitchell Investments Pty Ltd</h4>
+      </div>
+    </div>
+    <p style="text-align:center;color:var(--muted);font-size:.9rem;margin-top:1rem">Same dollar of income — almost half the tax inside the bucket company.</p>
+  </div>
+
+  <div class="callout danger">
+    <div class="callout-icon">🚫</div>
+    <div><strong>The bucket company and the corporate trustee MUST be different entities</strong>The corporate trustee (Mitchell Trustee Pty Ltd) holds the trust assets and bears legal risk. The bucket company (Mitchell Investments Pty Ltd) is a beneficiary that receives distributions and accumulates wealth. If they're the same entity, you've fused the trustee's legal liability with the bucket company's asset base — exactly the wrong outcome. Always two separate companies.</div>
+  </div>
+</section>
+
+<!-- ============ 9. DIV 7A ============ -->
+<section id="s9">
+  <div class="section-num">Section 09</div>
+  <h2>Loans From the Trust — Division 7A</h2>
+  <p class="summary">A trust can lend money to its beneficiaries. Done correctly, this is a powerful tool for funding investments. Done badly, the ATO treats the loan as an unfranked dividend and taxes it at the top marginal rate.</p>
+
+  <h3>Why borrow from the trust?</h3>
+  <p>Imagine the trust has $200,000 in retained earnings sitting in Mitchell Investments Pty Ltd. James wants to buy a share portfolio personally but doesn't have the cash. Instead of paying himself a dividend (which triggers personal tax), he borrows the money from the company at the official interest rate. He invests, claims the loan interest as a tax deduction against his investment income, and pays the loan back over up to seven years.</p>
+
+  <h3>Division 7A in plain English</h3>
+  <p><span class="term" data-tip="The Tax Act provision that polices loans, payments and forgiven debts from private companies to their shareholders or associates">Division 7A</span> is the ATO rule that stops business owners using their company as a personal piggy bank. It applies whenever a private company (including a bucket company associated with a trust) lends money to a shareholder or their associate. If you don't follow the rules, the entire loan amount is treated as an unfranked dividend in the borrower's tax return.</p>
+
+  <div class="table-wrap">
+    <table class="data">
+      <thead><tr><th>Requirement</th><th>What it means</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Written loan agreement</strong></td><td>Signed and in place by the company's tax-return lodgement date for the year the loan was made.</td></tr>
+        <tr><td><strong>Minimum interest rate</strong></td><td>The ATO benchmark rate (set each year). For 2024-25 this is around 8.77% — must be reviewed annually.</td></tr>
+        <tr><td><strong>Maximum term — unsecured</strong></td><td>7 years from the date of the loan.</td></tr>
+        <tr><td><strong>Maximum term — secured by registered mortgage</strong></td><td>25 years, where the loan is secured against real property and meets ATO loan-to-value requirements.</td></tr>
+        <tr><td><strong>Minimum yearly repayments</strong></td><td>Calculated by formula. Both principal and interest must be paid each year by 30 June.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout danger">
+    <div class="callout-icon">⚠️</div>
+    <div><strong>Get the documentation right or pay the price</strong>If the loan agreement isn't signed in time, or the minimum repayments are missed, the ATO will treat the loan as an unfranked dividend. That means tax at the borrower's marginal rate (up to 47%) on the <em>entire</em> loan balance — with no franking credit to offset it. Always run trust loans through your accountant before any money moves.</div>
+  </div>
+</section>
+
+<!-- ============ 10. ADDING/REMOVING ============ -->
+<section id="s10">
+  <div class="section-num">Section 10</div>
+  <h2>Adding and Removing Beneficiaries</h2>
+  <p class="summary">If your family changes — a new partner, a grandchild, a falling-out with a relative — you can update the beneficiary list with a Deed of Variation. But there are some things you can never reverse, so the smart approach is to draft widely from day one.</p>
+
+  <h3>What a Deed of Variation does</h3>
+  <p>A <span class="term" data-tip="A formal legal document that amends the original trust deed">Deed of Variation</span> is a short legal document, prepared by a lawyer or specialist trust provider, that amends the original trust deed. Typical uses include adding a new spouse, adding children born after the deed was set up, or excluding someone the family no longer wishes to include. Cost is typically <strong>$200 to $500</strong> depending on the provider.</p>
+
+  <div class="callout warn">
+    <div class="callout-icon">🔒</div>
+    <div><strong>The foreign person exclusion is irrevocable</strong>Most modern trust deeds include a "foreign person exclusion" clause to avoid foreign-purchaser surcharge stamp duty and land tax in NSW, Victoria and other states. Once that clause is in, it cannot be removed without potentially triggering huge retrospective duty bills. So if there's any chance a future beneficiary will be a foreign resident, talk to your adviser <em>before</em> activating the clause.</div>
+  </div>
+
+  <div class="callout success">
+    <div class="callout-icon">🎯</div>
+    <div><strong>Cast the net wide on day one</strong>It's far cheaper and cleaner to list a broad class of beneficiaries from the start than to keep amending the deed. A well-drafted modern deed already includes spouses, children, grandchildren, parents, siblings, related entities and charities. You'll rarely need a Deed of Variation if it's drafted properly.</div>
+  </div>
+</section>
+
+<!-- ============ 11. JV STRUCTURE ============ -->
+<section id="s11">
+  <div class="section-num">Section 11</div>
+  <h2>The Bucket Company + Cashflow Company Structure</h2>
+  <p class="summary">A worked example. James runs a 50/50 business with an unrelated partner. The right structure protects James's family wealth, allows tax-efficient income splitting, and keeps the operating risk away from the family's accumulated assets.</p>
+
+  <div class="jv-svg-wrap">
+    <svg viewBox="0 0 760 460" role="img" aria-label="Joint venture structure showing Cashflow Co owned 50/50 by Mitchell Family Trust and business partner, distributing to James and Mitchell Investments Pty Ltd">
+      <defs>
+        <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,0 L10,5 L0,10 Z" fill="#0FB5BA"/>
+        </marker>
+      </defs>
+      <!-- Cashflow Co -->
+      <rect x="270" y="30" width="220" height="70" rx="10" fill="#0A2540"/>
+      <text x="380" y="60" text-anchor="middle" fill="#fff" font-weight="700" font-size="14">Cashflow Co Pty Ltd</text>
+      <text x="380" y="80" text-anchor="middle" fill="#7FE3E8" font-size="11">Operating company — earns the revenue</text>
+      <!-- Owners -->
+      <rect x="40" y="170" width="220" height="60" rx="10" fill="#0FB5BA"/>
+      <text x="150" y="195" text-anchor="middle" fill="#fff" font-weight="700" font-size="13">Mitchell Family Trust</text>
+      <text x="150" y="215" text-anchor="middle" fill="#fff" font-size="11" opacity=".9">50% shareholder</text>
+      <rect x="500" y="170" width="220" height="60" rx="10" fill="#9F7AEA"/>
+      <text x="610" y="195" text-anchor="middle" fill="#fff" font-weight="700" font-size="13">Business Partner</text>
+      <text x="610" y="215" text-anchor="middle" fill="#fff" font-size="11" opacity=".9">50% shareholder</text>
+      <!-- Distribution -->
+      <rect x="60" y="320" width="200" height="60" rx="10" fill="#F4A742"/>
+      <text x="160" y="345" text-anchor="middle" fill="#fff" font-weight="700" font-size="13">James Mitchell</text>
+      <text x="160" y="365" text-anchor="middle" fill="#fff" font-size="11" opacity=".95">Income for living costs</text>
+      <rect x="290" y="320" width="240" height="60" rx="10" fill="#2FB573"/>
+      <text x="410" y="345" text-anchor="middle" fill="#fff" font-weight="700" font-size="13">Mitchell Investments Pty Ltd</text>
+      <text x="410" y="365" text-anchor="middle" fill="#fff" font-size="11" opacity=".95">Bucket co — accumulates wealth</text>
+      <!-- Arrows -->
+      <g stroke="#0FB5BA" stroke-width="2.5" fill="none">
+        <path d="M325,100 Q220,140 195,170" marker-end="url(#ar2)"/>
+        <path d="M435,100 Q540,140 565,170" marker-end="url(#ar2)"/>
+        <path d="M150,230 Q120,280 160,320" marker-end="url(#ar2)"/>
+        <path d="M180,230 Q260,280 360,320" marker-end="url(#ar2)"/>
+      </g>
+      <text x="220" y="140" fill="#5A6478" font-size="11" font-style="italic">50% dividend</text>
+      <text x="475" y="140" fill="#5A6478" font-size="11" font-style="italic">50% dividend</text>
+      <text x="105" y="280" fill="#5A6478" font-size="11" font-style="italic">distribution</text>
+      <text x="290" y="280" fill="#5A6478" font-size="11" font-style="italic">distribution</text>
+      <text x="380" y="430" text-anchor="middle" fill="#5A6478" font-size="12" font-style="italic">Trust deed governs how income flows down to James and the bucket company each year.</text>
+    </svg>
+  </div>
+
+  <h3>Why this layout works</h3>
+  <ul>
+    <li><strong>Operating risk is ring-fenced.</strong> If Cashflow Co is sued, only its assets are at risk — not the trust, not the bucket company, not James personally.</li>
+    <li><strong>The trust owns the shares, not James.</strong> If James were sued personally (a car accident, a guarantee gone bad), the trust's shareholding in Cashflow Co is shielded.</li>
+    <li><strong>Profits are tax-streamed.</strong> Each year the trustee decides how much profit James needs personally and how much can be parked in the bucket company at 25%.</li>
+  </ul>
+
+  <div class="callout info">
+    <div class="callout-icon">📜</div>
+    <div><strong>You must have a shareholders agreement</strong>Any joint venture between unrelated parties needs a written shareholders agreement covering decision-making, dispute resolution, exit rights and what happens if one shareholder dies, divorces or wants out. Without it, even close friendships fall apart when money is involved.</div>
+  </div>
+</section>
+
+<!-- ============ 12. ADMIN ============ -->
+<section id="s12">
+  <div class="section-num">Section 12</div>
+  <h2>Annual Trust Administration — What You Must Do Every Year</h2>
+  <p class="summary">A trust is not "set and forget". To keep it valid and tax-efficient, six things must happen every year. Work through the checklist below.</p>
+
+  <div class="checklist" id="checklist">
+    <div class="check-item"><input type="checkbox" id="c1"><label for="c1" class="check-label">Sign the distribution resolution before 30 June<small class="check-detail">Written, dated, signed by all trustees. The single most important deadline of the year.</small></label></div>
+    <div class="check-item"><input type="checkbox" id="c2"><label for="c2" class="check-label">Lodge the annual trust tax return<small class="check-detail">Generally due 15 May the following year if lodged through a tax agent. Reports trust income and how it was distributed.</small></label></div>
+    <div class="check-item"><input type="checkbox" id="c3"><label for="c3" class="check-label">Keep trust assets separate from personal assets<small class="check-detail">Separate bank accounts, separate share registries, separate everything. Mixing funds is the fastest way to break the trust.</small></label></div>
+    <div class="check-item"><input type="checkbox" id="c4"><label for="c4" class="check-label">Record every trust transaction properly<small class="check-detail">Bookkeeping in the trust's own ledger. Every deposit, every payment, every distribution — categorised and reconciled.</small></label></div>
+    <div class="check-item"><input type="checkbox" id="c5"><label for="c5" class="check-label">Review beneficiary distributions for tax optimisation<small class="check-detail">Sit with your accountant before 30 June each year and model the year's actual income against each beneficiary's other income.</small></label></div>
+    <div class="check-item"><input type="checkbox" id="c6"><label for="c6" class="check-label">Pay the ASIC annual review fee for the corporate trustee<small class="check-detail">Around $310 per year for Mitchell Trustee Pty Ltd. Miss it and ASIC charges late fees and ultimately deregisters the company.</small></label></div>
+  </div>
+</section>
+
+<!-- ============ 13. MISTAKES ============ -->
+<section id="s13">
+  <div class="section-num">Section 13</div>
+  <h2>Common Mistakes to Avoid</h2>
+  <p class="summary">Trusts are unforgiving — small admin slips can trigger enormous tax bills. These are the six mistakes accountants see most often.</p>
+
+  <div class="grid grid-2">
+    <div class="card"><div class="card-icon red">!</div><h4>Missing the 30 June distribution deadline</h4><p>The trustee gets taxed at 47% on every undistributed dollar. No exceptions, no extensions.</p></div>
+    <div class="card"><div class="card-icon red">!</div><h4>Mixing trust and personal funds</h4><p>Paying personal expenses from the trust account, or vice versa. Destroys the legal separation that makes the trust work.</p></div>
+    <div class="card"><div class="card-icon red">!</div><h4>Same company as both trustee and bucket company</h4><p>Fuses operating risk with accumulated wealth. Defeats the entire purpose of the structure.</p></div>
+    <div class="card"><div class="card-icon red">!</div><h4>No written agreement for trust loans</h4><p>The ATO treats the loan as an unfranked dividend taxed at the borrower's marginal rate.</p></div>
+    <div class="card"><div class="card-icon red">!</div><h4>Transferring personal assets into the trust without considering CGT</h4><p>Moving an existing investment into the trust is a sale at market value — capital gains tax is payable immediately.</p></div>
+    <div class="card"><div class="card-icon red">!</div><h4>Buying a deed from a cheap or unknown provider</h4><p>A poorly drafted deed limits your flexibility for decades. Use a reputable specialist provider only.</p></div>
+  </div>
+</section>
+
+<!-- ============ 14. GLOSSARY ============ -->
+<section id="s14">
+  <div class="section-num">Section 14</div>
+  <h2>Glossary</h2>
+  <p class="summary">Click any term to expand its plain-English definition.</p>
+  <div class="glossary" id="glossary">
+    <div class="gloss-item"><button class="gloss-q" aria-expanded="false">Trust</button><div class="gloss-a"><p>A legal relationship where one person (the trustee) holds and manages assets on behalf of others (the beneficiaries). It is not a company or a person — it is the relationship itself that the law recognises.</p></div></div>
+    <div class="gloss-item"><button class="gloss-q" aria-expanded="false">Trustee</button><div class="gloss-a"><p>The legal owner of trust assets and the day-to-day decision maker. Owes strict fiduciary duties to the beneficiaries and is personally liable unless the trustee is a company.</p></div></div>
+    <div class="gloss-item"><button class="gloss-q" aria-expanded="false">Settlor</button><div class="gloss-a"><p>An independent person who provides the initial settlement sum (usually $10) to create the trust, then walks away. Cannot be a beneficiary.</p></div></div>
+    <div class="gloss-item"><button class="gloss-q" aria-expanded="false">Appointor</button><div class="gloss-a"><p>The person with the power to hire and fire the trustee. The most powerful role in the trust because they ultimately control who is at the wheel.</p></div></div>
+    <div class="gloss-item"><button class="gloss-q" aria-expanded="false">Beneficiary</button><div class="gloss-a"><p>Any person or entity eligible to receive distributions of income or capital from the trust. Being a beneficiary doesn't entitle you to anything — the trustee decides each year.</p></div></div>
+    <div class="gloss-item"><button class="gloss-q" aria-expanded="false">Discretionary Trust</button><div class="gloss-a"><p>A trust where the trustee has full discretion to choose which beneficiaries receive distributions and in what proportions each year. Also known as a family trust.</p></div></div>
+    <div class="gloss-item"><button class="gloss-q" aria-expanded="false">Unit Trust</button><div class="gloss-a"><p>A trust where beneficiaries hold fixed units, similar to shares. Distributions are made strictly in proportion to units held.</p></div></div>
+    <div class="gloss-item"><button class="gloss-q" aria-expanded="false">Vesting Date</button><div class="gloss-a"><p>The date on which the trust must end and its remaining assets are distributed to beneficiaries. In most Australian states this is up to 80 years after the trust starts.</p></div></div>
+    <div class="gloss-item"><button class="gloss-q" aria-expanded="false">Distribution Resolution</button><div class="gloss-a"><p>The written, signed decision the trustee makes before 30 June each year, recording exactly which beneficiaries will receive what proportion of which type of trust income.</p></div></div>
+    <div class="gloss-item"><button class="gloss-q" aria-expanded="false">Franking Credits</button><div class="gloss-a"><p>Tax credits attached to dividends from Australian companies, representing tax already paid by the company. They reduce the receiving beneficiary's tax bill or may produce a refund.</p></div></div>
+    <div class="gloss-item"><button class="gloss-q" aria-expanded="false">Division 7A</button><div class="gloss-a"><p>The provision of the tax law that polices loans, payments and forgiven debts from private companies to their shareholders or associates. Breach it and the loan is taxed as an unfranked dividend.</p></div></div>
+    <div class="gloss-item"><button class="gloss-q" aria-expanded="false">Bucket Company</button><div class="gloss-a"><p>A private company set up as a tertiary beneficiary of the trust. Receives distributions, pays a flat 25% corporate tax, and accumulates wealth at lower tax rates than individuals.</p></div></div>
+    <div class="gloss-item"><button class="gloss-q" aria-expanded="false">Corporate Trustee</button><div class="gloss-a"><p>A company (e.g., Mitchell Trustee Pty Ltd) appointed as the trustee of the trust. Provides asset protection by separating the trustee's legal liability from the controllers personally.</p></div></div>
+    <div class="gloss-item"><button class="gloss-q" aria-expanded="false">Deed of Variation</button><div class="gloss-a"><p>A formal legal document that amends the original trust deed — for example, to add or remove beneficiaries or change administrative provisions.</p></div></div>
+    <div class="gloss-item"><button class="gloss-q" aria-expanded="false">CGT (Capital Gains Tax)</button><div class="gloss-a"><p>Tax payable on the increase in value of an asset between when it was acquired and when it is sold or transferred. Individuals get a 50% discount for assets held more than 12 months.</p></div></div>
+    <div class="gloss-item"><button class="gloss-q" aria-expanded="false">Settlement Sum</button><div class="gloss-a"><p>The initial nominal amount (typically $10) handed to the trustee by the settlor to create the trust. Usually held forever and never spent.</p></div></div>
+    <div class="gloss-item"><button class="gloss-q" aria-expanded="false">Trust Fund</button><div class="gloss-a"><p>The collective term for all of the assets held by the trustee on the terms of the trust — including the original settlement sum and everything acquired with it since.</p></div></div>
+    <div class="gloss-item"><button class="gloss-q" aria-expanded="false">Default Beneficiary</button><div class="gloss-a"><p>The fallback beneficiary named in the deed who automatically receives any income that the trustee fails to distribute by 30 June. Stops 47% penalty tax — but is a poor outcome.</p></div></div>
+    <div class="gloss-item"><button class="gloss-q" aria-expanded="false">Excluded Person</button><div class="gloss-a"><p>A person specifically excluded from being a beneficiary by the deed — often the settlor and any "foreign person" for state-tax reasons.</p></div></div>
+    <div class="gloss-item"><button class="gloss-q" aria-expanded="false">Legal Disability</button><div class="gloss-a"><p>A status — primarily applying to minors (under 18) and people of unsound mind — that limits their ability to deal with property in their own name. Trusts often restrict distributions to such beneficiaries.</p></div></div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="foot-inner">
+    <h4>Educational content only</h4>
+    <p>This document is a general internal training resource. It is <strong>not</strong> financial, legal, tax or investment advice and must not be relied upon as such. Trust law and Australian tax rules change regularly, and your circumstances are unique. Always consult a qualified accountant and a specialist trust lawyer before establishing, varying, distributing from, or restructuring any trust.</p>
+    <p>All names used in this document — James Mitchell, Sarah Mitchell, The Mitchell Family Trust, Mitchell Trustee Pty Ltd, Mitchell Investments Pty Ltd — are entirely fictional and used for illustrative purposes only.</p>
+    <button class="btn print-btn" onclick="window.print()">🖨 Print this document</button>
+  </div>
+</footer>
+
+<script>
+// Progress bar
+const pb=document.getElementById('progressBar');
+function updateProgress(){
+  const h=document.documentElement;
+  const scrolled=(h.scrollTop)/(h.scrollHeight-h.clientHeight);
+  pb.style.width=Math.min(100,Math.max(0,scrolled*100))+'%';
+}
+window.addEventListener('scroll',updateProgress,{passive:true});updateProgress();
+
+// Active nav highlighting
+const navLinks=document.querySelectorAll('#navLinks a');
+const sections=document.querySelectorAll('main section');
+const navLinksWrap=document.getElementById('navLinks');
+const io=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const id=e.target.id;
+      navLinks.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+id));
+      const active=navLinksWrap.querySelector('a.active');
+      if(active){
+        // Scroll the nav horizontally only — never touch the page scroll
+        const wrapRect=navLinksWrap.getBoundingClientRect();
+        const linkRect=active.getBoundingClientRect();
+        const target=navLinksWrap.scrollLeft+(linkRect.left-wrapRect.left)-(wrapRect.width/2)+(linkRect.width/2);
+        navLinksWrap.scrollTo({left:target,behavior:'smooth'});
+      }
+    }
+  });
+},{rootMargin:'-40% 0px -55% 0px'});
+sections.forEach(s=>io.observe(s));
+
+// Roles diagram interactivity
+const roleCards=document.querySelectorAll('.role-card');
+const diagramNodes=document.querySelectorAll('#rolesDiagram .node');
+const diagramLinks=document.querySelectorAll('#rolesDiagram .link');
+function highlightRole(role){
+  diagramNodes.forEach(n=>{
+    n.style.opacity=role&&n.dataset.node!==role?0.3:1;
+  });
+  diagramLinks.forEach(l=>{
+    const inv=role&&!l.dataset.link.includes(role);
+    l.style.opacity=inv?0.15:1;
+    l.style.strokeWidth=inv?2:role?3.5:2;
+    l.style.stroke=inv?'#94a3b8':role?'#0FB5BA':'#94a3b8';
+  });
+  roleCards.forEach(c=>c.classList.toggle('active',c.dataset.role===role));
+}
+roleCards.forEach(c=>{
+  c.addEventListener('mouseenter',()=>highlightRole(c.dataset.role));
+  c.addEventListener('focus',()=>highlightRole(c.dataset.role));
+  c.addEventListener('mouseleave',()=>highlightRole(null));
+  c.addEventListener('blur',()=>highlightRole(null));
+});
+
+// Flow stepper
+const flowSteps=document.querySelectorAll('#flowSteps .flow-step');
+const flowPrev=document.getElementById('flowPrev');
+const flowNext=document.getElementById('flowNext');
+const flowCounter=document.getElementById('flowCounter');
+let flowIdx=0;
+function renderFlow(){
+  flowSteps.forEach((s,i)=>s.classList.toggle('active',i===flowIdx));
+  flowCounter.textContent=flowIdx+1;
+  flowPrev.disabled=flowIdx===0;
+  flowNext.disabled=flowIdx===flowSteps.length-1;
+}
+flowPrev.addEventListener('click',()=>{if(flowIdx>0){flowIdx--;renderFlow();}});
+flowNext.addEventListener('click',()=>{if(flowIdx<flowSteps.length-1){flowIdx++;renderFlow();}});
+
+// Calculator
+const totalInc=document.getElementById('totalInc');
+const allocators=document.querySelectorAll('.allocator');
+const allocTotal=document.getElementById('allocTotal');
+const taxPersonalEl=document.getElementById('taxPersonal');
+const taxTrustEl=document.getElementById('taxTrust');
+const taxSavedEl=document.getElementById('taxSaved');
+
+// 2024-25 resident marginal brackets
+function indTax(inc){
+  if(inc<=0)return 0;
+  let tax=0;
+  const br=[[18200,0],[45000,0.16],[135000,0.30],[190000,0.37],[Infinity,0.45]];
+  let prev=0;
+  for(const[cap,rate]of br){
+    if(inc<=cap){tax+=(inc-prev)*rate;break;}
+    tax+=(cap-prev)*rate;prev=cap;
+  }
+  // Medicare levy 2% on income above ~26k threshold (simplified)
+  if(inc>26000)tax+=(inc-26000)*0.02;
+  return Math.max(0,tax);
+}
+function coTax(inc){return Math.max(0,inc*0.25);}
+function fmt(n){return '$'+Math.round(n).toLocaleString('en-AU');}
+
+function rebalance(changedEl){
+  const sliders=[...allocators].map(a=>a.querySelector('[data-pct]'));
+  let total=sliders.reduce((s,el)=>s+Number(el.value),0);
+  if(total!==100){
+    // proportional rebalance of others
+    const others=sliders.filter(s=>s!==changedEl);
+    const otherTotal=others.reduce((s,el)=>s+Number(el.value),0);
+    const target=100-Number(changedEl.value);
+    if(otherTotal>0){
+      others.forEach(o=>{o.value=Math.round(Number(o.value)*target/otherTotal);});
+    }else if(others.length){
+      others.forEach((o,i)=>o.value=i===0?target:0);
+    }
+    // Fix rounding so total is exactly 100
+    let diff=100-sliders.reduce((s,el)=>s+Number(el.value),0);
+    if(diff!==0){
+      const adj=others.find(o=>Number(o.value)+diff>=0&&Number(o.value)+diff<=100)||others[0];
+      if(adj)adj.value=Number(adj.value)+diff;
+    }
+  }
+}
+
+function recalc(){
+  const total=Math.max(0,Number(totalInc.value)||0);
+  let trustTax=0;
+  let allocSum=0;
+  allocators.forEach(a=>{
+    const slider=a.querySelector('[data-pct]');
+    const pct=Number(slider.value);
+    allocSum+=pct;
+    const amt=total*pct/100;
+    a.querySelector('[data-amt]').textContent=fmt(amt);
+    a.querySelector('[data-pct-label]').textContent=pct+'%';
+    const t=a.dataset.type==='co'?coTax(amt):indTax(amt);
+    a.querySelector('[data-tax]').textContent='Tax: '+fmt(t);
+    trustTax+=t;
+  });
+  allocTotal.textContent=allocSum+'%';
+  allocTotal.style.color=allocSum===100?'var(--green)':'var(--red)';
+  const personal=indTax(total);
+  taxPersonalEl.textContent=fmt(personal);
+  taxTrustEl.textContent=fmt(trustTax);
+  taxSavedEl.textContent=fmt(Math.max(0,personal-trustTax));
+}
+
+allocators.forEach(a=>{
+  const slider=a.querySelector('[data-pct]');
+  slider.addEventListener('input',()=>{
+    rebalance(slider);
+    recalc();
+  });
+});
+totalInc.addEventListener('input',recalc);
+recalc();
+
+// Checklist persistence within session
+document.querySelectorAll('#checklist input').forEach(cb=>{
+  cb.addEventListener('change',()=>{
+    cb.closest('.check-item').classList.toggle('done',cb.checked);
+  });
+});
+
+// Glossary accordion
+document.querySelectorAll('.gloss-q').forEach(q=>{
+  q.addEventListener('click',()=>{
+    const item=q.parentElement;
+    const open=item.classList.toggle('open');
+    q.setAttribute('aria-expanded',open);
+  });
+});
+</script>
+</body>
+</html>
