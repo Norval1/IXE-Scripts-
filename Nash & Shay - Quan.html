@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nash &amp; Shay Credit Card list &ndash; Qantas</title>
+<style>
+:root{
+  --bg:#f4f6fa; --card:#ffffff; --ink:#0f172a; --muted:#475569; --line:#e2e8f0;
+  --navy:#0b1f4d; --blue:#1d4ed8; --purple:#6d28d9;
+  --green:#166534; --green-bg:#dcfce7; --green-line:#86efac;
+  --red:#991b1b; --red-bg:#fee2e2; --red-line:#fca5a5;
+  --amber:#92400e; --amber-bg:#fef3c7; --amber-line:#fcd34d;
+  --grey-bg:#eef2f7;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0b1220; --card:#121b2e; --ink:#e8edf6; --muted:#a3b0c5; --line:#26334d;
+    --navy:#0a1736; --blue:#7aa2ff; --purple:#b69cff;
+    --green:#86efac; --green-bg:#0f2a1a; --green-line:#1f5c36;
+    --red:#fca5a5; --red-bg:#331416; --red-line:#7a2a2e;
+    --amber:#fcd34d; --amber-bg:#33260a; --amber-line:#7a5a12;
+    --grey-bg:#1a2540;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px 48px}
+header.hero{background:linear-gradient(135deg,#0b1f4d 0%,#1d3a8a 100%);color:#fff;padding:28px 16px 26px}
+header.hero .wrap{padding-bottom:0}
+header.hero h1{margin:0 0 6px;font-size:clamp(1.5rem,5vw,2.3rem);line-height:1.15;letter-spacing:-.01em}
+header.hero p{margin:0;opacity:.9;max-width:760px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.hero-meta span{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);padding:4px 10px;border-radius:999px;font-size:.82rem}
+h2{font-size:1.2rem;margin:0 0 10px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:16px}
+.bottom{border-left:5px solid var(--blue)}
+.bottom ul{margin:8px 0 10px;padding-left:20px}
+.bottom li{margin:6px 0}
+.small{font-size:.85rem;color:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.lg{font-size:.78rem;padding:3px 9px;border-radius:999px;border:1px solid}
+.lg.g{background:var(--green-bg);color:var(--green);border-color:var(--green-line)}
+.lg.r{background:var(--red-bg);color:var(--red);border-color:var(--red-line)}
+.lg.a{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-line)}
+
+.controls{display:grid;gap:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip-btn{appearance:none;border:1px solid var(--line);background:var(--grey-bg);color:var(--ink);padding:8px 12px;border-radius:999px;font:inherit;font-size:.9rem;cursor:pointer;min-height:40px}
+.chip-btn[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:#fff}
+@media (prefers-color-scheme: dark){.chip-btn[aria-pressed="true"]{color:#0b1220}}
+.calc{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.field label{display:flex;justify-content:space-between;font-size:.9rem;margin-bottom:4px}
+.field output{font-weight:700}
+input[type=range]{width:100%;accent-color:var(--blue)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{appearance:none;border:0;background:var(--grey-bg);color:var(--ink);padding:9px 12px;font:inherit;font-size:.9rem;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--blue);color:#fff}
+@media (prefers-color-scheme: dark){.seg button[aria-pressed="true"]{color:#0b1220}}
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+select{font:inherit;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.chk{display:flex;gap:8px;align-items:flex-start;font-size:.9rem}
+.chk input{margin-top:4px}
+
+#cards{display:grid;gap:16px;margin-top:16px;grid-template-columns:1fr}
+@media (min-width:900px){#cards{grid-template-columns:1fr 1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px;box-shadow:0 1px 2px rgba(15,23,42,.05)}
+.card-top{display:flex;gap:12px;align-items:flex-start}
+.rank{flex:0 0 auto;width:38px;height:38px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-weight:800}
+.card h3{margin:0;font-size:1.12rem;line-height:1.25}
+.sub{font-size:.82rem;color:var(--muted);margin-top:2px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.tag{font-size:.72rem;padding:2px 8px;border-radius:999px;font-weight:600;border:1px solid var(--line);background:var(--grey-bg);color:var(--ink)}
+.tag.personal{color:var(--blue);border-color:currentColor;background:transparent}
+.tag.business{color:var(--purple);border-color:currentColor;background:transparent}
+.tag.best{background:var(--green-bg);color:var(--green);border-color:var(--green-line)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{background:var(--grey-bg);border-radius:10px;padding:8px 10px;min-width:0}
+.stat .k{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.stat .v{display:block;font-weight:800;font-size:1.05rem;line-height:1.25;margin-top:2px}
+.stat .n{display:block;font-size:.72rem;color:var(--muted);margin-top:2px;line-height:1.3}
+.fee-low .v{color:var(--green)} .fee-mid .v{color:var(--amber)} .fee-high .v{color:var(--red)}
+.chips2{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:.78rem;padding:3px 9px;border-radius:999px;border:1px solid;font-weight:600}
+.chip-red{background:var(--red-bg);color:var(--red);border-color:var(--red-line)}
+.chip-amber{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-line)}
+.chip-grey{background:var(--grey-bg);color:var(--muted);border-color:var(--line)}
+.pc{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.pros,.cons{border-radius:12px;padding:10px 12px;border:1px solid}
+.pros{background:var(--green-bg);border-color:var(--green-line);color:var(--green)}
+.cons{background:var(--red-bg);border-color:var(--red-line);color:var(--red)}
+.pros h4,.cons h4{margin:0 0 6px;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em}
+.pros ul,.cons ul{list-style:none;margin:0;padding:0}
+.pros li,.cons li{position:relative;padding-left:22px;margin:6px 0;font-size:.9rem;line-height:1.4}
+.pros li::before{content:"\2713";position:absolute;left:0;font-weight:900}
+.cons li::before{content:"\2715";position:absolute;left:0;font-weight:900}
+.best-for{font-size:.9rem;margin:0}
+.est{border:1px dashed var(--line);border-radius:12px;padding:10px 12px;font-size:.88rem}
+.est .h{font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:4px}
+.est .r{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:3px 0}
+.pos{color:var(--green);font-weight:800}.neg{color:var(--red);font-weight:800}
+.warnline{margin-top:6px;font-size:.82rem;color:var(--amber);background:var(--amber-bg);border:1px solid var(--amber-line);padding:6px 8px;border-radius:8px}
+.card a.lnk{color:var(--blue);font-size:.82rem}
+
+details.panel summary{cursor:pointer;font-weight:700;list-style:none;display:flex;gap:10px;align-items:center;justify-content:space-between}
+details.panel summary::-webkit-details-marker{display:none}
+details.panel summary::after{content:"+";font-size:1.4rem;line-height:1;color:var(--blue)}
+details.panel[open] summary::after{content:"\2212"}
+details.panel .body{margin-top:10px;font-size:.93rem}
+details.panel .body ul{padding-left:20px;margin:6px 0}
+details.panel .body li{margin:5px 0}
+.approval{border-left:5px solid var(--amber)}
+.sources a{color:var(--blue);word-break:break-word}
+footer{margin-top:20px;font-size:.82rem;color:var(--muted)}
+@media print{
+  header.hero{background:#fff;color:#000;padding:0}.controls-panel,.chip-btn,.seg{display:none}
+  .card{break-inside:avoid;box-shadow:none}
+  details.panel{display:block} details.panel .body{display:block}
+}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <h1>Nash &amp; Shay Credit Card list <span style="font-weight:500;opacity:.85">&ndash; Qantas edition</span></h1>
+    <p>Top 10 Qantas Points cards for a couple travelling once or twice a year &mdash; with the pros, the cons, the fees and what each card is worth at your spending.</p>
+    <div class="hero-meta">
+      <span>Offers checked 6 Oct 2026</span>
+      <span>Qantas Frequent Flyer focus</span>
+      <span>~$160K household income</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="panel bottom" aria-labelledby="short">
+    <h2 id="short">The short version</h2>
+    <ul>
+      <li><strong>Shay (ABN):</strong> Amex Qantas Business Rewards &mdash; 150,000 Qantas points plus a $200 travel fund for a $450 fee. Needs $75K+ business revenue and $6,000 spend in 3 months. Apply by 10 Nov.</li>
+      <li><strong>Nash (PAYG):</strong> Qantas Amex Ultimate &mdash; up to 120,000 points, and the $450 Qantas travel credit cancels the $450 fee if you'd book Qantas anyway. Apply by 17 Nov. If Amex says no, the non-Amex route is Westpac Altitude Qantas Black.</li>
+      <li><strong>Probably skip:</strong> the $1,450 Amex Platinum, and the NAB Qantas Rewards Signature (earn and bonus were cut on 1 Oct).</li>
+      <li><strong>Prefer Velocity?</strong> The Velocity list has the bigger direct bonus (Amex Velocity Business: 200,000 points for $249). Qantas wins on lounge passes and the travel credit.</li>
+      <li><strong>Before cancelling ANZ:</strong> get the new cards approved first. Closing a card doesn't cause a decline &mdash; <a href="#approval" id="goApproval">see the approval notes below</a>.</li>
+    </ul>
+    <p class="small">Based on what you told us: one PAYG income, one ABN income, travel 1&ndash;2 times a year, Velocity preferred (this is the Qantas version), both currently hold an ANZ Rewards Black with a $15K limit. General information only &mdash; not personal financial advice.</p>
+    <div class="legend" aria-label="Colour key">
+      <span class="lg g">Green = pro</span><span class="lg r">Red = con</span><span class="lg a">Amber = deadline or double-check</span>
+    </div>
+  </section>
+
+  <section class="panel controls-panel" aria-label="Filters and calculator">
+    <div class="controls">
+      <div>
+        <div class="small" style="margin-bottom:6px">Show</div>
+        <div class="chips" id="filters" role="group" aria-label="Filter cards">
+          <button class="chip-btn" data-f="all" aria-pressed="true">All 10</button>
+          <button class="chip-btn" data-f="personal" aria-pressed="false">Personal cards</button>
+          <button class="chip-btn" data-f="business" aria-pressed="false">Business (Shay)</button>
+          <button class="chip-btn" data-f="lowfee" aria-pressed="false">Fee $400 or less</button>
+          <button class="chip-btn" data-f="direct" aria-pressed="false">Earns Qantas Points directly</button>
+        </div>
+      </div>
+
+      <div class="calc">
+        <div class="field">
+          <label for="pm">Personal spend per month <output id="pmOut">$3,000</output></label>
+          <input type="range" id="pm" min="1000" max="10000" step="250" value="3000">
+        </div>
+        <div class="field">
+          <label for="bm">Shay's business spend per month <output id="bmOut">$3,000</output></label>
+          <input type="range" id="bm" min="500" max="15000" step="500" value="3000">
+        </div>
+        <div class="field">
+          <div class="small" style="margin-bottom:4px">What's a Qantas point worth?</div>
+          <div class="seg" id="cpp" role="group" aria-label="Point value">
+            <button data-v="1.3" aria-pressed="true">1.3c (cautious)</button>
+            <button data-v="1.6" aria-pressed="false">1.6c (optimistic)</button>
+          </div>
+        </div>
+        <div class="field">
+          <label class="chk"><input type="checkbox" id="perks"><span>Count travel credits I'd actually use (Qantas Amex Ultimate $450, Amex Qantas Business $200)</span></label>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="small" id="count">Showing 10 cards</div>
+        <label class="small">Sort by&nbsp;
+          <select id="sort">
+            <option value="fit">Best fit for you</option>
+            <option value="y1">Year-1 value (highest)</option>
+            <option value="fee">Annual fee (lowest)</option>
+          </select>
+        </label>
+      </div>
+      <p class="small" style="margin:0">Order = best fit on paper for 1&ndash;2 trips a year, Qantas preference, fee versus value, and how hard approval looks. The dollar figures are estimates: points &times; the value you pick, minus annual fees. Sign-up bonuses only count if your spend reaches the minimum.</p>
+    </div>
+  </section>
+
+  <section id="cards" aria-live="polite" aria-label="Card list"></section>
+  <noscript><p class="panel">This page needs JavaScript to show the card list.</p></noscript>
+
+  <details class="panel approval" id="approval">
+    <summary>Worried about getting declined? Read this first</summary>
+    <div class="body">
+      <p><strong>Short answer:</strong> nobody outside the lender can say why Nash was declined three years ago &mdash; only Amex has that. What we can say is how this works, and that cancelling a card isn't what triggers a decline.</p>
+      <ul>
+        <li><strong>Applying is what leaves a mark.</strong> Every application puts a hard enquiry on your credit file for 5 years, approved or not &mdash; so Nash's old one is likely still there. <strong>Closing</strong> a card doesn't add an enquiry; the closed account just stays visible for about 2 years.</li>
+        <li><strong>Common reasons people are declined:</strong> too many recent applications, existing card limits that are large against income, income that can't be verified or doesn't match the application, short or patchy credit history, errors on the credit file. Amex members also report letters citing "credit rating and other factors". These are community reports, not Amex's published rules.</li>
+        <li><strong>Find the real reason:</strong> look for any decline letter from Amex, ask Amex what the reasons were, and get your credit report from Equifax, Experian and illion (once every 3 months at no charge; checking your own file doesn't affect your score).</li>
+        <li><strong>Safer order:</strong> apply one person at a time, spaced out &mdash; one or two enquiries a year is normal, five or more in 12 months looks risky. Keep the ANZ cards until the new cards are approved and the bonus spend is done. Check what ANZ does with your points before closing.</li>
+        <li><strong>Shay:</strong> Amex excludes the sign-up bonus for anyone who has held an Amex card in the last 18 months, so apply for the business card before any personal Amex. Both of you already hold ANZ Rewards cards, so ANZ bonuses may be off the table.</li>
+        <li><strong>If Amex says no again:</strong> the non-Amex cards in the list use different assessments, but each application is another enquiry &mdash; don't apply for all of them.</li>
+      </ul>
+      <p class="small">Nobody can promise approval &mdash; it's the lender's decision. General information only; not credit or financial advice.</p>
+    </div>
+  </details>
+
+  <details class="panel sources">
+    <summary>Sources and how this was put together</summary>
+    <div class="body">
+      <ul>
+        <li><a href="https://www.pointhacks.com.au/qantas/best-frequent-flyer-credit-card/" rel="noopener">Point Hacks &ndash; Best credit cards for Qantas Points</a></li>
+        <li><a href="https://www.pointhacks.com.au/credit-cards/qantas-american-express-ultimate-guide/" rel="noopener">Point Hacks &ndash; Qantas Amex Ultimate guide</a></li>
+        <li><a href="https://www.pointhacks.com.au/credit-cards/westpac-altitude-qantas-black-guide/" rel="noopener">Point Hacks &ndash; Westpac Altitude Qantas Black guide</a></li>
+        <li><a href="https://www.qantas.com/au/en/business-rewards/earn-points-on-business-expenses/amex.html" rel="noopener">Qantas &ndash; Amex Qantas Business Rewards</a></li>
+        <li><a href="https://flighthacks.com.au/rba-surcharge-ban-rewards-credit-card-changes/" rel="noopener">Flight Hacks &ndash; rewards card changes from 1 Oct 2026</a></li>
+        <li><a href="https://www.pointhacks.com.au/news/ato-drop-credit-cards-over-surcharge-ban/" rel="noopener">Point Hacks &ndash; ATO dropping credit cards after 30 Nov 2026</a></li>
+        <li><a href="https://www.australianfrequentflyer.com.au/community/threads/amex-rejection.112575/" rel="noopener">Australian Frequent Flyer forum &ndash; Amex rejection reports</a> (community anecdotes)</li>
+        <li><a href="https://www.creditcard.com.au/what-to-do-when-your-credit-card-application-is-declined/" rel="noopener">CreditCard.com.au &ndash; why applications are declined</a></li>
+      </ul>
+      <p class="small">Qantas point values: 1.6c is the Australian Frequent Flyer estimate (Dec 2025); 1.3c is a more cautious independent benchmark (Rewards That Fly, Aug 2026). The calculator assumes typical everyday spend, a blended earn rate where a card has categories, and no perks unless you tick the box.</p>
+    </div>
+  </details>
+
+  <footer>
+    <p>Offers, fees and points rules change often &mdash; several change in October 2026. Confirm every detail on the card issuer's own website before applying. Some links in the sources may earn their publishers a commission; this page doesn't. Prepared for Nash &amp; Shay with help from Claude (AI) using public sources, 6 Oct 2026. This is general information, not personal financial or credit advice.</p>
+  </footer>
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  // earn tiers are Qantas-equivalent points per $1; cap is $ per month at that rate (null = no cap)
+  var CARDS = [
+    { id:"qau", rank:1, name:"Qantas Amex Ultimate", issuer:"American Express", kind:"personal", earnType:"direct", typeLabel:"Earns Qantas Points directly",
+      badge:"Best for Nash", fee:450, feeNote:"per year (offset by a $450 Qantas travel credit)",
+      earn:"1.25", earnNote:"Qantas pts per $1 (2.25 on Qantas purchases; drops to 1.0 after 100,000 pts in a year)",
+      bonus:"Up to 120,000", bonusNote:"70,000 + 50,000 in year 2 · $5,000 spend in 3 months, and again in year 2",
+      deadline:"2026-11-17T23:59:59+10:00", deadlineLabel:"17 Nov", verify:false, amexLink:true,
+      pros:["Highest everyday direct-earn on the list: 1.25 Qantas pts per $1, uncapped","$450 Qantas travel credit each year — if you'd book Qantas anyway it cancels the $450 fee","2 Qantas Club lounge passes a year (after an eligible Qantas purchase)","Complimentary international travel insurance and Qantas Wine Premium membership","Up to 120,000 bonus Qantas points"],
+      cons:["$450 annual fee — the credit only helps if you'd spend it with Qantas","Amex isn't accepted everywhere — keep a Visa or Mastercard as backup","3.5% overseas transaction fee and 23.99% p.a. interest if you carry a balance","Bonus is only for people who haven't held an Amex in the last 18 months — and Amex approval is the real hurdle for Nash"],
+      bestFor:"Nash, if Amex approves — the best Qantas card for 1–2 trips a year.",
+      calc:{tiers:[{cap:6667,rate:1.25},{cap:null,rate:1.0}],b1:70000,min1:5000,b2:50000,min2:5000,cash1:0,perk1:450,perk2:450} },
+
+    { id:"aqbr", rank:2, name:"Amex Qantas Business Rewards", issuer:"American Express", kind:"business", earnType:"direct", typeLabel:"Charge card · Qantas Business Rewards",
+      badge:"Best for Shay", fee:450, feeNote:"per year (employee cards free)",
+      earn:"1.25", earnNote:"Qantas pts per $1 (2 on Qantas; 0.5 on government, utilities, insurance)",
+      bonus:"150,000 + $200", bonusNote:"$6,000 spend in 3 months · $200 travel fund",
+      deadline:"2026-11-10T23:59:59+10:00", deadlineLabel:"10 Nov", verify:false, amexLink:true,
+      pros:["150,000 bonus Qantas points plus a $200 travel fund","1.25 pts per $1 on everyday business spend; 2 pts per $1 on Qantas","Charge card: no preset limit and extra days to pay","Up to 99 employee cards at no extra fee, all earning to the one balance","Keeps business spend off the personal card"],
+      cons:["Needs $75,000+ annual business revenue","Charge card — must be paid in full every month","Only 0.5 pts per $1 on government, utilities and insurance — and the ATO stops taking credit cards after 30 Nov 2026","Earn rate drops to 0.75 after 500,000 points a year (unlikely to matter at your spend)","No Amex card in the last 18 months for the bonus — Shay should apply before any personal Amex"],
+      bestFor:"Shay — the best Qantas business card for a small ABN holder.",
+      calc:{tiers:[{cap:null,rate:1.25}],b1:150000,min1:6000,b2:0,min2:0,cash1:0,perk1:200,perk2:0} },
+
+    { id:"wqb", rank:3, name:"Westpac Altitude Qantas Black", issuer:"Westpac", kind:"personal", earnType:"direct", typeLabel:"Earns Qantas Points directly",
+      badge:"", fee:450, feeNote:"per year ($295 + $155 Qantas fee; one source shows $370 in year 2)",
+      earn:"0.8", earnNote:"Qantas pts per $1 on key categories (1.5 overseas, 0.4 other, 0.25 above $10K a statement)",
+      bonus:"Up to 150,000 + 50 SC", bonusNote:"90,000 on $6,000 in 90 days + 50 Status Credits; +60,000 in year 2 on $6,000 more",
+      deadline:null, deadlineLabel:"", verify:true,
+      pros:["Up to 150,000 bonus Qantas points — the biggest bonus on a personal card","50 bonus Status Credits with the first bonus","2 Qantas Club lounge passes a year, plus domestic and international travel insurance","Not an Amex — widely accepted and assessed differently","1.5 pts per $1 on overseas spend"],
+      cons:["$450 a year in year one — one of the dearest fees on the list","Everyday earn is thin: 0.8 pts per $1 on key categories, 0.4 elsewhere","Needs $6,000 spend twice (year 1 and year 2) to get the full bonus","Minimum income $75,000 and no recent Altitude Black or Platinum card in the last 24 months","Westpac changed Altitude fees and earn from 30 Sept — confirm the offer is live"],
+      bestFor:"The non-Amex route for Nash or Shay, if the offer is live — the bonus does the work, not the ongoing earn.",
+      calc:{tiers:[{cap:10000,rate:0.6},{cap:null,rate:0.25}],b1:90000,min1:6000,b2:60000,min2:6000,cash1:0,perk1:0,perk2:0} },
+
+    { id:"anzffb", rank:4, name:"ANZ Frequent Flyer Black", issuer:"ANZ", kind:"personal", earnType:"direct", typeLabel:"Earns Qantas Points directly",
+      badge:"", fee:425, feeNote:"per year",
+      earn:"1.0", earnNote:"Qantas pts per $1 (check statement caps in the T&Cs)",
+      bonus:"Up to 100,000", bonusNote:"$6,000 in 90 days · one summary also lists 50,000 more at 12 months — confirm",
+      deadline:null, deadlineLabel:"", verify:true,
+      pros:["1 Qantas pt per $1 straight into Qantas Frequent Flyer","Up to 100,000 bonus Qantas points","Travel insurance included","Not an Amex"],
+      cons:["$425 annual fee","You both already hold an ANZ rewards card — ANZ usually blocks the bonus for recent holders (often 24 months), so check the T&Cs","Bonus structure is unclear between sources — confirm what's payable","Lower value than Amex per dollar of fee"],
+      bestFor:"Only if ANZ will pay the bonus to existing ANZ customers — otherwise skip.",
+      calc:{tiers:[{cap:null,rate:1.0}],b1:100000,min1:6000,b2:0,min2:0,cash1:0,perk1:0,perk2:0} },
+
+    { id:"mcq", rank:5, name:"MyCard Premier Qantas", issuer:"MyCard", kind:"personal", earnType:"direct", typeLabel:"Earns Qantas Points directly",
+      badge:"", fee:350, feeNote:"per year",
+      earn:"1.0", earnNote:"Qantas pts per $1, capped at 100,000 pts a year",
+      bonus:"Up to 80,000 + 40,000", bonusNote:"80,000 on $7,000 in 90 days; +40,000 after 12 months",
+      deadline:null, deadlineLabel:"", verify:true,
+      pros:["1 Qantas pt per $1 on everyday spend","Up to 120,000 bonus Qantas points in total (80,000 + 40,000 after 12 months)","Travel insurance included","Not an Amex"],
+      cons:["$350 annual fee","Needs $7,000 spend in 90 days","Earn capped at 100,000 points a year","Single-source offer details — confirm before applying"],
+      bestFor:"A non-Amex card with a solid bonus if Westpac or ANZ aren't options.",
+      calc:{tiers:[{cap:8333,rate:1.0},{cap:null,rate:0}],b1:80000,min1:7000,b2:40000,min2:0,cash1:0,perk1:0,perk2:0} },
+
+    { id:"nqbs", rank:6, name:"NAB Qantas Business Signature", issuer:"NAB", kind:"business", earnType:"direct", typeLabel:"Earns Qantas Points directly",
+      badge:"", fee:295, feeNote:"per card, per year",
+      earn:"0.67", earnNote:"Qantas pts per $1 (1 point per $1.50; +1 on Qantas)",
+      bonus:"Up to 150,000", bonusNote:"$10,000 spend in 90 days · plus 50,000 after 15 months on some offers",
+      deadline:null, deadlineLabel:"", verify:true,
+      pros:["Up to 150,000 bonus Qantas points","Not an Amex — for suppliers that don't take Amex","$295 fee is lower than the Amex business card","Earns on ATO payments (until the ATO stops credit cards)"],
+      cons:["Needs $10,000 spend in 90 days — a high bar for a small business","Everyday earn is low: 1 point per $1.50","ATO stops accepting credit cards after 30 Nov 2026","ABN 12+ months and $75,000+ turnover for new NAB customers; $50,000 per statement cap"],
+      bestFor:"Shay as a second business card for suppliers that won't take Amex.",
+      calc:{tiers:[{cap:null,rate:0.67}],b1:150000,min1:10000,b2:50000,min2:0,cash1:0,perk1:0,perk2:0} },
+
+    { id:"anzqb", rank:7, name:"ANZ Qantas Business Rewards", issuer:"ANZ", kind:"business", earnType:"direct", typeLabel:"Earns Qantas Points directly",
+      badge:"", fee:375, feeNote:"per year ($300 + $75 rewards fee)",
+      earn:"1.0", earnNote:"Up to 1 Qantas pt per $1",
+      bonus:"Up to 150,000", bonusNote:"$6,000 in 90 days · +50,000 at 15 months",
+      deadline:null, deadlineLabel:"", verify:true,
+      pros:["Up to 150,000 bonus Qantas points","Lower spend hurdle than NAB: $6,000 in 90 days","1 Qantas pt per $1","Not an Amex"],
+      cons:["$375 annual fee","Shay already holds an ANZ card — ANZ bonuses usually exclude recent holders, so confirm","Part of the bonus arrives only after 15 months","Business turnover limits apply (under $10m)"],
+      bestFor:"Shay if the Amex business card is declined — check ANZ's bonus rules first.",
+      calc:{tiers:[{cap:null,rate:1.0}],b1:100000,min1:6000,b2:50000,min2:0,cash1:0,perk1:0,perk2:0} },
+
+    { id:"nqrs", rank:8, name:"NAB Qantas Rewards Signature", issuer:"NAB", kind:"personal", earnType:"direct", typeLabel:"Earns Qantas Points directly",
+      badge:"", fee:449, feeNote:"per year for new applications from 1 Oct 2026 (was $420)",
+      earn:"0.75", earnNote:"Qantas pts per $1 on the first $3,000 a statement, then 0.25 on the next $12,000",
+      bonus:"Up to 60,000 + $200", bonusNote:"$5,000 in 90 days · +20,000 after 12 months",
+      deadline:null, deadlineLabel:"", verify:true,
+      pros:["Up to 80,000 bonus Qantas points plus $200 cashback","Travel insurance included","Not an Amex","Earns on Qantas purchases at a higher rate"],
+      cons:["$449 fee for new applicants","Earn was cut on 1 Oct: 0.75 per $1, then 0.25 — and nothing past $15,000 a statement","Sign-up bonus is much smaller than it was before 30 Sept","NAB excludes recent NAB rewards cardholders for 24 months"],
+      bestFor:"Not recommended on today's terms — listed so you can see why.",
+      calc:{tiers:[{cap:3000,rate:0.75},{cap:12000,rate:0.25},{cap:null,rate:0}],b1:60000,min1:5000,b2:20000,min2:0,cash1:200,perk1:0,perk2:0} },
+
+    { id:"ap", rank:9, name:"Amex Platinum (personal)", issuer:"American Express", kind:"personal", earnType:"flex", typeLabel:"Charge card · Amex points, sent to Qantas 2:1",
+      badge:"", fee:1450, feeNote:"per year",
+      earn:"1.125*", earnNote:"*2.25 Amex pts per $1, sent to Qantas at 2 for 1; no cap",
+      bonus:"≈100,000", bonusNote:"200,000 Amex pts (Qantas-equivalent) · $5,000 in 3 months · the bigger partner offer ends today, 6 Oct",
+      deadline:"2026-11-03T23:59:59+10:00", deadlineLabel:"3 Nov", verify:true, amexLink:true,
+      pros:["Highest uncapped earn on this list: about 1.125 Qantas pts per $1","About 100,000 Qantas-equivalent bonus points for $5,000 spend","Premium lounge and travel perks (Norval has this card)","Flexible points — can go to Qantas, Velocity and others"],
+      cons:["$1,450 annual fee — very hard to recover on 1–2 trips a year","Charge card — pay in full every month","Premium Amex cards have the strictest approval","Qantas transfer rate is 2:1, so it's an extra step"],
+      bestFor:"Frequent flyers who'd use the lounges and credits. For 1–2 trips a year the Qantas Amex Ultimate gives more per dollar of fee.",
+      calc:{tiers:[{cap:null,rate:1.125}],b1:100000,min1:5000,b2:0,min2:0,cash1:0,perk1:0,perk2:0} },
+
+    { id:"anzffp", rank:10, name:"ANZ Frequent Flyer Platinum", issuer:"ANZ", kind:"personal", earnType:"direct", typeLabel:"Earns Qantas Points directly",
+      badge:"", fee:295, feeNote:"per year",
+      earn:"0.75", earnNote:"Qantas pts per $1",
+      bonus:"Up to 50,000 + 25,000", bonusNote:"$3,500 in 120 days · +25,000 at 12 months",
+      deadline:null, deadlineLabel:"", verify:true,
+      pros:["Lowest spend hurdle for a bonus: $3,500 in 120 days","Straight into Qantas Frequent Flyer","Basic travel insurance included","Not an Amex"],
+      cons:["Smallest bonus on the list","0.75 pts per $1 is low value for a $295 fee","ANZ rewards-card exclusion likely applies to you both","Last choice unless everything above is declined"],
+      bestFor:"A fall-back only — and only if ANZ will pay the bonus.",
+      calc:{tiers:[{cap:null,rate:0.75}],b1:50000,min1:3500,b2:25000,min2:0,cash1:0,perk1:0,perk2:0} }
+  ];
+
+  var state = { filter:"all", sort:"fit", pm:3000, bm:3000, cpp:1.3, perks:false };
+
+  function $(s){ return document.querySelector(s); }
+  function fmt(n){ return Math.round(n).toLocaleString("en-AU"); }
+  function money(n){ return (n < 0 ? "-" : "") + "$" + Math.abs(Math.round(n)).toLocaleString("en-AU"); }
+  function feeClass(f){ return f <= 250 ? "fee-low" : (f <= 450 ? "fee-mid" : "fee-high"); }
+
+  function estimate(card){
+    var c = card.calc; if(!c){ return null; }
+    var m = card.kind === "business" ? state.bm : state.pm;
+    var left = m, perMonth = 0, i, t, amt;
+    for(i = 0; i < c.tiers.length; i++){
+      t = c.tiers[i];
+      amt = (t.cap === null) ? left : Math.min(left, t.cap);
+      perMonth += amt * t.rate; left -= amt;
+      if(left <= 0){ break; }
+    }
+    var earn = perMonth * 12;
+    var unlock1 = !c.min1 || (m * 3 >= c.min1);
+    var b1 = unlock1 ? c.b1 : 0;
+    var unlock2 = c.b2 > 0 && (!c.min2 || (m * 3 >= c.min2));
+    var b2 = unlock2 ? c.b2 : 0;
+    var cpp = state.cpp / 100;
+    var p1 = state.perks ? c.perk1 : 0, p2 = state.perks ? c.perk2 : 0;
+    var y1pts = earn + b1;
+    var y1val = y1pts * cpp + c.cash1 + p1;
+    var y2pts = earn * 2 + b1 + b2;
+    var y2val = y2pts * cpp + c.cash1 + p1 + p2;
+    return { y1pts:y1pts, y1val:y1val, y1net:y1val - card.fee,
+             y2pts:y2pts, y2net:y2val - card.fee * 2,
+             unlocked:unlock1, need:c.min1 ? Math.ceil(c.min1 / 3 / 50) * 50 : 0,
+             hasBonus:c.b1 > 0, perksOn:state.perks && (c.perk1 > 0) };
+  }
+
+  function deadlineChip(card){
+    if(!card.deadline){ return ""; }
+    var ms = new Date(card.deadline).getTime() - Date.now();
+    var days = Math.ceil(ms / 86400000);
+    if(ms < 0){ return '<span class="chip chip-red">Offer window closed ' + card.deadlineLabel + ' \u2014 check for a current offer</span>'; }
+    if(days <= 7){ return '<span class="chip chip-red">Ends ' + card.deadlineLabel + ' \u00b7 ' + days + ' day' + (days === 1 ? "" : "s") + ' left</span>'; }
+    if(days <= 21){ return '<span class="chip chip-amber">Ends ' + card.deadlineLabel + ' \u00b7 ' + days + ' days left</span>'; }
+    return '<span class="chip chip-grey">Ends ' + card.deadlineLabel + '</span>';
+  }
+
+  function estHTML(card){
+    var e = estimate(card);
+    if(!e){
+      return '<div class="est"><div class="h">Estimated value at your spend</div><div class="small">Not calculated \u2014 bonus terms need confirming first.</div></div>';
+    }
+    var c1 = e.y1net >= 0 ? "pos" : "neg", c2 = e.y2net >= 0 ? "pos" : "neg";
+    var h = '<div class="est"><div class="h">Estimated value at your spend</div>';
+    h += '<div class="r"><span>Year 1: ' + fmt(e.y1pts) + ' pts \u2248 ' + money(e.y1val) + '</span><span class="' + c1 + '">' + money(e.y1net) + ' after fee</span></div>';
+    h += '<div class="r"><span>Over 2 years (incl. any year-2 bonus)</span><span class="' + c2 + '">' + money(e.y2net) + ' after fees</span></div>';
+    if(e.hasBonus && !e.unlocked){
+      h += '<div class="warnline">At this spend the sign-up bonus isn\'t unlocked \u2014 you\'d need about ' + money(e.need) + ' a month.</div>';
+    }
+    if(e.perksOn){ h += '<div class="small" style="margin-top:4px">Includes credits you said you\'d use.</div>'; }
+    return h + '</div>';
+  }
+
+  function cardHTML(card){
+    var tags = '<span class="tag ' + card.kind + '">' + (card.kind === "business" ? "Business card (Shay)" : "Personal card") + '</span>';
+    tags += '<span class="tag">' + card.typeLabel + '</span>';
+    if(card.badge){ tags += '<span class="tag best">' + card.badge + '</span>'; }
+    var chips = deadlineChip(card);
+    if(card.verify){ chips += ' <span class="chip chip-amber">Double-check this offer on the issuer\'s site</span>'; }
+    var h = '<article class="card" id="c-' + card.id + '">';
+    h += '<div class="card-top"><div class="rank" aria-label="Rank ' + card.rank + '">' + card.rank + '</div><div><h3>' + card.name + '</h3><div class="sub">' + card.issuer + '</div><div class="tags">' + tags + '</div></div></div>';
+    h += '<div class="stats">';
+    h += '<div class="stat ' + feeClass(card.fee) + '"><span class="k">Annual fee</span><span class="v">' + money(card.fee) + '</span><span class="n">' + card.feeNote + '</span></div>';
+    h += '<div class="stat"><span class="k">Everyday earn</span><span class="v">' + card.earn + '</span><span class="n">' + card.earnNote + '</span></div>';
+    h += '<div class="stat"><span class="k">Sign-up bonus</span><span class="v">' + card.bonus + '</span><span class="n">' + card.bonusNote + '</span></div>';
+    h += '</div>';
+    if(chips){ h += '<div class="chips2">' + chips + '</div>'; }
+    h += '<div class="pc"><div class="pros"><h4>Pros</h4><ul>' + card.pros.map(function(x){ return "<li>" + x + "</li>"; }).join("") + '</ul></div>';
+    h += '<div class="cons"><h4>Cons</h4><ul>' + card.cons.map(function(x){ return "<li>" + x + "</li>"; }).join("") + '</ul></div></div>';
+    h += estHTML(card);
+    h += '<p class="best-for"><strong>Best for:</strong> ' + card.bestFor + '</p>';
+    if(card.amexLink){ h += '<a class="lnk" href="#approval" data-open-approval="1">Amex approval notes \u2193</a>'; }
+    return h + '</article>';
+  }
+
+  function passes(card){
+    switch(state.filter){
+      case "personal": return card.kind === "personal";
+      case "business": return card.kind === "business";
+      case "lowfee": return card.fee <= 400;
+      case "direct": return card.earnType === "direct";
+      default: return true;
+    }
+  }
+
+  function render(){
+    var list = CARDS.filter(passes);
+    if(state.sort === "fee"){ list.sort(function(a,b){ return a.fee - b.fee; }); }
+    else if(state.sort === "y1"){
+      list.sort(function(a,b){
+        var ea = estimate(a), eb = estimate(b);
+        var va = ea ? ea.y1net : -Infinity, vb = eb ? eb.y1net : -Infinity;
+        return vb - va;
+      });
+    } else { list.sort(function(a,b){ return a.rank - b.rank; }); }
+    $("#count").textContent = "Showing " + list.length + " card" + (list.length === 1 ? "" : "s");
+    $("#cards").innerHTML = list.map(cardHTML).join("");
+  }
+
+  function openApproval(e){
+    var d = $("#approval"); if(d){ d.open = true; }
+  }
+
+  // events
+  $("#filters").addEventListener("click", function(e){
+    var b = e.target.closest("button[data-f]"); if(!b){ return; }
+    state.filter = b.getAttribute("data-f");
+    Array.prototype.forEach.call(document.querySelectorAll("#filters button"), function(x){
+      x.setAttribute("aria-pressed", x === b ? "true" : "false");
+    });
+    render();
+  });
+  $("#sort").addEventListener("change", function(e){ state.sort = e.target.value; render(); });
+  $("#pm").addEventListener("input", function(e){ state.pm = +e.target.value; $("#pmOut").textContent = money(state.pm); render(); });
+  $("#bm").addEventListener("input", function(e){ state.bm = +e.target.value; $("#bmOut").textContent = money(state.bm); render(); });
+  $("#perks").addEventListener("change", function(e){ state.perks = e.target.checked; render(); });
+  $("#cpp").addEventListener("click", function(e){
+    var b = e.target.closest("button[data-v]"); if(!b){ return; }
+    state.cpp = +b.getAttribute("data-v");
+    Array.prototype.forEach.call(document.querySelectorAll("#cpp button"), function(x){
+      x.setAttribute("aria-pressed", x === b ? "true" : "false");
+    });
+    render();
+  });
+  $("#cards").addEventListener("click", function(e){ if(e.target.closest("[data-open-approval]")){ openApproval(); } });
+  $("#goApproval").addEventListener("click", openApproval);
+
+  render();
+})();
+</script>
+</body>
+</html>
